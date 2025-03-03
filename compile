@@ -1,0 +1,57 @@
+#!/bin/bash
+###########################################################################################
+####                              COMPILER SET UP                                      ####
+###########################################################################################
+compile="ifort -fast \
+             -Ofast \
+             -ipo \
+             -ffast-math \
+             -funroll-loops \
+             -xHost \
+             -align array32byte \
+             -qopt-zmm-usage=high \
+             -qopenmp \
+             -diag-disable=10448"
+
+#compile="gfortran-12 -Ofast \
+#                     -march=native \
+#                     -mprefer-vector-width=512 \
+#                     -fno-bounds-check \
+#                     -flto=auto \
+#                     -fwhole-program \
+#                     -fopenmp"
+
+###########################################################################################
+####                            BUILDING OBJ INTERFACES                                ####
+###########################################################################################
+$compile -c src/math/math.f90
+$compile -c src/fft/fourier_transform.f90
+$compile -c src/lgp/lege_poly.f90
+$compile -c src/sph/lateral_grid.f90
+$compile -c src/sphpack.f90
+
+###########################################################################################
+####                           BUILDING IMPLEMENTATIONS                                ####
+###########################################################################################
+$compile -c src/math/arr/*.f90 &
+$compile -c src/fft/init/*.f90 &
+$compile -c src/fft/codelets/*.f90 &
+$compile -c src/fft/cores/*.f90 &
+$compile -c src/fft/transform/*.f90 &
+$compile -c src/lgp/init/*.f90 &
+$compile -c src/lgp/codelets/*.f90 &
+$compile -c src/lgp/indexing/*.f90 &
+$compile -c src/lgp/transform/*.f90 &
+$compile -c src/sph/init/*.f90 &
+$compile -c src/sph/cores/*.f90 &
+wait
+
+###########################################################################################
+####                              LINKING TO MAIN CODE                                 ####
+###########################################################################################
+$compile test.f90 *.o -o sphpack_test
+
+###########################################################################################
+####                                      CLEANING                                     ####
+###########################################################################################
+rm *.o *.mod *.smod
