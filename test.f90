@@ -8,7 +8,8 @@ program test
   integer, parameter :: jmcut  = jcut*(jcut+1)/2+jcut+1
   
   real(kind=dbl)                 :: start, end
-  real(kind=dbl),    allocatable :: grid(:,:,:)
+  real(kind=dbl),    pointer     :: grid(:,:,:)
+  type(c_ptr)                    :: c_grid
   complex(kind=dbl), allocatable :: c1(:), c2(:), cout(:)
   
   !*****************************************************************************!
@@ -22,14 +23,15 @@ program test
   allocate( c1(jmcut)   ) ; call fill_scalar_sub( c1 )
   allocate( cout(jmcut) ) ; cout = cmplx(0._dbl, 0._dbl, kind=dbl)
   
-  allocate( grid(nth,nph,2) )
+  c_grid = malloc( 32, int(2 * nth * nph * c_sizeof(0._dbl), kind=4) )
+  call c_f_pointer( c_grid,  grid,  [nth,nph,2] )
   
   start = omp_get_wtime()
     call harmsy( c1, grid )
     call harman( grid, cout )
   end = omp_get_wtime()
   
-  deallocate( grid )
+  call free( c_grid)
   
   write(*,*) 'harmsy/harman:'
   write(*,*) 'exec time: ',end-start

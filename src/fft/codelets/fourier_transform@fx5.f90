@@ -26,7 +26,8 @@ submodule (fourier_transform) fx5
       t4im = t(2,ij+3)
       
       do i = 1, l/5
-        do iv = 1, step
+        !$omp simd
+        do iv = 1, howmany
           x1re =        t1re * x(iv,1,i,1,j) - t1im * x(iv,2,i,1,j)
           x1im =        t1re * x(iv,2,i,1,j) + t1im * x(iv,1,i,1,j)
           x2re =        t2re * x(iv,1,i,2,j) - t2im * x(iv,2,i,2,j)
@@ -78,7 +79,8 @@ submodule (fourier_transform) fx5
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im, x3re, x3im, x4re, x4im
     
     do i = 1, l/5
-      do iv = 1, step
+      !$omp simd
+      do iv = 1, howmany
         x0re = x(iv,1,i,1) - x(iv,1,i,4)
         x0im = x(iv,2,i,1) - x(iv,2,i,4)
         x1re = x(iv,1,i,1) + x(iv,1,i,4)

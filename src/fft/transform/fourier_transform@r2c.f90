@@ -5,10 +5,11 @@ submodule (fourier_transform) r2c
     integer        :: i, iv
     real(kind=dbl) :: addre, addim, subre, subim, t1, t2
     
-    call this%fxztal( x )
-    call this%fxzshf( x )
+    call this%fxztal( howmany, x )
+    call this%fxzshf( howmany, x )
     
-    do iv = 1, step
+    !$omp simd
+    do iv = 1, howmany
       addre     =             x(iv,1,0)
       x(iv,1,0) = x(iv,1,0) + x(iv,2,0)
       x(iv,2,0) = addre     - x(iv,2,0)
@@ -18,7 +19,8 @@ submodule (fourier_transform) r2c
       t1 = this%t(this%n+2*i-1)
       t2 = this%t(this%n+2*i  )
       
-      do iv = 1, step
+      !$omp simd
+      do iv = 1, howmany
         addre = -x(iv,1,i) - x(iv,1,this%n/2-i)
         subre = +x(iv,1,i) - x(iv,1,this%n/2-i)
         addim = +x(iv,2,i) + x(iv,2,this%n/2-i)
@@ -33,7 +35,8 @@ submodule (fourier_transform) r2c
     end do
     
     if ( mod(this%n,4) == 0) then
-      do iv = 1, step
+      !$omp simd
+      do iv = 1, howmany
         x(iv,1,this%n/4) = +x(iv,1,this%n/4)
         x(iv,2,this%n/4) = -x(iv,2,this%n/4)
       end do

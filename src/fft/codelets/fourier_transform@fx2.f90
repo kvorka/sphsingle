@@ -10,7 +10,8 @@ submodule (fourier_transform) fx2
       t1im = t(2,j)
       
       do i = 1, l/2
-        do iv = 1, step
+        !$omp simd
+        do iv = 1, howmany
           x1re = x(iv,1,i,0,j) - t1re * x(iv,1,i,1,j)
           x1im = x(iv,2,i,0,j) - t1im * x(iv,1,i,1,j)
           
@@ -28,7 +29,8 @@ submodule (fourier_transform) fx2
     integer :: i, iv
     
     do i = 1, l/2
-      do iv = 1, step
+      !$omp simd
+      do iv = 1, howmany
         x(iv,1,i,1) =     x(iv,1,i,0) - x(iv,1,i,1)
         x(iv,2,i,1) =     x(iv,2,i,0) - x(iv,2,i,1)
         x(iv,1,i,0) = 2 * x(iv,1,i,0) - x(iv,1,i,1)

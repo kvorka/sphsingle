@@ -5,7 +5,7 @@ submodule (fourier_transform) fxshf
     integer                     :: iv, j, isj, isj2
     real(kind=dbl), allocatable :: y(:)
     
-    allocate( y(2*step) )
+    allocate( y(2*howmany) )
     
     j = 1  
       do while (j <= this%n/2-2)
@@ -15,7 +15,8 @@ submodule (fourier_transform) fxshf
           j = j + 1
           
         else
-          do iv = 1, 2*step
+          !$omp simd
+          do iv = 1, 2*howmany
             y(iv) = x(iv,isj)
           end do
           
@@ -24,7 +25,8 @@ submodule (fourier_transform) fxshf
             isj2 = this%it(j)
             
             if ( isj2 < 0 ) then
-              do iv = 1, 2*step
+              !$omp simd
+              do iv = 1, 2*howmany
                 x(iv,isj)      = x(iv,isj2-imm)
                 x(iv,isj2-imm) = y(iv)
               end do
@@ -33,7 +35,8 @@ submodule (fourier_transform) fxshf
               exit
             
             else
-              do iv = 1, 2*step
+              !$omp simd
+              do iv = 1, 2*howmany
                 x(iv,isj) = x(iv,isj2)
               end do
               

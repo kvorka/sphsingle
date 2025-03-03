@@ -6,8 +6,9 @@ submodule (lege_poly) allocators
     
     n = 4*this%nrma
     
-    allocate( arr(n) )
-      call zero_rarray_sub( n, arr )
+    c_arr = malloc( 32, int( n * c_sizeof(0._dbl) ) )
+    call c_f_pointer( c_arr, arr, [n] )
+    call zero_rarray_sub( n, arr )
     
   end procedure allocate_lgp_arr_sub
   

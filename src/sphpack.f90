@@ -26,8 +26,8 @@ module sphpack
   end subroutine harmsy
   
   subroutine harman(grid, cajm)
-    real(kind=dbl),    intent(in)  :: grid(*)
-    complex(kind=dbl), intent(out) :: cajm(*)
+    real(kind=dbl),    intent(inout) :: grid(*)
+    complex(kind=dbl), intent(out)   :: cajm(*)
     
     call sph%harman_sub( grid, cajm )
     

@@ -5,7 +5,7 @@ submodule (lege_poly) r2c
     integer                     :: m, j, jm, mj, ma
     real(kind=dbl), allocatable :: cab(:,:)
     
-    call this%is_rescale_sub( rcab )
+    call is_rescale_c( this%nrma, this%amj, rcab )
     
     allocate( cab(2,this%jms) )
     

@@ -104,7 +104,7 @@ submodule (lege_poly) c2r
     
     deallocate( cab )
     
-    call this%is_rescale_sub( rcab )
+    call is_rescale_c( this%nrma, this%amj, rcab )
     
   end procedure index_bwd_sub
   

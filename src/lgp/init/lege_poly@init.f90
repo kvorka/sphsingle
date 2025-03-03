@@ -24,13 +24,12 @@ submodule (lege_poly) init
     call this%roots_sub()
     call this%coeffs_sub()
     
-    this%rw(:,4) = this%rw(:,4) / wfac
+    this%wght = this%wght / wfac
     
   end procedure init_lege_sub
   
   module procedure deallocate_lege_sub
     
-    if ( allocated(this%rw)  ) deallocate( this%rw  ) 
     if ( allocated(this%emj) ) deallocate( this%emj )
     if ( allocated(this%fmj) ) deallocate( this%fmj )
     

@@ -34,9 +34,9 @@ module lateral_grid
     end subroutine harmsy_sub
     
     module  subroutine harman_sub(this, grid, cout)
-      class(T_lateralGrid), intent(in)  :: this
-      real(kind=dbl),       intent(in)  :: grid(this%lgp%n,this%fourtrans%n,2)
-      complex(kind=dbl),    intent(out) :: cout(*)
+      class(T_lateralGrid), intent(in)    :: this
+      real(kind=dbl),       intent(inout) :: grid(this%lgp%n,this%fourtrans%n,2)
+      complex(kind=dbl),    intent(out)   :: cout(*)
     end subroutine harman_sub
   end interface
   

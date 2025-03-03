@@ -28,7 +28,10 @@ submodule (lege_poly) roots
     !!**********************************************************************!!
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
-    allocate( this%rw(this%n,4) )
+    this%c_cosx  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_cosx,  this%cosx,  [this%n] )
+    this%c_sinx  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_sinx,  this%sinx,  [this%n] )
+    this%c_cosx2 = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_cosx2, this%cosx2, [this%n] )
+    this%c_wght  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_wght,  this%wght,  [this%n] )
     
     !!**********************************************************************!!
     !!* Seek for efficient stepping to use within the bisection method and *!!
@@ -92,10 +95,10 @@ submodule (lege_poly) roots
         end if
       end do
       
-      this%rw(i,1) = root
-      this%rw(i,2) = sqrt( 1 - root**2 )
-      this%rw(i,3) = root**2
-      this%rw(i,4) = qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2
+      this%cosx(i)  = root
+      this%sinx(i)  = sqrt( 1 - root**2 )
+      this%cosx2(i) = root**2
+      this%wght(i) = qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2
     end do
     !$omp end parallel do
     
