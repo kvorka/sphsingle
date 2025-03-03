@@ -51,7 +51,7 @@ $fcompile -c src/sph/lateral_grid.f90
 $fcompile -c src/sphpack.f90
 
 ###########################################################################################
-####                           BUILDING IMPLEMENTATIONS                                ####
+####                         BUILDING FORTRAN IMPLEMENTATIONS                          ####
 ###########################################################################################
 $fcompile -c src/math/arr/*.f90 &
 $fcompile -c src/fft/init/*.f90 &
@@ -59,11 +59,16 @@ $fcompile -c src/fft/codelets/*.f90 &
 $fcompile -c src/fft/cores/*.f90 &
 $fcompile -c src/fft/transform/*.f90 &
 $fcompile -c src/lgp/init/*.f90 &
-$ccompile -c src/lgp/codelets/*.c &
 $fcompile -c src/lgp/indexing/*.f90 &
 $fcompile -c src/lgp/transform/*.f90 &
 $fcompile -c src/sph/init/*.f90 &
 $fcompile -c src/sph/cores/*.f90 &
+wait
+
+###########################################################################################
+####                             BUILDING C IMPLEMENTATIONS                            ####
+###########################################################################################
+$ccompile -c src/lgp/codelets/avx/*.c &
 wait
 
 ###########################################################################################
