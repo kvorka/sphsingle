@@ -29,7 +29,7 @@ submodule (fourier_transform) fx4
           x(iv,1,i,2,j) = ( x0re - t1re * x1re ) + t1im * x1im
           x(iv,2,i,2,j) = ( x0im - t1im * x1re ) - t1re * x1im
           x(iv,1,i,0,j) = 2 * x0re - x(iv,1,i,2,j)
-          x(iv,2,i,0,j) = 2 * x0im - x(Iv,2,i,2,j)
+          x(iv,2,i,0,j) = 2 * x0im - x(iv,2,i,2,j)
           x(iv,1,i,1,j) = ( x2re - t1re * x3im ) - t1im * x3re
           x(iv,2,i,1,j) = ( x2im + t1re * x3re ) - t1im * x3im
           x(iv,1,i,3,j) = 2 * x2re - x(iv,1,i,1,j)

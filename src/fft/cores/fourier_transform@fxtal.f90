@@ -30,7 +30,8 @@ submodule (fourier_transform) fxtal
       
       select case (ip)
         case (4)
-          call fxzm4a( howmany, k1, l, x, this%t(1+2*isd) )
+          !call fxzm4a( howmany, k1, l, x, this%t(1+2*isd) )
+          call fxzm4a_c( howmany, k1, l/4, x, this%t(1+2*isd) )
         case (2)
           call fxzm2a( howmany, k1, l, x, this%t(1+2*isd) )
         case (3)

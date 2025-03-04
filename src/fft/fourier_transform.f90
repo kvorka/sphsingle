@@ -117,4 +117,13 @@ module fourier_transform
     end subroutine fxzm5b
   end interface
   
+  interface
+    pure subroutine fxzm4a_c(howmany, k, l, x, t) bind(C, name="fxzm4a_c")
+      import :: dbl
+      integer, value, intent(in)    :: howmany, k, l
+      real(kind=dbl), intent(inout) :: x(*)
+      real(kind=dbl), intent(in)    :: t(*)
+    end subroutine fxzm4a_c
+  end interface
+  
 end module fourier_transform
