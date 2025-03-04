@@ -7,7 +7,7 @@ extern inline void fwd_sum_c( const int n,                   // howmany roots (n
                               double *restrict cc) {         // sph coeffs
   
   // constant needed for loop unrolling
-  const int n16 = (n/16)*16;
+  const int n32 = (n/32)*32;
   
   // avx vars for Legendre polynomials and sph coeffs, temporary sums
   __m256d rpmj, rcc[4];
@@ -18,8 +18,8 @@ extern inline void fwd_sum_c( const int n,                   // howmany roots (n
   
   // sums: cycle over the roots, the outer cycle is unrolled by 16, factor of 4 is handled by an explicit
   // vectorization, factor of 4 is added in order to unroll the cycle a bit more for efficiency
-  for ( int i2 = 0; i2 < n16; i2+=16 ) {
-    for ( int i1 = 0; i1 < 16; i1+=4 ) {
+  for ( int i2 = 0; i2 < n32; i2+=32 ) {
+    for ( int i1 = 0; i1 < 32; i1+=4 ) {
       
       // load Legendre polynomials
       rpmj = _mm256_load_pd( pmj+i2+i1 );
@@ -34,16 +34,16 @@ extern inline void fwd_sum_c( const int n,                   // howmany roots (n
   }
   
   // sums: remainer cases
-  for ( int i1 = 0; i1 < 8; i1+=4 ) {
+  for ( int i1 = 0; i1 < n-n32; i1+=4 ) {
     
     // load Legendre polynomials
-    rpmj = _mm256_load_pd( pmj+n16+i1 );
+    rpmj = _mm256_load_pd( pmj+n32+i1 );
       
     // sum over roots and sph coeffs
-    rcc[0] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+    n16+i1 ) ), rcc[0] );
-    rcc[1] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+  n+n16+i1 ) ), rcc[1] );
-    rcc[2] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+2*n+n16+i1 ) ), rcc[2] );
-    rcc[3] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+3*n+n16+i1 ) ), rcc[3] );
+    rcc[0] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+    n32+i1 ) ), rcc[0] );
+    rcc[1] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+  n+n32+i1 ) ), rcc[1] );
+    rcc[2] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+2*n+n32+i1 ) ), rcc[2] );
+    rcc[3] = _mm256_add_pd( _mm256_mul_pd( rpmj, _mm256_load_pd( swork+3*n+n32+i1 ) ), rcc[3] );
     
   }
   
