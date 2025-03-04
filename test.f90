@@ -24,7 +24,7 @@ program test
   allocate( cout(jmcut) ) ; cout = cmplx(0._dbl, 0._dbl, kind=dbl)
   
   c_grid = malloc( 32, int(2 * nth * nph * c_sizeof(0._dbl), kind=4) )
-  call c_f_pointer( c_grid,  grid,  [nth,nph,2] )
+  call c_f_pointer( c_grid,  grid,  [nth,2,nph] )
   
   start = omp_get_wtime()
     call harmsy( c1, grid )

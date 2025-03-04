@@ -6,7 +6,7 @@ submodule (lateral_grid) harmsy
     real(kind=dbl), pointer, contiguous :: rcc(:)
     
     !Transform to suitable real input
-    call this%lgp%allocate_lgp_arr_sub( c_rcc, rcc )
+    call alloc_aligned_sub( 32, 4*this%lgp%nrma, c_rcc, rcc )
     call this%lgp%index_bwd_sub( cin, rcc )
     
     call zero_rarray_sub( 2*this%lgp%n*this%fourtrans%n, grid )

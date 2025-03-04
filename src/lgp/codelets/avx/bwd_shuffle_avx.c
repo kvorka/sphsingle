@@ -16,15 +16,15 @@ extern inline void bwd_shuffle_c( const int n,                   // howmany root
       
       rcosx = _mm256_load_pd( cosx+i1+4*j );
       
-      rasym[0] = _mm256_load_pd( swork+i1+4*j     );
-      rasym[1] = _mm256_load_pd( swork+i1+4*j+  n );
-      rssym[0] = _mm256_load_pd( swork+i1+4*j+2*n );
-      rssym[1] = _mm256_load_pd( swork+i1+4*j+3*n );
+      rasym[0] =                       _mm256_load_pd( swork+i1+4*j     );
+      rasym[1] =                       _mm256_load_pd( swork+i1+4*j+  n );
+      rssym[0] = _mm256_mul_pd( rcosx, _mm256_load_pd( swork+i1+4*j+2*n ) );
+      rssym[1] = _mm256_mul_pd( rcosx, _mm256_load_pd( swork+i1+4*j+3*n ) );
       
-      _mm256_store_pd( sumN+i1+4*j  , _mm256_add_pd( _mm256_mul_pd( rcosx, rssym[0] ), rasym[0] ) );
-      _mm256_store_pd( sumS+i1+4*j  , _mm256_sub_pd( _mm256_mul_pd( rcosx, rssym[0] ), rasym[0] ) );
-      _mm256_store_pd( sumN+i1+4*j+n, _mm256_add_pd( _mm256_mul_pd( rcosx, rssym[1] ), rasym[1] ) );
-      _mm256_store_pd( sumS+i1+4*j+n, _mm256_sub_pd( _mm256_mul_pd( rcosx, rssym[1] ), rasym[1] ) );
+      _mm256_store_pd( sumN+i1+4*j  , _mm256_add_pd( rssym[0], rasym[0] ) );
+      _mm256_store_pd( sumS+i1+4*j  , _mm256_sub_pd( rssym[0], rasym[0] ) );
+      _mm256_store_pd( sumN+i1+4*j+n, _mm256_add_pd( rssym[1], rasym[1] ) );
+      _mm256_store_pd( sumS+i1+4*j+n, _mm256_sub_pd( rssym[1], rasym[1] ) );
       
     }
   }

@@ -2,10 +2,11 @@ submodule (fourier_transform) fxshf
   implicit none; contains
   
   module procedure fxzshf
-    integer                     :: iv, j, isj, isj2
-    real(kind=dbl), allocatable :: y(:)
+    integer                             :: iv, j, isj, isj2
+    type(c_ptr)                         :: c_y
+    real(kind=dbl), pointer, contiguous :: y(:)
     
-    allocate( y(2*howmany) )
+    call alloc_aligned_sub( default_alig, 2*howmany, c_y, y )
     
     j = 1  
       do while (j <= this%n/2-2)
@@ -46,7 +47,7 @@ submodule (fourier_transform) fxshf
         end if
       end do
     
-    deallocate( y )
+    call free( c_y )
     
   end procedure fxzshf
   

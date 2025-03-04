@@ -28,10 +28,10 @@ submodule (lege_poly) roots
     !!**********************************************************************!!
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
-    this%c_cosx  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_cosx,  this%cosx,  [this%n] )
-    this%c_sinx  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_sinx,  this%sinx,  [this%n] )
-    this%c_cosx2 = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_cosx2, this%cosx2, [this%n] )
-    this%c_wght  = malloc( 32, int(this%n * c_sizeof(0._dbl), kind=4) ); call c_f_pointer( this%c_wght,  this%wght,  [this%n] )
+    call alloc_aligned_sub( default_alig, this%n, this%c_cosx,  this%cosx  )
+    call alloc_aligned_sub( default_alig, this%n, this%c_sinx,  this%sinx  )
+    call alloc_aligned_sub( default_alig, this%n, this%c_cosx2, this%cosx2 )
+    call alloc_aligned_sub( default_alig, this%n, this%c_wght,  this%wght  )
     
     !!**********************************************************************!!
     !!* Seek for efficient stepping to use within the bisection method and *!!

@@ -8,23 +8,28 @@ submodule (fourier_transform) fx4
     do j = 0, k-1
       ij = 3 * j
       
-      t1re = t(1,ij  )
-      t1im = t(2,ij  )
-      t2re = t(1,ij+1)
-      t2im = t(2,ij+1)
+      t1re = t(  2*ij)
+      t1im = t(1+2*ij)
+      t2re = t(2+2*ij)
+      t2im = t(3+2*ij)
       
-      do i = 1, l/4
+      do i = 1, l
         !$omp simd
         do iv = 1, howmany
-          x2re = ( x(iv,1,i,0,j) - t2re * x(iv,1,i,2,j) ) + t2im * x(iv,2,i,2,j)
-          x2im = ( x(iv,2,i,0,j) - t2im * x(iv,1,i,2,j) ) - t2re * x(iv,2,i,2,j)
-          x3re = ( x(iv,1,i,1,j) - t2re * x(iv,1,i,3,j) ) + t2im * x(iv,2,i,3,j)
-          x3im = ( x(iv,2,i,1,j) - t2im * x(iv,1,i,3,j) ) - t2re * x(iv,2,i,3,j)
+          x0re = x(iv,1,i,0,j)
+          x0im = x(iv,2,i,0,j)
+          x1re = x(iv,1,i,1,j)
+          x1im = x(iv,2,i,1,j)
           
-          x0re = 2 * x(iv,1,i,0,j) - x2re
-          x0im = 2 * x(iv,2,i,0,j) - x2im
-          x1re = 2 * x(iv,1,i,1,j) - x3re
-          x1im = 2 * x(iv,2,i,1,j) - x3im
+          x2re = ( x0re - t2re * x(iv,1,i,2,j) ) + t2im * x(iv,2,i,2,j)
+          x2im = ( x0im - t2im * x(iv,1,i,2,j) ) - t2re * x(iv,2,i,2,j)
+          x3re = ( x1re - t2re * x(iv,1,i,3,j) ) + t2im * x(iv,2,i,3,j)
+          x3im = ( x1im - t2im * x(iv,1,i,3,j) ) - t2re * x(iv,2,i,3,j)
+          
+          x0re = 2 * x0re - x2re
+          x0im = 2 * x0im - x2im
+          x1re = 2 * x1re - x3re
+          x1im = 2 * x1im - x3im
           
           x(iv,1,i,2,j) = ( x0re - t1re * x1re ) + t1im * x1im
           x(iv,2,i,2,j) = ( x0im - t1im * x1re ) - t1re * x1im
@@ -44,7 +49,7 @@ submodule (fourier_transform) fx4
     integer        :: i, iv
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im, x3re, x3im
     
-    do i = 1, l/4
+    do i = 1, l
       !$omp simd
       do iv = 1, howmany
         x2re = x(iv,1,i,0) - x(iv,1,i,2)
@@ -56,14 +61,14 @@ submodule (fourier_transform) fx4
         x1re = x(iv,1,i,1) + x(iv,1,i,3)
         x1im = x(iv,2,i,1) + x(iv,2,i,3)
         
-        x(iv,1,i,2) =     x0re - x1re
-        x(iv,2,i,2) =     x0im - x1im
-        x(iv,1,i,0) = 2 * x0re - x(iv,1,i,2)
-        x(iv,2,i,0) = 2 * x0im - x(iv,2,i,2)       
-        x(iv,1,i,1) =     x2re - x3im
-        x(iv,2,i,1) =     x2im + x3re
-        x(iv,1,i,3) = 2 * x2re - x(iv,1,i,1)
-        x(iv,2,i,3) = 2 * x2im - x(iv,2,i,1)
+        x(iv,1,i,2) = x0re - x1re
+        x(iv,2,i,2) = x0im - x1im
+        x(iv,1,i,0) = x0re + x1re
+        x(iv,2,i,0) = x0im + x1im       
+        x(iv,1,i,1) = x2re - x3im
+        x(iv,2,i,1) = x2im + x3re
+        x(iv,1,i,3) = x2re + x3im
+        x(iv,2,i,3) = x2im - x3re
       end do
     end do
     

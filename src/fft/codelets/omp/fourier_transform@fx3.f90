@@ -13,12 +13,12 @@ submodule (fourier_transform) fx3
     do j = 0, k-1
       ij = 2 * j
       
-      t1re = t(1,ij  )
-      t1im = t(2,ij  )            
-      t2re = t(1,ij+1)
-      t2im = t(2,ij+1)
+      t1re = t(  2*ij)
+      t1im = t(1+2*ij)
+      t2re = t(2+2*ij)
+      t2im = t(3+2*ij)
       
-      do i = 1, l/3
+      do i = 1, l
         !$omp simd
         do iv = 1, howmany
           x0re =        t1re * x(iv,1,i,1,j) - t1im * x(iv,2,i,1,j)
@@ -47,7 +47,7 @@ submodule (fourier_transform) fx3
     integer        :: i, iv
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im
     
-    do i = 1, l/3
+    do i = 1, l
       !$omp simd
       do iv = 1, howmany
         x1re = x(iv,1,i,1) -       x(iv,1,i,2)

@@ -15,13 +15,8 @@ module lege_poly
     procedure, private, pass :: coeffs_sub     => compute_coeffs_sub
     procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
     
-    procedure, public, pass :: allocate_lgp_arr_sub
-    
-    procedure, public,  pass :: index_bwd_sub
-    procedure, public,  pass :: index_fwd_sub
-    
-    procedure, public, pass :: bwd_legesum_sub
-    procedure, public, pass :: fwd_legesum_sub
+    procedure, public, pass :: index_bwd_sub, bwd_legesum_sub
+    procedure, public, pass :: index_fwd_sub, fwd_legesum_sub
     
   end type T_legep
   
@@ -48,12 +43,6 @@ module lege_poly
       class(T_legep), intent(inout) :: this
     end subroutine compute_coeffs_sub
     
-    module subroutine allocate_lgp_arr_sub(this, c_arr, arr)
-      class(T_legep),                      intent(in)  :: this
-      type(c_ptr),                         intent(out) :: c_arr
-      real(kind=dbl), pointer, contiguous, intent(out) :: arr(:)
-    end subroutine allocate_lgp_arr_sub
-    
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
       complex(kind=dbl), intent(in)  :: cjm(*)
@@ -79,6 +68,56 @@ module lege_poly
     end subroutine fwd_legesum_sub
   end interface
   
+#ifdef omp
+  interface
+    module pure subroutine is_rescale_c(n, cff, rcab)
+      integer, value, intent(in)    :: n
+      real(kind=dbl), intent(in)    :: cff(n)
+      real(kind=dbl), intent(inout) :: rcab(4,n)
+    end subroutine is_rescale_c
+    
+    module pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj)
+      integer,        intent(in)    :: n, ma
+      real(kind=dbl), intent(in)    :: cff, cosx(n), sinx(n)
+      real(kind=dbl), intent(inout) :: pmm(n)
+      real(kind=dbl), intent(out)   :: pmj1(n), pmj(n)
+    end subroutine mm_set_c
+    
+    module pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj)
+      integer,        intent(in)    :: n
+      real(kind=dbl), intent(in)    :: cff(2), cosx2(n)
+      real(kind=dbl), intent(inout) :: pmj1(n), pmj(n)
+    end subroutine mj_rec_c
+    
+    module pure subroutine bwd_sum_c(n, pmj, cc, swork)
+      integer,        intent(in)  :: n
+      real(kind=dbl), intent(in)  :: pmj(n)
+      real(kind=dbl), intent(in)  :: cc(4)
+      real(kind=dbl), intent(out) :: swork(n,4)
+    end subroutine bwd_sum_c
+    
+    module pure subroutine bwd_shuffle_c(n, cosx, swork, sumN, sumS)
+      integer,        intent(in)    :: n
+      real(kind=dbl), intent(in)    :: cosx(n)
+      real(kind=dbl), intent(inout) :: swork(n,2,2)
+      real(kind=dbl), intent(out)   :: sumN(n,2), sumS(n,2)
+    end subroutine bwd_shuffle_c
+    
+    module pure subroutine fwd_shuffle_c(n, cosx, w, sumN, sumS, swork)
+      integer,        intent(in)  :: n
+      real(kind=dbl), intent(in)  :: w(n), cosx(n)
+      real(kind=dbl), intent(in)  :: sumN(n,2), sumS(n,2)
+      real(kind=dbl), intent(out) :: swork(n,2,2)
+    end subroutine fwd_shuffle_c
+    
+    module pure subroutine fwd_sum_c(n, pmj, swork, cr)
+      integer,        intent(in)    :: n
+      real(kind=dbl), intent(in)    :: pmj(n)
+      real(kind=dbl), intent(in)    :: swork(n,4)
+      real(kind=dbl), intent(inout) :: cr(4)
+    end subroutine fwd_sum_c
+  end interface
+#else
   interface
     pure subroutine is_rescale_c(n, cff, rcab) bind(C, name="is_rescale_c")
       import                        :: dbl
@@ -86,13 +125,6 @@ module lege_poly
       real(kind=dbl), intent(in)    :: cff(*)
       real(kind=dbl), intent(inout) :: rcab(*)
     end subroutine is_rescale_c
-    
-    pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj) bind(C, name="mj_rec_c")
-      import                        :: dbl
-      integer, value, intent(in)    :: n
-      real(kind=dbl), intent(in)    :: cff(*), pmj1(*), cosx2(*)
-      real(kind=dbl), intent(inout) :: pmj(*)
-    end subroutine mj_rec_c
     
     pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj) bind(C, name="mm_set_c")
       import                               :: dbl
@@ -102,6 +134,13 @@ module lege_poly
       real(kind=dbl),        intent(inout) :: pmm(*)
       real(kind=dbl),        intent(out)   :: pmj(*), pmj1(*)
     end subroutine mm_set_c
+    
+    pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj) bind(C, name="mj_rec_c")
+      import                        :: dbl
+      integer, value, intent(in)    :: n
+      real(kind=dbl), intent(in)    :: cff(*), pmj1(*), cosx2(*)
+      real(kind=dbl), intent(inout) :: pmj(*)
+    end subroutine mj_rec_c
     
     pure subroutine bwd_sum_c(n, pmj, cc, swork) bind(C, name="bwd_sum_c")
       import                      :: dbl
@@ -133,5 +172,6 @@ module lege_poly
       real(kind=dbl), intent(inout) :: cc(*)
     end subroutine fwd_sum_c
   end interface
-  
+#endif
+
 end module lege_poly

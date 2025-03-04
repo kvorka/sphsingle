@@ -1,45 +1,76 @@
 #!/bin/bash
 ###########################################################################################
+####                              COMPILER CHOICE                                      ####
+###########################################################################################
+compiler="ifort"
+instructions="avx"
+
+###########################################################################################
 ####                              COMPILER SET UP                                      ####
 ###########################################################################################
-fcompile="gfortran-12 -Ofast \
-                     -march=native \
-                     -mprefer-vector-width=512 \
-                     -fno-bounds-check \
-                     -flto=auto \
-                     -fwhole-program \
-                     -fopenmp"
+if [ "$compiler" = "gfortran" ];
+then
+  fcompile="gfortran-12 -Ofast \
+                        -march=native \
+                        -mprefer-vector-width=512 \
+                        -fno-bounds-check \
+                        -flto=auto \
+                        -fwhole-program \
+                        -fopenmp \
+                        -cpp -D$instructions"
+  
+  ccompile="gcc-12 -Ofast \
+                   -fno-strict-aliasing \
+                   -march=native \
+                   -mprefer-vector-width=512 \
+                   -funroll-loops \
+                   -flto=auto \
+                   -fwhole-program"
 
-ccompile="gcc-12 -Ofast \
-                 -march=native \
-                 -mprefer-vector-width=512 \
-                 -fno-strict-aliasing \
-                 -flto=auto \
-                 -funroll-loops \
-                 -fomit-frame-pointer \
-                 -fwhole-program \
-                 -fopenmp"
+elif [ "$compiler" = "ifx" ];
+then
+  fcompile="ifx -fast \
+                -Ofast \
+                -ipo \
+                -ffast-math \
+                -funroll-loops \
+                -xHost \
+                -qopt-zmm-usage=high \
+                -qopenmp \
+                -cpp -D$instructions"
+  
+  ccompile="icx -fast \
+                -Ofast \
+                -no-ansi-alias \
+                -ipo \
+                -ffast-math \
+                -funroll-loops \
+                -xHost \
+                -qopt-zmm-usage=high"
 
-#fcompile="ifort -fast \
-#                -Ofast \
-#                -ipo \
-#                -ffast-math \
-#                -funroll-loops \
-#                -xHost \
-#                -qopt-zmm-usage=high \
-#                -qopenmp \
-#                -diag-disable=10448 \
-#                -diag-disable=11003 \
-#                -diag-disable=11021"
-#  
-#ccompile="icx -fast \
-#              -Ofast \
-#              -no-ansi-alias \
-#              -ffast-math \
-#              -funroll-loops \
-#              -xHost \
-#              -qopt-zmm-usage=high \
-#              -qopenmp"
+elif [ "$compiler" = "ifort" ];
+then
+  fcompile="ifort -fast \
+                  -Ofast \
+                  -ipo \
+                  -ffast-math \
+                  -funroll-loops \
+                  -xHost \
+                  -qopt-zmm-usage=high \
+                  -qopenmp \
+                  -diag-disable=10448 \
+                  -diag-disable=11003 \
+                  -diag-disable=11021 \
+                  -cpp -D$instructions"
+  
+  ccompile="icx -fast \
+                -Ofast \
+                -no-ansi-alias \
+                -ffast-math \
+                -funroll-loops \
+                -xHost \
+                -qopt-zmm-usage=high"
+fi
 
 ###########################################################################################
 ####                            BUILDING OBJ INTERFACES                                ####
@@ -55,7 +86,6 @@ $fcompile -c src/sphpack.f90
 ###########################################################################################
 $fcompile -c src/math/arr/*.f90 &
 $fcompile -c src/fft/init/*.f90 &
-$fcompile -c src/fft/codelets/*.f90 &
 $fcompile -c src/fft/cores/*.f90 &
 $fcompile -c src/fft/transform/*.f90 &
 $fcompile -c src/lgp/init/*.f90 &
@@ -66,11 +96,24 @@ $fcompile -c src/sph/cores/*.f90 &
 wait
 
 ###########################################################################################
-####                             BUILDING C IMPLEMENTATIONS                            ####
+####                            BUILDING CORE IMPLEMENTATIONS                          ####
 ###########################################################################################
-$ccompile -c src/lgp/codelets/avx/*.c &
-$ccompile -c src/fft/codelets/*.c &
-wait
+if [ "$instructions" = "omp" ];
+then
+  $fcompile -c src/lgp/codelets/omp/*.f90 &
+  $fcompile -c src/fft/codelets/omp/*.f90 &
+  wait
+elif [ "$instructions" = "avx" ];
+then
+  $ccompile -c src/lgp/codelets/avx/*.c &
+  $fcompile -c src/fft/codelets/omp/*.f90 &
+  wait
+elif [ "$instructions" = "fma" ];
+then
+  $ccompile -c src/lgp/codelets/fma/*.c &
+  $fcompile -c src/fft/codelets/omp/*.f90 &
+  wait
+fi
 
 ###########################################################################################
 ####                              LINKING TO MAIN CODE                                 ####

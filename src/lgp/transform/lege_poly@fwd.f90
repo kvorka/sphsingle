@@ -6,8 +6,7 @@ submodule (lege_poly) fwd
     real(kind=dbl), pointer, contiguous :: work(:), swork(:), pmm(:), pmj1(:), pmj(:), pmj2(:)
     type(c_ptr)                         :: c_work
     
-    c_work = malloc( 32, int(7 * this%n * c_sizeof(0._dbl), kind=4) )
-    call c_f_pointer( c_work, work, [7 * this%n] )
+    call alloc_aligned_sub( default_alig, 7*this%n, c_work, work )
     
     pmm   => work(          1 :   this%n )
     pmj1  => work(   this%n+1 : 2*this%n )
