@@ -6,11 +6,12 @@ extern inline void fwd_sum_c( const int n,                   // howmany roots (n
                               const double *restrict swork,  // partial sums
                               double *restrict cc) {         // sph coeffs
   
-  const int n16 = (n/16)*16;  // constant needed for loop unrolling
+  // constant needed for loop unrolling
+  const int n16 = (n/16)*16;
   
-  __m256d rpmj;    // Legendre polynomials 
-  __m256d rcc[4];  // sph coeffs accumulators
-  __m128d rsum;    // temporary sum of sph coeffs
+  // avx vars for Legendre polynomials and sph coeffs, temporary sums
+  __m256d rpmj, rcc[4];
+  __m128d rsum;
   
    // set accumulators to zero (suboptimal)
    for ( int j = 0; j < 4; j++ ) { rcc[j] = _mm256_setzero_pd(); }

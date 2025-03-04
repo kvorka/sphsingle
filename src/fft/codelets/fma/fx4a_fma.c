@@ -12,26 +12,26 @@ extern inline void fxzm4a_c( const int n,
   
   __m256d rtre[2], rtim[2], rxre[6], rxim[6];
   
-  for ( int j = 0; j < k; j++) {
+  for ( int j = 0; j < k; j++ ) {
     
     rtre[0] = _mm256_broadcast_sd( t+6*j   );
     rtim[0] = _mm256_broadcast_sd( t+6*j+1 );
     rtre[1] = _mm256_broadcast_sd( t+6*j+2 );
     rtim[1] = _mm256_broadcast_sd( t+6*j+3 );
     
-    for ( int i = 0; i < l; i++) {
-      for ( int iv = 0; iv < n; iv+=16) {
-        for ( int iv1 = 0; iv1 < 4; iv1++) {
+    for ( int i = 0; i < l; i++ ) {
+      for ( int iv = 0; iv < n; iv+=16 ) {
+        for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
           
-          rxre[4] = _mm256_load_pd(x+4*iv1+iv  +2*i*n+4*l*n+8*j*l*n);
-          rxim[4] = _mm256_load_pd(x+4*iv1+iv+n+2*i*n+4*l*n+8*j*l*n);
-          rxre[5] = _mm256_load_pd(x+4*iv1+iv  +2*i*n+6*l*n+8*j*l*n);
-          rxim[5] = _mm256_load_pd(x+4*iv1+iv+n+2*i*n+6*l*n+8*j*l*n);
+          rxre[4] = _mm256_load_pd(x+iv1+iv  +2*i*n+4*l*n+8*j*l*n);
+          rxim[4] = _mm256_load_pd(x+iv1+iv+n+2*i*n+4*l*n+8*j*l*n);
+          rxre[5] = _mm256_load_pd(x+iv1+iv  +2*i*n+6*l*n+8*j*l*n);
+          rxim[5] = _mm256_load_pd(x+iv1+iv+n+2*i*n+6*l*n+8*j*l*n);
           
-          rxre[0] = _mm256_load_pd(x+2*i*n+      8*j*l*n+4*iv1+iv  );
-          rxim[0] = _mm256_load_pd(x+2*i*n+      8*j*l*n+4*iv1+iv+n);
-          rxre[1] = _mm256_load_pd(x+2*i*n+2*l*n+8*j*l*n+4*iv1+iv  );
-          rxim[1] = _mm256_load_pd(x+2*i*n+2*l*n+8*j*l*n+4*iv1+iv+n);
+          rxre[0] = _mm256_load_pd(x+iv1+iv  +2*i*n+      8*j*l*n);
+          rxim[0] = _mm256_load_pd(x+iv1+iv+n+2*i*n+      8*j*l*n);
+          rxre[1] = _mm256_load_pd(x+iv1+iv  +2*i*n+2*l*n+8*j*l*n);
+          rxim[1] = _mm256_load_pd(x+iv1+iv+n+2*i*n+2*l*n+8*j*l*n);
           
           rxre[2] = _mm256_fmsub_pd( rtre[1], rxre[4], rxre[0] );
           rxim[2] = _mm256_fmsub_pd( rtim[1], rxre[4], rxim[0] );
@@ -67,14 +67,14 @@ extern inline void fxzm4a_c( const int n,
           rxim[4] = _mm256_xor_pd( rxim[4], rm00 );
           rxre[5] = _mm256_xor_pd( rxre[5], rm00 );
           
-          _mm256_store_pd( x+2*i*n+4*l*n+8*j*l*n+4*iv1+iv  , rxre[4] );
-          _mm256_store_pd( x+2*i*n+4*l*n+8*j*l*n+4*iv1+iv+n, rxim[4] );
-          _mm256_store_pd( x+2*i*n+      8*j*l*n+4*iv1+iv  , rxre[0] );
-          _mm256_store_pd( x+2*i*n+      8*j*l*n+4*iv1+iv+n, rxim[0] );
-          _mm256_store_pd( x+2*i*n+2*l*n+8*j*l*n+4*iv1+iv  , rxre[5] );
-          _mm256_store_pd( x+2*i*n+2*l*n+8*j*l*n+4*iv1+iv+n, rxim[5] );
-          _mm256_store_pd( x+2*i*n+6*l*n+8*j*l*n+4*iv1+iv  , rxre[2] );
-          _mm256_store_pd( x+2*i*n+6*l*n+8*j*l*n+4*iv1+iv+n, rxim[2] );
+          _mm256_store_pd( x+iv1+iv  +2*i*n+4*l*n+8*j*l*n, rxre[4] );
+          _mm256_store_pd( x+iv1+iv+n+2*i*n+4*l*n+8*j*l*n, rxim[4] );
+          _mm256_store_pd( x+iv1+iv  +2*i*n+      8*j*l*n, rxre[0] );
+          _mm256_store_pd( x+iv1+iv+n+2*i*n+      8*j*l*n, rxim[0] );
+          _mm256_store_pd( x+iv1+iv  +2*i*n+2*l*n+8*j*l*n, rxre[5] );
+          _mm256_store_pd( x+iv1+iv+n+2*i*n+2*l*n+8*j*l*n, rxim[5] );
+          _mm256_store_pd( x+iv1+iv  +2*i*n+6*l*n+8*j*l*n, rxre[2] );
+          _mm256_store_pd( x+iv1+iv+n+2*i*n+6*l*n+8*j*l*n, rxim[2] );
           
         }
       }

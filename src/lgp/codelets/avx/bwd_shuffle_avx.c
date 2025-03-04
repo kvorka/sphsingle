@@ -6,7 +6,8 @@ extern inline void bwd_shuffle_c( const int n,                   // howmany root
                                   const double *restrict swork,  // partial sums to be shuffled
                                   double *restrict grid) {       // Legendre polys sum
   
-  const int n16 = (n/16)*16;  // constant needed for loop unrolling
+  // constant needed for loop unrolling
+  const int n16 = (n/16)*16;
   
   // avx vars for cosine values and partial sums
   __m256d rcosx, rssym[2], rasym[2];

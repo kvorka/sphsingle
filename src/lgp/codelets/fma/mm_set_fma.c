@@ -16,15 +16,15 @@ extern inline void mm_set_c( const int ma,                  // identifier for m=
   // set pmj1
   rcff = _mm256_setzero_pd();
   
-  for ( int i1 = 0; i1 < n; i1+=8 ) {
-    for ( int j = 0; j < 2; j++) {
+  for ( int i2 = 0; i2 < n; i2+=8 ) {
+    for ( int i1 = 0; i1 < 8; i1+=4 ) {
     
-      _mm256_store_pd( pmj1+i1+4*j, rcff );
+      _mm256_store_pd( pmj1+i2+i1, rcff );
       
     }
   }
   
-  // set pmm, pmj: n1 >= 16 by design, the loop is unrolled by 4
+  // set pmm, pmj
   rcff = _mm256_set1_pd( cff );
   
   switch ( ma ) {
@@ -32,11 +32,11 @@ extern inline void mm_set_c( const int ma,                  // identifier for m=
     case 1:
     {
       
-      for ( int i1 = 0; i1 < n; i1+=8 ) {
-        for ( int j = 0; j < 2; j++ ) {
+      for ( int i2 = 0; i2 < n; i2+=8 ) {
+        for ( int i1 = 0; i1 < 8; i1+=4 ) {
           
-          _mm256_store_pd( pmm+i1+4*j, rcff );
-          _mm256_store_pd( pmj+i1+4*j, _mm256_div_pd( rcff, _mm256_load_pd( cosx+i1+4*j ) ) );
+          _mm256_store_pd( pmm+i2+i1, rcff );
+          _mm256_store_pd( pmj+i2+i1, _mm256_div_pd( rcff, _mm256_load_pd( cosx+i2+i1 ) ) );
           
         }
       }
@@ -47,14 +47,14 @@ extern inline void mm_set_c( const int ma,                  // identifier for m=
     default:
     {
       
-      for ( int i1 = 0; i1 < n; i1+=8 ) {
-        for ( int j = 0; j < 2; j++ ) {
+      for ( int i2 = 0; i2 < n; i2+=8 ) {
+        for ( int i1 = 0; i1 < 8; i1+=4 ) {
           
-          rpmm = _mm256_mul_pd( rcff, _mm256_load_pd( sinx+i1+4*j ) );
-          rpmm = _mm256_mul_pd( rpmm, _mm256_load_pd( pmm +i1+4*j ) );
+          rpmm = _mm256_mul_pd( rcff, _mm256_load_pd( sinx+i2+i1 ) );
+          rpmm = _mm256_mul_pd( rpmm, _mm256_load_pd( pmm +i2+i1 ) );
           
-          _mm256_store_pd( pmm+i1+4*j, rpmm );
-          _mm256_store_pd( pmj+i1+4*j, _mm256_div_pd( rpmm, _mm256_load_pd( cosx+i1+4*j ) ) );
+          _mm256_store_pd( pmm+i2+i1, rpmm );
+          _mm256_store_pd( pmj+i2+i1, _mm256_div_pd( rpmm, _mm256_load_pd( cosx+i2+i1 ) ) );
           
         }
       }

@@ -6,10 +6,11 @@ extern inline void bwd_sum_c( const int n,                 // howmany roots (n)
                               const double *restrict cc,   // sph coeffs
                               double *restrict swork) {    // partial sums
   
-  const int n16 = (n/16)*16;  // constant needed for loop unrolling
+  // constant needed for loop unrolling
+  const int n16 = (n/16)*16;
   
-  __m256d rpmj;    // Legendre polynomials
-  __m256d rcc[4];  // sph coeffs
+  // avx vars for Legendre polynomials and sph coeffs
+  __m256d rpmj, rcc[4];
   
   // load and broadcast sph coeffs
   for ( int j = 0; j < 4; j++ ) { rcc[j] = _mm256_broadcast_sd( cc+j ); }

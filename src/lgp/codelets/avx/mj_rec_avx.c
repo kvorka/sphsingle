@@ -7,11 +7,13 @@ extern inline void mj_rec_c( const int n,                  // howmany roots (ste
                             double *restrict pmj1,         // Lege polys from previous step
                             double *restrict pmj ) {       // Lege polys
   
-  const int n16 = (n/16)*16;  // constant needed for loop unrolling
+  // constant needed for loop unrolling
+  const int n16 = (n/16)*16;
   
-  const __m256d rcff1 = _mm256_broadcast_sd( cff   );  // recursion coeff 1
-  const __m256d rcff2 = _mm256_broadcast_sd( cff+1 );  // recursion coeff 2
-        __m256d rpmj;                                  // Legendre polynomials
+  // avx vars for recursion coeffs and Legendre polynomials
+  const __m256d rcff1 = _mm256_broadcast_sd( cff   );
+  const __m256d rcff2 = _mm256_broadcast_sd( cff+1 );
+        __m256d rpmj;
   
   // recursion: cycle over the roots, the outer cycle is unrolled by 16, factor of 4 is handled by an explicit
   // vectorization, factor of 4 is added in order to unroll the cycle a bit more for efficiency
