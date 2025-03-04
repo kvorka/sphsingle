@@ -20,8 +20,8 @@ extern inline void fxzm4a_c( const int n,
     rtim[1] = _mm256_broadcast_sd( t+6*j+3 );
     
     for ( int i = 0; i < l; i++) {
-      for ( int iv = 0; iv < n; iv+=8) {
-        for ( int iv1 = 0; iv1 < 2; iv1++) {
+      for ( int iv = 0; iv < n; iv+=16) {
+        for ( int iv1 = 0; iv1 < 4; iv1++) {
           
           rxre[4] = _mm256_load_pd(x+4*iv1+iv  +2*i*n+4*l*n+8*j*l*n);
           rxim[4] = _mm256_load_pd(x+4*iv1+iv+n+2*i*n+4*l*n+8*j*l*n);

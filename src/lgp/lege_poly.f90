@@ -55,15 +55,15 @@ module lege_poly
       complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
     
-    module subroutine bwd_legesum_sub(this, cc, sumN, sumS)
+    module subroutine bwd_legesum_sub(this, cc, grid)
       class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(out) :: sumN(2*this%n,0:this%jmax), sumS(2*this%n,0:this%jmax)
+      real(kind=dbl), intent(out) :: grid(4*this%n,0:this%jmax)
       real(kind=dbl), intent(in)  :: cc(4,this%nrma)
     end subroutine bwd_legesum_sub
     
-    module subroutine fwd_legesum_sub(this, sumN, sumS, cr)
+    module subroutine fwd_legesum_sub(this, grid, cr)
       class(T_legep), intent(in)    :: this
-      real(kind=dbl), intent(in)    :: sumN(2*this%n,0:this%jmax), sumS(2*this%n,0:this%jmax)
+      real(kind=dbl), intent(in)    :: grid(4*this%n,0:this%jmax)
       real(kind=dbl), intent(inout) :: cr(4,this%nrma)
     end subroutine fwd_legesum_sub
   end interface
@@ -96,17 +96,17 @@ module lege_poly
       real(kind=dbl), intent(out) :: swork(n,4)
     end subroutine bwd_sum_c
     
-    module pure subroutine bwd_shuffle_c(n, cosx, swork, sumN, sumS)
+    module pure subroutine bwd_shuffle_c(n, cosx, swork, grid)
       integer,        intent(in)    :: n
       real(kind=dbl), intent(in)    :: cosx(n)
       real(kind=dbl), intent(inout) :: swork(n,2,2)
-      real(kind=dbl), intent(out)   :: sumN(n,2), sumS(n,2)
+      real(kind=dbl), intent(out)   :: grid(n,2,2)
     end subroutine bwd_shuffle_c
     
-    module pure subroutine fwd_shuffle_c(n, cosx, w, sumN, sumS, swork)
+    module pure subroutine fwd_shuffle_c(n, cosx, w, grid, swork)
       integer,        intent(in)  :: n
       real(kind=dbl), intent(in)  :: w(n), cosx(n)
-      real(kind=dbl), intent(in)  :: sumN(n,2), sumS(n,2)
+      real(kind=dbl), intent(in)  :: grid(n,2,2)
       real(kind=dbl), intent(out) :: swork(n,2,2)
     end subroutine fwd_shuffle_c
     
@@ -146,15 +146,15 @@ module lege_poly
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine bwd_sum_c
     
-    module pure subroutine bwd_shuffle_c(n, cosx, swork, sumN, sumS) bind(C, name="bwd_shuffle_c")
+    module pure subroutine bwd_shuffle_c(n, cosx, swork, grid) bind(C, name="bwd_shuffle_c")
       integer, value, intent(in)  :: n
       real(kind=dbl), intent(in)  :: cosx(*), swork(*)
-      real(kind=dbl), intent(out) :: sumN(*), sumS(*)
+      real(kind=dbl), intent(out) :: grid(*)
     end subroutine bwd_shuffle_c
     
-    module pure subroutine fwd_shuffle_c(n, cosx, wght, sumN, sumS, swork) bind(C, name="fwd_shuffle_c")
+    module pure subroutine fwd_shuffle_c(n, cosx, wght, grid, swork) bind(C, name="fwd_shuffle_c")
       integer, value, intent(in)  :: n
-      real(kind=dbl), intent(in)  :: cosx(*), wght(*), sumN(*), sumS(*)
+      real(kind=dbl), intent(in)  :: cosx(*), wght(*), grid(*)
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine fwd_shuffle_c
     

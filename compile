@@ -2,7 +2,7 @@
 ###########################################################################################
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
-compiler="gfortran"
+compiler="ifx"
 instructions="avx"
 
 ###########################################################################################
@@ -106,7 +106,7 @@ then
 elif [ "$instructions" = "avx" ];
 then
   $ccompile -c src/lgp/codelets/avx/*.c &
-  $ccompile -c src/fft/codelets/avx/*.c &
+  $ccompile -c src/fft/codelets/fma/*.c &
   $fcompile -c src/fft/codelets/avx/*.f90 &
   wait
 elif [ "$instructions" = "fma" ];

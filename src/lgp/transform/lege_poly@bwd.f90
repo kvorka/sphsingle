@@ -46,7 +46,7 @@ submodule (lege_poly) bwd
         call bwd_sum_c( this%n, pmj, cc(1,ma), swork )
       end if
       
-      call bwd_shuffle_c( this%n, this%cosx, swork, sumN(1,m), sumS(1,m) )
+      call bwd_shuffle_c( this%n, this%cosx, swork, grid(1,m) )
     end do
     
     call free( c_work )

@@ -8,10 +8,9 @@ submodule (lateral_grid) harman
     !Allocate input array
     call alloc_aligned_sub( 32, 4*this%lgp%nrma, c_rcr, rcr )
     
-    call this%fourtrans%fft_r2c_sub( this%lgp%n, grid(1,1,1) )
-    call this%fourtrans%fft_r2c_sub( this%lgp%n, grid(1,1,2) )
-    
-    call this%lgp%fwd_legesum_sub( grid(1,1,1), grid(1,1,2), rcr )
+    !Transform
+    call this%fourtrans%fft_r2c_sub( 2*this%lgp%n, grid )
+    call this%lgp%fwd_legesum_sub( grid, rcr )
     
     !Reindex output array
     call this%lgp%index_fwd_sub( rcr, cout )

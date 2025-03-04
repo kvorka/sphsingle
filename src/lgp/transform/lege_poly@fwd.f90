@@ -16,7 +16,7 @@ submodule (lege_poly) fwd
     ma  = 0
     
     do m = 0, this%jmax
-      call fwd_shuffle_c( this%n, this%cosx, this%wght, sumN(1,m), sumS(1,m), swork )
+      call fwd_shuffle_c( this%n, this%cosx, this%wght, grid(1,m), swork )
       
       !j = m
         ma = ma+1
