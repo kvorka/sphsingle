@@ -4,7 +4,6 @@ submodule (lege_poly) fwd_sum
   module procedure fwd_sum_c
     integer :: i1
     
-    !$omp simd
     do i1 = 1, n
       cr(1) = cr(1) + pmj(i1) * swork(i1,1)
       cr(2) = cr(2) + pmj(i1) * swork(i1,2)

@@ -119,53 +119,46 @@ module lege_poly
   end interface
 #else
   interface
-    pure subroutine is_rescale_c(n, cff, rcab) bind(C, name="is_rescale_c")
-      import                        :: dbl
+    module pure subroutine is_rescale_c(n, cff, rcab) bind(C, name="is_rescale_c")
       integer, value, intent(in)    :: n
       real(kind=dbl), intent(in)    :: cff(*)
       real(kind=dbl), intent(inout) :: rcab(*)
     end subroutine is_rescale_c
     
-    pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj) bind(C, name="mm_set_c")
-      import                               :: dbl
-      integer, value,        intent(in)    :: ma, n
+    module pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj) bind(C, name="mm_set_c")
+      integer,        value, intent(in)    :: ma, n
       real(kind=dbl), value, intent(in)    :: cff
       real(kind=dbl),        intent(in)    :: cosx(*), sinx(*)
       real(kind=dbl),        intent(inout) :: pmm(*)
       real(kind=dbl),        intent(out)   :: pmj(*), pmj1(*)
     end subroutine mm_set_c
     
-    pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj) bind(C, name="mj_rec_c")
-      import                        :: dbl
+    module pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj) bind(C, name="mj_rec_c")
       integer, value, intent(in)    :: n
       real(kind=dbl), intent(in)    :: cff(*), pmj1(*), cosx2(*)
       real(kind=dbl), intent(inout) :: pmj(*)
     end subroutine mj_rec_c
     
-    pure subroutine bwd_sum_c(n, pmj, cc, swork) bind(C, name="bwd_sum_c")
-      import                      :: dbl
+    module pure subroutine bwd_sum_c(n, pmj, cc, swork) bind(C, name="bwd_sum_c")
       integer, value, intent(in)  :: n
       real(kind=dbl), intent(in)  :: pmj(*)
       real(kind=dbl), intent(in)  :: cc(*)
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine bwd_sum_c
     
-    pure subroutine bwd_shuffle_c(n, cosx, swork, sumN, sumS) bind(C, name="bwd_shuffle_c")
-      import                      :: dbl
+    module pure subroutine bwd_shuffle_c(n, cosx, swork, sumN, sumS) bind(C, name="bwd_shuffle_c")
       integer, value, intent(in)  :: n
       real(kind=dbl), intent(in)  :: cosx(*), swork(*)
       real(kind=dbl), intent(out) :: sumN(*), sumS(*)
     end subroutine bwd_shuffle_c
     
-    pure subroutine fwd_shuffle_c(n, cosx, wght, sumN, sumS, swork) bind(C, name="fwd_shuffle_c")
-      import                      :: dbl
+    module pure subroutine fwd_shuffle_c(n, cosx, wght, sumN, sumS, swork) bind(C, name="fwd_shuffle_c")
       integer, value, intent(in)  :: n
       real(kind=dbl), intent(in)  :: cosx(*), wght(*), sumN(*), sumS(*)
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine fwd_shuffle_c
     
-    pure subroutine fwd_sum_c(n, pmj, swork, cc) bind(C, name="fwd_sum_c")
-      import                        :: dbl
+    module pure subroutine fwd_sum_c(n, pmj, swork, cc) bind(C, name="fwd_sum_c")
       integer, value, intent(in)    :: n
       real(kind=dbl), intent(in)    :: pmj(*)
       real(kind=dbl), intent(in)    :: swork(*)

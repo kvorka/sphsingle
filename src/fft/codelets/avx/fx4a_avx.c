@@ -4,8 +4,8 @@
 extern inline void fxzm4a_c( const int n,
                              const int k,
                              const int l,
-                             const double *restrict t,
-                             double *restrict x ) {
+                             double *restrict x,
+                             const double *restrict t ) {
   
   __m256d rtre[2], rtim[2], rxre[6], rxim[6];
   

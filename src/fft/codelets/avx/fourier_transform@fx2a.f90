@@ -1,7 +1,7 @@
-submodule (fourier_transform) fx2
+submodule (fourier_transform) fx2a
   implicit none; contains
   
-  module procedure fxzm2a
+  module procedure fxzm2a_c
     integer        :: i, j, iv
     real(kind=dbl) :: x0re, x0im, x1re, x1im, t1re, t1im
     
@@ -26,21 +26,6 @@ submodule (fourier_transform) fx2
       end do
     end do
     
-  end procedure fxzm2a
+  end procedure fxzm2a_c
   
-  module procedure fxzm2b
-    integer :: i, iv
-    
-    do i = 1, l
-      !$omp simd
-      do iv = 1, howmany
-        x(iv,1,i,1) =     x(iv,1,i,0) - x(iv,1,i,1)
-        x(iv,2,i,1) =     x(iv,2,i,0) - x(iv,2,i,1)
-        x(iv,1,i,0) = 2 * x(iv,1,i,0) - x(iv,1,i,1)
-        x(iv,2,i,0) = 2 * x(iv,2,i,0) - x(iv,2,i,1)
-      end do
-    end do
-    
-  end procedure fxzm2b
-  
-end submodule fx2
+end submodule fx2a

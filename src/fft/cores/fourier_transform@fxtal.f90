@@ -12,13 +12,13 @@ submodule (fourier_transform) fxtal
     
     select case (ip)
       case (4)
-        call fxzm4b( howmany, l/4, x )
+        call fxzm4b_c( howmany, l/4, x )
       case (2)
-        call fxzm2b( howmany, l/2, x )
+        call fxzm2b_c( howmany, l/2, x )
       case (3)
-        call fxzm3b( howmany, l/3, x )
+        call fxzm3b_c( howmany, l/3, x )
       case (5)
-        call fxzm5b( howmany, l/5, x )
+        call fxzm5b_c( howmany, l/5, x )
     end select
     
     do icdd = 2, this%it(this%n/2)
@@ -30,13 +30,13 @@ submodule (fourier_transform) fxtal
       
       select case (ip)
         case (4)
-          call fxzm4a( howmany, k1, l/4, x, this%t(1+2*isd) )
+          call fxzm4a_c( howmany, k1, l/4, x, this%t(1+2*isd) )
         case (2)
-          call fxzm2a( howmany, k1, l/2, x, this%t(1+2*isd) )
+          call fxzm2a_c( howmany, k1, l/2, x, this%t(1+2*isd) )
         case (3)
-          call fxzm3a( howmany, k1, l/3, x, this%t(1+2*isd) )
+          call fxzm3a_c( howmany, k1, l/3, x, this%t(1+2*isd) )
         case (5)
-          call fxzm5a( howmany, k1, l/5, x, this%t(1+2*isd) )
+          call fxzm5a_c( howmany, k1, l/5, x, this%t(1+2*isd) )
       end select
     end do
     
