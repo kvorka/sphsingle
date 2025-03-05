@@ -3,8 +3,11 @@
 
 extern inline void fxzm4b_c( const int n,
                              const int l,
-                             double *restrict x ) {
-  
+                             double *restrict x )
+
+#if defined( avx ) || defined( fma )
+{
+
   __m256d rxre[6], rxim[6];
   
   for ( int i = 0; i < l; i++) {
@@ -45,3 +48,4 @@ extern inline void fxzm4b_c( const int n,
   }
   
 }
+#endif

@@ -2,8 +2,8 @@
 ###########################################################################################
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
-compiler="ifort"
-instructions="avx"
+compiler="gfortran"
+instructions="omp"
 
 ###########################################################################################
 ####                              COMPILER SET UP                                      ####
@@ -25,7 +25,8 @@ then
                    -mprefer-vector-width=512 \
                    -funroll-loops \
                    -flto=auto \
-                   -fwhole-program"
+                   -fwhole-program \
+                   -cpp -D$instructions"
 
 elif [ "$compiler" = "ifx" ];
 then
@@ -46,7 +47,8 @@ then
                 -ffast-math \
                 -funroll-loops \
                 -xHost \
-                -qopt-zmm-usage=high"
+                -qopt-zmm-usage=high \
+                -D$instructions"
 
 elif [ "$compiler" = "ifort" ];
 then
@@ -69,7 +71,8 @@ then
                 -ffast-math \
                 -funroll-loops \
                 -xHost \
-                -qopt-zmm-usage=high"
+                -qopt-zmm-usage=high \
+                -D$instructions"
 fi
 
 ###########################################################################################
@@ -103,17 +106,10 @@ then
   $fcompile -c src/lgp/codelets/omp/*.f90 &
   $fcompile -c src/fft/codelets/omp/*.f90 &
   wait
-elif [ "$instructions" = "avx" ];
-then
-  $ccompile -c src/lgp/codelets/avx/*.c &
-  $ccompile -c src/fft/codelets/avx/*.c &
-  $fcompile -c src/fft/codelets/avx/*.f90 &
-  wait
-elif [ "$instructions" = "fma" ];
-then
-  $ccompile -c src/lgp/codelets/fma/*.c &
-  $ccompile -c src/fft/codelets/fma/*.c &
-  $fcompile -c src/fft/codelets/fma/*.f90 &
+else
+  $ccompile -c src/lgp/codelets/cvec/*.c &
+  $ccompile -c src/fft/codelets/cvec/*.c &
+  $fcompile -c src/fft/codelets/cvec/*.f90 &
   wait
 fi
 
