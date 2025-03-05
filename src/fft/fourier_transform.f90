@@ -127,10 +127,10 @@ module fourier_transform
   end interface
 #else
   interface
-    module pure subroutine fxzm2a_c(howmany, k, l, x, t)
-      integer,        intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(0:*)
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:1,0:k-1)
+    module pure subroutine fxzm2a_c(howmany, k, l, x, t) bind(C, name="fxzm2a_c")
+      integer, value, intent(in)    :: k, l, howmany
+      real(kind=dbl), intent(in)    :: t(*)
+      real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm2a_c
     
     module pure subroutine fxzm2b_c(howmany, l, x)
