@@ -2,7 +2,7 @@
 ###########################################################################################
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
-compiler="ifort"
+compiler="gfortran"
 instructions="avx"
 
 ###########################################################################################
@@ -108,7 +108,7 @@ then
   $fcompile -c src/fft/codelets/omp/*.f90 &
   wait
 else
-  $fcompile -c src/math/arr/arrzero.f90 &
+  $ccompile -c src/math/arr/arrzero.c &
   $ccompile -c src/lgp/codelets/cvec/*.c &
   $ccompile -c src/fft/codelets/cvec/*.c &
   $fcompile -c src/fft/codelets/cvec/*.f90 &
