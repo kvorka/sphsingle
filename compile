@@ -2,8 +2,8 @@
 ###########################################################################################
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
-compiler="gfortran"
-instructions="omp"
+compiler="ifort"
+instructions="avx"
 
 ###########################################################################################
 ####                              COMPILER SET UP                                      ####
@@ -87,7 +87,7 @@ $fcompile -c src/sphpack.f90
 ###########################################################################################
 ####                         BUILDING FORTRAN IMPLEMENTATIONS                          ####
 ###########################################################################################
-$fcompile -c src/math/arr/*.f90 &
+$fcompile -c src/math/arr/alloc.f90 &
 $fcompile -c src/fft/init/*.f90 &
 $fcompile -c src/fft/cores/*.f90 &
 $fcompile -c src/fft/transform/*.f90 &
@@ -103,10 +103,12 @@ wait
 ###########################################################################################
 if [ "$instructions" = "omp" ];
 then
+  $fcompile -c src/math/arr/arrzero.f90 &
   $fcompile -c src/lgp/codelets/omp/*.f90 &
   $fcompile -c src/fft/codelets/omp/*.f90 &
   wait
 else
+  $fcompile -c src/math/arr/arrzero.f90 &
   $ccompile -c src/lgp/codelets/cvec/*.c &
   $ccompile -c src/fft/codelets/cvec/*.c &
   $fcompile -c src/fft/codelets/cvec/*.f90 &

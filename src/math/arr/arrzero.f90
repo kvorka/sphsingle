@@ -1,7 +1,7 @@
 submodule (math) arrops
   implicit none; contains
   
-  module procedure zero_rarray_sub
+  module procedure zero_rarray_c
     integer :: i
     
     !$omp simd
@@ -9,6 +9,6 @@ submodule (math) arrops
       arr(i) = 0._dbl
     end do
     
-  end procedure zero_rarray_sub
+  end procedure zero_rarray_c
   
 end submodule arrops

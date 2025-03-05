@@ -16,7 +16,7 @@ submodule (lege_poly) bwd
     ma  = 0
     
     do m = 0, this%jmax
-      call zero_rarray_sub( 4*this%n, swork )
+      call zero_rarray_c( 4*this%n, swork )
       
       !j = m
         ma = ma+1

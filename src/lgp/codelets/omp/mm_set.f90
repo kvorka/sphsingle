@@ -18,7 +18,7 @@ submodule (lege_poly) poly_mm
         end do
     end select
     
-    call zero_rarray_sub( n, pmj1 )
+    call zero_rarray_c( n, pmj1 )
     
     !$omp simd
     do i2 = 1, n

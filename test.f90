@@ -3,7 +3,7 @@ program test
   use omp_lib
   implicit none
   
-  integer, parameter :: jcut = 53
+  integer, parameter :: jcut = 497
   
   integer, parameter :: jmcut  = jcut*(jcut+1)/2+jcut+1
   
