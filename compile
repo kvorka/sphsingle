@@ -113,7 +113,6 @@ else
   $ccompile -c src/math/arr/cvec/arrcopy.c &
   $ccompile -c src/lgp/codelets/cvec/*.c &
   $ccompile -c src/fft/codelets/cvec/*.c &
-  $fcompile -c src/fft/codelets/cvec/*.f90 &
   wait
 fi
 

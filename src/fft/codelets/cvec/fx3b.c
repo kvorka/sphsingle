@@ -13,7 +13,7 @@ extern inline void fxzm3b_c( const int n,
     
     __m256d rxre[4], rxim[4];
     
-    for ( int i = 0; i < l; i++) {
+    for ( int i = 0; i < l; i++ ) {
       for ( int iv = 0; iv < n; iv+=16 ) {
         for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
           
@@ -67,7 +67,7 @@ extern inline void fxzm3b_c( const int n,
     
     __m256d rxre[4], rxim[4];
     
-    for ( int i = 0; i < l; i++) {
+    for ( int i = 0; i < l; i++ ) {
       for ( int iv = 0; iv < n; iv+=16 ) {
         for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
           

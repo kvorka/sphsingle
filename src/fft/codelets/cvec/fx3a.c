@@ -15,14 +15,14 @@ extern inline void fxzm3a_c( const int n,
     
     __m256d rtre[2], rtim[2], rxre[5], rxim[5];
     
-    for ( int j = 0; j < k; j++) {
+    for ( int j = 0; j < k; j++ ) {
       
       rtre[0] = _mm256_broadcast_sd( t+4*j   );
       rtim[0] = _mm256_broadcast_sd( t+4*j+1 );
       rtre[1] = _mm256_broadcast_sd( t+4*j+2 );
       rtim[1] = _mm256_broadcast_sd( t+4*j+3 );
       
-      for ( int i = 0; i < l; i++) {
+      for ( int i = 0; i < l; i++ ) {
         for ( int iv = 0; iv < n; iv+=16 ) {
           for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
             
@@ -103,14 +103,14 @@ extern inline void fxzm3a_c( const int n,
     
     __m256d rtre[2], rtim[2], rxre[5], rxim[5];
     
-    for ( int j = 0; j < k; j++) {
+    for ( int j = 0; j < k; j++ ) {
       
       rtre[0] = _mm256_broadcast_sd( t+4*j   );
       rtim[0] = _mm256_broadcast_sd( t+4*j+1 );
       rtre[1] = _mm256_broadcast_sd( t+4*j+2 );
       rtim[1] = _mm256_broadcast_sd( t+4*j+3 );
       
-      for ( int i = 0; i < l; i++) {
+      for ( int i = 0; i < l; i++ ) {
         for ( int iv = 0; iv < n; iv+=16 ) {
           for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
             

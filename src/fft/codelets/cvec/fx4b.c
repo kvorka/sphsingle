@@ -10,7 +10,7 @@ extern inline void fxzm4b_c( const int n,
 
   __m256d rxre[6], rxim[6];
   
-  for ( int i = 0; i < l; i++) {
+  for ( int i = 0; i < l; i++ ) {
     for ( int iv = 0; iv < n; iv+=16 ) {
       for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
         

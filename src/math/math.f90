@@ -3,10 +3,15 @@ module math
   use iso_c_binding
   implicit none; public
   
-  integer, parameter :: dbl          = real64   !double precision
-  integer, parameter :: qbl          = real128  !quadruple precision
-  integer, parameter :: default_alig = 32       !memory alignement: SSE (16), AVX (32), AVX512 (64)
-  
+  integer, parameter :: dbl = real64   !double precision
+  integer, parameter :: qbl = real128  !quadruple precision
+
+#if defined( avx ) || defined( fma )
+  integer, parameter :: default_alig = 32  !memory alignement: AVX, FMA
+#else
+  integer, parameter :: default_alig = 64  !memory alignement: AVX512
+#endif
+
   interface
     type(c_ptr) function malloc(alignement, n) bind(C, name='aligned_alloc')
       import         :: c_ptr

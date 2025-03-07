@@ -12,12 +12,12 @@ extern inline void fxzm2a_c( const int n,
   
   __m256d rtre, rtim, rxre[3], rxim[3];
   
-  for ( int j = 0; j < k; j++) {
+  for ( int j = 0; j < k; j++ ) {
     
     rtre = _mm256_broadcast_sd( t+2*j   );
     rtim = _mm256_broadcast_sd( t+2*j+1 );
     
-    for ( int i = 0; i < l; i++) {
+    for ( int i = 0; i < l; i++ ) {
       for ( int iv = 0; iv < n; iv+=16 ) {
         for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
           
@@ -62,12 +62,12 @@ extern inline void fxzm2a_c( const int n,
     
     __m256d rtre, rtim, rxre[3], rxim[3];
     
-    for ( int j = 0; j < k; j++) {
+    for ( int j = 0; j < k; j++ ) {
       
       rtre = _mm256_broadcast_sd( t+2*j   );
       rtim = _mm256_broadcast_sd( t+2*j+1 );
       
-      for ( int i = 0; i < l; i++) {
+      for ( int i = 0; i < l; i++ ) {
         for ( int iv = 0; iv < n; iv+=16 ) {
           for ( int iv1 = 0; iv1 < 16; iv1+=4 ) {
             
