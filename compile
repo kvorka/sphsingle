@@ -21,9 +21,9 @@ then
   
   ccompile="gcc-12 -Ofast \
                    -fno-strict-aliasing \
+                   -fomit-frame-pointer \
                    -march=native \
                    -mprefer-vector-width=512 \
-                   -funroll-loops \
                    -flto=auto \
                    -fwhole-program \
                    -cpp -D$instructions"
