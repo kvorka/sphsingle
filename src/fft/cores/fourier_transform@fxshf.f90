@@ -16,30 +16,21 @@ submodule (fourier_transform) fxshf
           j = j + 1
           
         else
-          !$omp simd
-          do iv = 1, 2*howmany
-            y(iv) = x(iv,isj)
-          end do
+          call copy_rarray_c( 2*howmany, x(1,isj), y )
           
           do
             j    = j + 1
             isj2 = this%it(j)
             
             if ( isj2 < 0 ) then
-              !$omp simd
-              do iv = 1, 2*howmany
-                x(iv,isj)      = x(iv,isj2-imm)
-                x(iv,isj2-imm) = y(iv)
-              end do
+              call copy_rarray_c( 2*howmany, x(1,isj2-imm), x(1,isj) )
+              call copy_rarray_c( 2*howmany, y, x(1,isj2-imm) )
               
               j = j + 1
               exit
             
             else
-              !$omp simd
-              do iv = 1, 2*howmany
-                x(iv,isj) = x(iv,isj2)
-              end do
+              call copy_rarray_c( 2*howmany, x(1,isj2), x(1,isj) )
               
               isj = isj2
             end if

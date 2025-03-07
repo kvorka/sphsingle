@@ -31,9 +31,21 @@ module math
       integer,        intent(in)  :: n
       real(kind=dbl), intent(out) :: arr(n)
     end subroutine zero_rarray_c
+    
+    module pure subroutine copy_rarray_c(n, arrfrom, arrto)
+      integer,        intent(in)  :: n
+      real(kind=dbl), intent(in)  :: arrfrom(n)
+      real(kind=dbl), intent(out) :: arrto(n)
+    end subroutine copy_rarray_c
   end interface
 #else
   interface
+    module pure subroutine copy_rarray_c(n, arrfrom, arrto) bind(C, name="copy_rarray_c")
+      integer, value, intent(in)  :: n
+      real(kind=dbl), intent(in)  :: arrfrom(*)
+      real(kind=dbl), intent(out) :: arrto(*)
+    end subroutine copy_rarray_c
+    
     module pure subroutine zero_rarray_c(n, arr) bind(C, name="zero_rarray_c")
       integer, value, intent(in)  :: n
       real(kind=dbl), intent(out) :: arr(*)

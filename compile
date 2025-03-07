@@ -103,12 +103,14 @@ wait
 ###########################################################################################
 if [ "$instructions" = "omp" ];
 then
-  $fcompile -c src/math/arr/arrzero.f90 &
+  $fcompile -c src/math/arr/omp/arrzero.f90 &
+  $fcompile -c src/math/arr/omp/arrcopy.f90 &
   $fcompile -c src/lgp/codelets/omp/*.f90 &
   $fcompile -c src/fft/codelets/omp/*.f90 &
   wait
 else
-  $ccompile -c src/math/arr/arrzero.c &
+  $ccompile -c src/math/arr/cvec/arrzero.c &
+  $ccompile -c src/math/arr/cvec/arrcopy.c &
   $ccompile -c src/lgp/codelets/cvec/*.c &
   $ccompile -c src/fft/codelets/cvec/*.c &
   $fcompile -c src/fft/codelets/cvec/*.f90 &

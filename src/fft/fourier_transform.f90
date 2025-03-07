@@ -166,9 +166,9 @@ module fourier_transform
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4,0:k-1)
     end subroutine fxzm5a_c
     
-    module pure subroutine fxzm5b_c(howmany, l, x)
-      integer,        intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4)
+    module pure subroutine fxzm5b_c(howmany, l, x) bind(C, name="fxzm5b_c")
+      integer, value, intent(in)    :: l, howmany
+      real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm5b_c
   end interface
 #endif
