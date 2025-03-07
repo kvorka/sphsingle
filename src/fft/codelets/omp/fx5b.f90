@@ -17,14 +17,14 @@ submodule (fourier_transform) fx5b
         x4re = x(iv,1,i,2) + x(iv,1,i,3)
         x4im = x(iv,2,i,2) + x(iv,2,i,3)
         
-        x2re =       x0re + C53 * x3re
-        x2im =       x0im + C53 * x3im
-        x3re = C53 * x0re -       x3re
-        x3im = C53 * x0im -       x3im
-        x0re =       x1re +       x4re
-        x0im =       x1im +       x4im
-        x1re =       x1re -       x4re
-        x1im =       x1im -       x4im
+        x2re = C53 * x3re + x0re
+        x2im = C53 * x3im + x0im
+        x3re = C53 * x0re - x3re
+        x3im = C53 * x0im - x3im
+        x0re =       x1re + x4re
+        x0im =       x1im + x4im
+        x1re =       x1re - x4re
+        x1im =       x1im - x4im
         
         x4re =     x(iv,1,i,0) - C51 * x0re
         x4im =     x(iv,2,i,0) - C51 * x0im
