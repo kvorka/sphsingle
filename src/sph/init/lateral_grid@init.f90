@@ -5,7 +5,7 @@ submodule (lateral_grid) init
     integer :: nL, nF
     
     nL = (3*jmax/2+1)/2+9-mod((3*jmax/2+1)/2+1,8)
-    nF = 3*(jmax+1) !prime_adjustement_sub(3*jmax+1)
+    nF = prime_adjustement_sub(3*jmax+1)
     
     call this%fourtrans%init_sub( nF )
     call this%lgp%init_sub( jmax, nL, real(nF, kind=dbl) )
