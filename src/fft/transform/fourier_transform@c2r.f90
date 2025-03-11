@@ -5,7 +5,6 @@ submodule (fourier_transform) c2r
     integer        :: i, iv
     real(kind=dbl) :: addre, addim, subre, subim, t1, t2
     
-    !$omp simd
     do iv = 1, howmany
       addre     =             x(iv,1,0)
       x(iv,1,0) = x(iv,1,0) + x(iv,2,0)
@@ -16,7 +15,6 @@ submodule (fourier_transform) c2r
       t1 = this%t(this%n+2*i-1)
       t2 = this%t(this%n+2*i  )
       
-      !$omp simd
       do iv = 1, howmany
         addre = x(iv,1,i) + x(iv,1,this%n/2-i)
         subre = x(iv,1,i) - x(iv,1,this%n/2-i)
@@ -32,7 +30,6 @@ submodule (fourier_transform) c2r
     end do
     
     if ( mod(this%n,4) == 0) then
-      !$omp simd
       do iv = 1, howmany
         x(iv,1,this%n/4) = +x(iv,1,this%n/4) * 2
         x(iv,2,this%n/4) = -x(iv,2,this%n/4) * 2

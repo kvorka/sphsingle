@@ -2,93 +2,15 @@ submodule (lege_poly) r2c
   implicit none; contains
   
   module procedure index_fwd_sub
-    integer                     :: m, j, jm, mj, ma
-    real(kind=dbl), allocatable :: cab(:,:)
+    integer                 :: m, j, jm, mj
+    type(c_ptr)             :: c_arr
+    real(kind=dbl), pointer :: cab(:,:)
+    
+    c_arr = malloc( 32, 2 * this%jms * size_d )
+    call c_f_pointer( c_arr, cab, [2,this%jms] )
     
     call is_rescale_c( this%nrma, this%amj, rcab )
-    
-    allocate( cab(2,this%jms) )
-    
-    m = 0
-      !j == m
-        ma = 1
-        mj = 1
-        
-        cab(1,mj) = rcab(1,2,ma)
-        cab(2,mj) = rcab(2,2,ma)
-      
-      do j = 1, (this%jmax-1)/2
-        ma = ma+1
-        mj = mj+2
-        
-        cab(1,mj-1) = this%emj(mj-1) * rcab(1,1,ma-1) + this%emj(mj) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj-1) * rcab(2,1,ma-1) + this%emj(mj) * rcab(2,1,ma)
-        cab(1,mj  ) =                  rcab(1,2,ma  )
-        cab(2,mj  ) =                  rcab(2,2,ma  )
-      end do
-      
-      !j == this%jmax
-      if ( mod((this%jmax),2) == 0 ) then
-        ma = ma+1
-        mj = mj+2
-        
-        cab(1,mj-1) = this%emj(mj-1) * rcab(1,1,ma-1) + this%emj(mj) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj-1) * rcab(2,1,ma-1) + this%emj(mj) * rcab(2,1,ma)
-        cab(1,mj  ) =                  rcab(1,2,ma  )
-        cab(2,mj  ) =                  rcab(2,2,ma  )
-      
-      else
-        ma = ma+1
-        mj = mj+1
-        
-        cab(1,mj) = this%emj(mj) * rcab(1,1,ma-1) + this%emj(mj+1) * rcab(1,1,ma)
-        cab(2,mj) = this%emj(mj) * rcab(2,1,ma-1) + this%emj(mj+1) * rcab(2,1,ma)
-      end if
-    
-    do m = 1, this%jmax-1
-      !j == m
-        ma = ma+1
-        mj = mj+1
-        
-        cab(1,mj) = rcab(1,2,ma)
-        cab(2,mj) = rcab(2,2,ma)
-      
-      do j = 1, (this%jmax-m-1)/2
-        ma = ma+1
-        mj = mj+2
-        
-        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,1,ma-1) + this%emj(mj+m) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,1,ma-1) + this%emj(mj+m) * rcab(2,1,ma)
-        cab(1,mj  ) =                    rcab(1,2,ma  )
-        cab(2,mj  ) =                    rcab(2,2,ma  )
-      end do
-      
-      !j == this%jmax
-      if ( mod((this%jmax-m),2) == 0 ) then
-        ma = ma+1
-        mj = mj+2
-        
-        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,1,ma-1) + this%emj(mj+m) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,1,ma-1) + this%emj(mj+m) * rcab(2,1,ma)
-        cab(1,mj  ) =                    rcab(1,2,ma  )
-        cab(2,mj  ) =                    rcab(2,2,ma  )
-        
-      else
-        ma = ma+1
-        mj = mj+1
-        
-        cab(1,mj) = this%emj(mj+m) * rcab(1,1,ma-1) + this%emj(mj+m+1) * rcab(1,1,ma)
-        cab(2,mj) = this%emj(mj+m) * rcab(2,1,ma-1) + this%emj(mj+m+1) * rcab(2,1,ma)
-      end if
-    end do
-    
-    m = this%jmax
-      !j == m
-      ma = ma+1
-      mj = mj+1
-      
-      cab(1,mj) = rcab(1,2,ma)
-      cab(2,mj) = rcab(2,2,ma)
+    call fwd_indx_c( this%jmax, this%emj, rcab, cab )
     
     do j = 0, this%jmax
       m = 0
@@ -105,7 +27,7 @@ submodule (lege_poly) r2c
       end do
     end do
     
-    deallocate( cab )
+    call free( c_arr )
     
   end procedure index_fwd_sub
   

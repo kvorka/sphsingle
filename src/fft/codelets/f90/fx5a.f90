@@ -19,7 +19,6 @@ submodule (fourier_transform) fx5a
       t4im = t(2,ij+3)
       
       do i = 1, l
-        !$omp simd
         do iv = 1, howmany
           x1re =        t1re * x(iv,1,i,1,j) - t1im * x(iv,2,i,1,j)
           x1im =        t1re * x(iv,2,i,1,j) + t1im * x(iv,1,i,1,j)

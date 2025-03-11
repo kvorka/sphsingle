@@ -1,9 +1,5 @@
 submodule (math) alloc
-  implicit none
-  
-  integer, parameter :: size_d = c_sizeof(0._dbl)
-  
-  contains
+  implicit none; contains
   
   module procedure alloc_aligned_sub
     

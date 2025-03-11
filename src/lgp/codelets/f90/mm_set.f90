@@ -6,13 +6,11 @@ submodule (lege_poly) poly_mm
     
     select case (ma)
       case (1)
-        !$omp simd
         do i2 = 1, n
           pmm(i2) = cff
         end do
       
       case default
-        !$omp simd
         do i2 = 1, n
           pmm(i2) = cff * sinx(i2) * pmm(i2)
         end do
@@ -20,7 +18,6 @@ submodule (lege_poly) poly_mm
     
     call zero_rarray_c( n, pmj1 )
     
-    !$omp simd
     do i2 = 1, n
       pmj(i2)  = pmm(i2) / cosx(i2)
     end do

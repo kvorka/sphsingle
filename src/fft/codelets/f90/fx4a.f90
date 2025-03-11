@@ -14,7 +14,6 @@ submodule (fourier_transform) fx4a
       t2im = t(3+2*ij)
       
       do i = 1, l
-        !$omp simd
         do iv = 1, howmany
           x0re = x(iv,1,i,0,j)
           x0im = x(iv,2,i,0,j)

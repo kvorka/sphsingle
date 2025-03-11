@@ -3,15 +3,16 @@ module math
   use iso_c_binding
   implicit none; public
   
-  integer, parameter :: dbl = real64   !double precision
-  integer, parameter :: qbl = real128  !quadruple precision
-
+  integer, parameter :: dbl    = real64            !double precision
+  integer, parameter :: qbl    = real128           !quadruple precision
+  integer, parameter :: size_d = c_sizeof(0._dbl)  !size of double
+  
 #if defined( avx ) || defined( fma )
   integer, parameter :: default_alig = 32  !memory alignement: AVX, FMA
 #else
-  integer, parameter :: default_alig = 64  !memory alignement: AVX512
+  integer, parameter :: default_alig = 32  !memory alignement: AVX512
 #endif
-
+  
   interface
     type(c_ptr) function malloc(alignement, n) bind(C, name='aligned_alloc')
       import         :: c_ptr
@@ -30,7 +31,7 @@ module math
     end subroutine free
   end interface
   
-#ifdef omp
+#ifdef f90
   interface
     module pure subroutine zero_rarray_c(n, arr)
       integer,        intent(in)  :: n

@@ -68,10 +68,22 @@ module lege_poly
     end subroutine fwd_legesum_sub
   end interface
   
-#ifdef omp
+#ifdef f90
   interface
+    module pure subroutine bwd_indx_c(jmax, emj, icab, ocab)
+      integer,        intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), icab(2,*)
+      real(kind=dbl), intent(out) :: ocab(2,2,*)
+    end subroutine bwd_indx_c
+    
+    module pure subroutine fwd_indx_c(jmax, emj, ocab, icab)
+      integer,        intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), ocab(2,2,*)
+      real(kind=dbl), intent(out) :: icab(2,*)
+    end subroutine fwd_indx_c
+    
     module pure subroutine is_rescale_c(n, cff, rcab)
-      integer, value, intent(in)    :: n
+      integer,        intent(in)    :: n
       real(kind=dbl), intent(in)    :: cff(n)
       real(kind=dbl), intent(inout) :: rcab(4,n)
     end subroutine is_rescale_c
@@ -119,6 +131,18 @@ module lege_poly
   end interface
 #else
   interface
+    module pure subroutine bwd_indx_c(jmax, emj, icab, ocab) bind(C, name="bwd_indx_c")
+      integer, value, intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), icab(*)
+      real(kind=dbl), intent(out) :: ocab(*)
+    end subroutine bwd_indx_c
+    
+    module pure subroutine fwd_indx_c(jmax, emj, ocab, icab) bind(C, name="fwd_indx_c")
+      integer, value, intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), ocab(*)
+      real(kind=dbl), intent(out) :: icab(*)
+    end subroutine fwd_indx_c
+    
     module pure subroutine is_rescale_c(n, cff, rcab) bind(C, name="is_rescale_c")
       integer, value, intent(in)    :: n
       real(kind=dbl), intent(in)    :: cff(*)

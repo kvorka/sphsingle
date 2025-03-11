@@ -6,7 +6,6 @@ submodule (fourier_transform) fx3b
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im
     
     do i = 1, l
-      !$omp simd
       do iv = 1, howmany
         x0re = x(iv,1,i,1) + x(iv,1,i,2)
         x0im = x(iv,2,i,1) + x(iv,2,i,2)

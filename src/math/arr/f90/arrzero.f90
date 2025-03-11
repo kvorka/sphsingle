@@ -4,7 +4,6 @@ submodule (math) arrops
   module procedure zero_rarray_c
     integer :: i
     
-    !$omp simd
     do i = 1, n
       arr(i) = 0._dbl
     end do

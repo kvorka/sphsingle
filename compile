@@ -3,7 +3,7 @@
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
 compiler="gfortran"
-instructions="fma"
+instructions="avx"
 
 ###########################################################################################
 ####                              COMPILER SET UP                                      ####
@@ -101,12 +101,12 @@ wait
 ###########################################################################################
 ####                            BUILDING CORE IMPLEMENTATIONS                          ####
 ###########################################################################################
-if [ "$instructions" = "omp" ];
+if [ "$instructions" = "f90" ];
 then
-  $fcompile -c src/math/arr/omp/arrzero.f90 &
-  $fcompile -c src/math/arr/omp/arrcopy.f90 &
-  $fcompile -c src/lgp/codelets/omp/*.f90 &
-  $fcompile -c src/fft/codelets/omp/*.f90 &
+  $fcompile -c src/math/arr/f90/arrzero.f90 &
+  $fcompile -c src/math/arr/f90/arrcopy.f90 &
+  $fcompile -c src/lgp/codelets/f90/*.f90 &
+  $fcompile -c src/fft/codelets/f90/*.f90 &
   wait
 else
   $ccompile -c src/math/arr/cvec/arrzero.c &

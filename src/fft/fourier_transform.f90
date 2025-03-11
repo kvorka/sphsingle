@@ -79,7 +79,7 @@ module fourier_transform
     end subroutine fxzini
   end interface
 
-#ifdef omp
+#ifdef f90
   interface
     module pure subroutine fxzm2a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
