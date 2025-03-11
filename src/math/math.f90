@@ -10,7 +10,7 @@ module math
 #if defined( avx ) || defined( fma )
   integer, parameter :: default_alig = 32  !memory alignement: AVX, FMA
 #else
-  integer, parameter :: default_alig = 32  !memory alignement: AVX512
+  integer, parameter :: default_alig = 64  !memory alignement: AVX512
 #endif
   
   interface
