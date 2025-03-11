@@ -3,10 +3,7 @@
 
 extern inline void is_rescale_c( const int n,
                                  const double *restrict amj,
-                                 double *restrict cc )
-
-#if defined( avx ) || defined( fma )
-{
+                                 double *restrict cc ) {
     
     // rescale loop: unroll by 4 for efficiency
     for ( int i1 = 0; i1 < (n/4)*4; i1+=4 ) {
@@ -28,4 +25,3 @@ extern inline void is_rescale_c( const int n,
     }
     
 }
-#endif
