@@ -55,7 +55,7 @@ extern inline void mj_rec_c( const int n,                  // howmany roots (ste
     // recursion: cycle over the roots, the outer cycle is unrolled by 16, factor of 4 is handled by an explicit
     // vectorization, factor of 4 is added in order to unroll the cycle a bit more for efficiency
     for ( int i2 = 0; i2 < n32; i2+=32 ) {
-      for ( int i1 = 0; i1 < 32; i1+=4 ) {
+      for ( int i1 = 0; i1 < 32; i1+=incr ) {
         
         rpmj = fmsub( rcff1, load( cosx2+i1+i2 ), rcff2 );
         rpmj = fmsub( rpmj,  load( pmj1 +i1+i2 ), load( pmj+i1+i2 ) );
@@ -66,7 +66,7 @@ extern inline void mj_rec_c( const int n,                  // howmany roots (ste
     }
     
     // recursion: remainder cases
-    for ( int i1 = 0; i1 < n-n32; i1+=4 ) {
+    for ( int i1 = 0; i1 < n-n32; i1+=incr ) {
         
       rpmj = fmsub( rcff1, load( cosx2+i1+n32 ), rcff2 );
       rpmj = fmsub( rpmj,  load( pmj1 +i1+n32 ), load( pmj+i1+n32 ) );
