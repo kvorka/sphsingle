@@ -1,4 +1,4 @@
-#include "../../../math/cvec.h"
+#include "fft.h"
 
 extern inline void fxzm3a_c( const int n,
                              const int k,
@@ -8,9 +8,6 @@ extern inline void fxzm3a_c( const int n,
 
 #if defined( avx ) || defined( avx512 )
 {
-    
-    const mmreg rc31 = setdbl( -0.50000000000000000000 );
-    const mmreg rc32 = setdbl( +0.86602540378443864676 );
     
     mmreg rtre[2], rtim[2], rxre[5], rxim[5];
     
@@ -92,13 +89,8 @@ extern inline void fxzm3a_c( const int n,
     }
     
 }
-#elif defined( fma )
+#elif defined( fma ) || defined( avx512fma )
 {
-    
-    const mmreg rtwo = setdbl( +2.0 );
-    const mmreg rm00 = setdbl( -0.0 );
-    const mmreg rc31 = setdbl( -0.50000000000000000000 );
-    const mmreg rc32 = setdbl( +0.86602540378443864676 );
     
     mmreg rtre[2], rtim[2], rxre[5], rxim[5];
     
@@ -123,22 +115,22 @@ extern inline void fxzm3a_c( const int n,
             rxre[1] = mul( rtim[1], rxim[4] );
             rxim[1] = mul( rtim[1], rxre[4] );
             
-            rxre[0] = _mm256_fmsub_pd( rtre[0], rxre[3], rxre[0] );
-            rxim[0] = _mm256_fmadd_pd( rtre[0], rxim[3], rxim[0] );
-            rxre[1] = _mm256_fmsub_pd( rtre[1], rxre[4], rxre[1] );
-            rxim[1] = _mm256_fmadd_pd( rtre[1], rxim[4], rxim[1] );
+            rxre[0] = fmsub( rtre[0], rxre[3], rxre[0] );
+            rxim[0] = fmadd( rtre[0], rxim[3], rxim[0] );
+            rxre[1] = fmsub( rtre[1], rxre[4], rxre[1] );
+            rxim[1] = fmadd( rtre[1], rxim[4], rxim[1] );
             
             rxre[1] = sub( rxre[0], rxre[1] );
             rxim[1] = sub( rxim[0], rxim[1] );
             
-            rxre[0] = _mm256_fmsub_pd( rtwo, rxre[0], rxre[1] );
-            rxim[0] = _mm256_fmsub_pd( rtwo, rxim[0], rxim[1] );
+            rxre[0] = fmsub( rtwo, rxre[0], rxre[1] );
+            rxim[0] = fmsub( rtwo, rxim[0], rxim[1] );
             
             rxre[3] = load( x+iv1+iv  +2*i*n+6*j*l*n );
             rxim[3] = load( x+iv1+iv+n+2*i*n+6*j*l*n );
             
-            rxre[2] = _mm256_fmadd_pd( rc31, rxre[0], rxre[3] );
-            rxim[2] = _mm256_fmadd_pd( rc31, rxim[0], rxim[3] );
+            rxre[2] = fmadd( rc31, rxre[0], rxre[3] );
+            rxim[2] = fmadd( rc31, rxim[0], rxim[3] );
             
             rxre[0] = add( rxre[0], rxre[3] );
             rxim[0] = add( rxim[0], rxim[3] );
@@ -146,15 +138,15 @@ extern inline void fxzm3a_c( const int n,
             store( x+iv1+iv  +2*i*n+6*j*l*n, rxre[0] );
             store( x+iv1+iv+n+2*i*n+6*j*l*n, rxim[0] );
             
-            rxre[0] = _mm256_fmadd_pd( rc32, rxim[1], rxre[2] );
-            rxim[0] = _mm256_fmsub_pd( rc32, rxre[1], rxim[2] );
-            rxim[0] = _mm256_xor_pd( rxim[0], rm00 );
+            rxre[0] = fmadd( rc32, rxim[1], rxre[2] );
+            rxim[0] = fmsub( rc32, rxre[1], rxim[2] );
+            rxim[0] = xor( rxim[0], rm00 );
             
             store( x+iv1+iv  +2*i*n+4*l*n+6*j*l*n, rxre[0] );
             store( x+iv1+iv+n+2*i*n+4*l*n+6*j*l*n, rxim[0] );
             
-            rxre[0] = _mm256_fmsub_pd( rtwo, rxre[2], rxre[0] );
-            rxim[0] = _mm256_fmsub_pd( rtwo, rxim[2], rxim[0] );
+            rxre[0] = fmsub( rtwo, rxre[2], rxre[0] );
+            rxim[0] = fmsub( rtwo, rxim[2], rxim[0] );
             
             store( x+iv1+iv  +2*i*n+2*l*n+6*j*l*n, rxre[0] );
             store( x+iv1+iv+n+2*i*n+2*l*n+6*j*l*n, rxim[0] );

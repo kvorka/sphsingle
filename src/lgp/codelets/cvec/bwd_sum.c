@@ -70,10 +70,10 @@ extern inline void bwd_sum_c( const int n,                 // howmany roots (n)
         rpmj = load( pmj+i2+i1 );
         
         // sum over roots and sph coeffs
-        store( swork+    i2+i1, _mm256_fmadd_pd( rpmj, rcc[0], load( swork+    i2+i1 ) ) );
-        store( swork+  n+i2+i1, _mm256_fmadd_pd( rpmj, rcc[1], load( swork+  n+i2+i1 ) ) );
-        store( swork+2*n+i2+i1, _mm256_fmadd_pd( rpmj, rcc[2], load( swork+2*n+i2+i1 ) ) );
-        store( swork+3*n+i2+i1, _mm256_fmadd_pd( rpmj, rcc[3], load( swork+3*n+i2+i1 ) ) );
+        store( swork+    i2+i1, fmadd( rpmj, rcc[0], load( swork+    i2+i1 ) ) );
+        store( swork+  n+i2+i1, fmadd( rpmj, rcc[1], load( swork+  n+i2+i1 ) ) );
+        store( swork+2*n+i2+i1, fmadd( rpmj, rcc[2], load( swork+2*n+i2+i1 ) ) );
+        store( swork+3*n+i2+i1, fmadd( rpmj, rcc[3], load( swork+3*n+i2+i1 ) ) );
         
       }
     }
@@ -85,10 +85,10 @@ extern inline void bwd_sum_c( const int n,                 // howmany roots (n)
       rpmj = load( pmj+n32+i1 );
       
       // sum over roots and sph coeffs
-      store( swork+    n32+i1, _mm256_fmadd_pd( rpmj, rcc[0], load( swork+    n32+i1 ) ) );
-      store( swork+  n+n32+i1, _mm256_fmadd_pd( rpmj, rcc[1], load( swork+  n+n32+i1 ) ) );
-      store( swork+2*n+n32+i1, _mm256_fmadd_pd( rpmj, rcc[2], load( swork+2*n+n32+i1 ) ) );
-      store( swork+3*n+n32+i1, _mm256_fmadd_pd( rpmj, rcc[3], load( swork+3*n+n32+i1 ) ) );
+      store( swork+    n32+i1, fmadd( rpmj, rcc[0], load( swork+    n32+i1 ) ) );
+      store( swork+  n+n32+i1, fmadd( rpmj, rcc[1], load( swork+  n+n32+i1 ) ) );
+      store( swork+2*n+n32+i1, fmadd( rpmj, rcc[2], load( swork+2*n+n32+i1 ) ) );
+      store( swork+3*n+n32+i1, fmadd( rpmj, rcc[3], load( swork+3*n+n32+i1 ) ) );
       
     }
     

@@ -57,8 +57,8 @@ extern inline void mj_rec_c( const int n,                  // howmany roots (ste
     for ( int i2 = 0; i2 < n32; i2+=32 ) {
       for ( int i1 = 0; i1 < 32; i1+=4 ) {
         
-        rpmj = _mm256_fmsub_pd( rcff1, load( cosx2+i1+i2 ), rcff2 );
-        rpmj = _mm256_fmsub_pd( rpmj,  load( pmj1 +i1+i2 ), load( pmj+i1+i2 ) );
+        rpmj = fmsub( rcff1, load( cosx2+i1+i2 ), rcff2 );
+        rpmj = fmsub( rpmj,  load( pmj1 +i1+i2 ), load( pmj+i1+i2 ) );
         
         store( pmj+i1+i2, rpmj );
         
@@ -68,8 +68,8 @@ extern inline void mj_rec_c( const int n,                  // howmany roots (ste
     // recursion: remainder cases
     for ( int i1 = 0; i1 < n-n32; i1+=4 ) {
         
-      rpmj = _mm256_fmsub_pd( rcff1, load( cosx2+i1+n32 ), rcff2 );
-      rpmj = _mm256_fmsub_pd( rpmj,  load( pmj1 +i1+n32 ), load( pmj+i1+n32 ) );
+      rpmj = fmsub( rcff1, load( cosx2+i1+n32 ), rcff2 );
+      rpmj = fmsub( rpmj,  load( pmj1 +i1+n32 ), load( pmj+i1+n32 ) );
       
       store( pmj+i1+n32, rpmj );
       

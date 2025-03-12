@@ -1,4 +1,4 @@
-#include "../../../math/cvec.h"
+#include "fft.h"
 
 extern inline void fxzm2b_c( const int n,
                              const int l,
@@ -37,10 +37,8 @@ extern inline void fxzm2b_c( const int n,
     }
     
 }
-#elif defined( fma )
+#elif defined( fma ) || defined( avx512fma )
 {
-    
-    const mmreg rtwo = setdbl( +2.0 );
     
     mmreg rxre[2], rxim[2];
     
@@ -56,8 +54,8 @@ extern inline void fxzm2b_c( const int n,
           rxre[1] = sub( rxre[0], rxre[1] );
           rxim[1] = sub( rxre[0], rxim[1] );
           
-          rxre[0] = _mm256_fmsub_pd( rtwo, rxre[0], rxre[1] );
-          rxim[0] = _mm256_fmsub_pd( rtwo, rxre[0], rxim[1] );
+          rxre[0] = fmsub( rtwo, rxre[0], rxre[1] );
+          rxim[0] = fmsub( rtwo, rxre[0], rxim[1] );
           
           store( x+iv+iv1  +2*i*n,       rxre[0] );
           store( x+iv+iv1+n+2*i*n,       rxim[0] );

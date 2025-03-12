@@ -1,4 +1,4 @@
-#include "../../../math/cvec.h"
+#include "fft.h"
 
 extern inline void fxzm2a_c( const int n,
                              const int k,
@@ -53,11 +53,8 @@ extern inline void fxzm2a_c( const int n,
   }
     
 }
-#elif defined( fma )
+#elif defined( fma ) || defined( avx512fma )
 {
-    
-    const mmreg rtwo = setdbl( +2.0 );
-    const mmreg rm00 = setdbl( -0.0 );
     
     mmreg rtre, rtim, rxre[3], rxim[3];
     
@@ -75,15 +72,15 @@ extern inline void fxzm2a_c( const int n,
             rxre[2] = load( x+iv1+iv  +2*i*n+2*l*n+4*j*l*n );
             rxim[2] = load( x+iv1+iv+n+2*i*n+2*l*n+4*j*l*n );
             
-            rxre[1] = _mm256_fmsub_pd( rtre, rxre[2], rxre[0] );
-            rxim[1] = _mm256_fmsub_pd( rtim, rxre[2], rxim[0] );
+            rxre[1] = fmsub( rtre, rxre[2], rxre[0] );
+            rxim[1] = fmsub( rtim, rxre[2], rxim[0] );
             
-            rxre[1] = _mm256_fmsub_pd( rtim, rxim[2], rxre[1] );
-            rxim[1] = _mm256_fmadd_pd( rtre, rxim[2], rxim[1] );
-            rxim[1] = _mm256_xor_pd( rxim[1], rm00 );
+            rxre[1] = fmsub( rtim, rxim[2], rxre[1] );
+            rxim[1] = fmadd( rtre, rxim[2], rxim[1] );
+            rxim[1] = xor( rxim[1], rm00 );
             
-            rxre[0] = _mm256_fmsub_pd( rtwo, rxre[0], rxre[1] );
-            rxim[0] = _mm256_fmsub_pd( rtwo, rxim[0], rxim[1] );
+            rxre[0] = fmsub( rtwo, rxre[0], rxre[1] );
+            rxim[0] = fmsub( rtwo, rxim[0], rxim[1] );
             
             store( x+iv1+iv  +2*i*n+      4*j*l*n, rxre[0] );
             store( x+iv1+iv+n+2*i*n+      4*j*l*n, rxim[0] );

@@ -12,10 +12,18 @@ module sphpack
     
     call sph%init_sub( jcut )
     
-    nth = sph%lgp%n
+    nth = 2 * sph%lgp%n
     nph = sph%fourtrans%n
     
   end subroutine init_sphpack
+  
+  subroutine alloc_grid(c_grid, f_grid)
+    type(c_ptr),                         intent(out) :: c_grid
+    real(kind=dbl), pointer, contiguous, intent(out) :: f_grid(:,:)
+    
+    call sph%alloc_grid_sub( c_grid, f_grid )
+    
+  end subroutine alloc_grid
   
   subroutine harmsy(cajm, grid)
     complex(kind=dbl), intent(in)  :: cajm(*)

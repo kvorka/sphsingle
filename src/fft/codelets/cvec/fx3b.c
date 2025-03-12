@@ -1,4 +1,4 @@
-#include "../../../math/cvec.h"
+#include "fft.h"
 
 extern inline void fxzm3b_c( const int n,
                              const int l,
@@ -6,9 +6,6 @@ extern inline void fxzm3b_c( const int n,
 
 #if defined( avx ) || defined( avx512 )
 {
-    
-    const mmreg rc31 = setdbl( -0.50000000000000000000 );
-    const mmreg rc32 = setdbl( +0.86602540378443864676 );
     
     mmreg rxre[4], rxim[4];
     
@@ -57,12 +54,8 @@ extern inline void fxzm3b_c( const int n,
     }
     
 }
-#elif defined (fma)
+#elif defined (fma) || defined( avx512fma )
 {
-    
-    const mmreg rc31 = setdbl( -0.50000000000000000000 );
-    const mmreg rc32 = setdbl( +0.86602540378443864676 );
-    const mmreg rm00 = setdbl( -0.0 );
     
     mmreg rxre[4], rxim[4];
     
@@ -83,8 +76,8 @@ extern inline void fxzm3b_c( const int n,
           rxre[3] = load( x+iv1+iv+  2*i*n );
           rxim[3] = load( x+iv1+iv+n+2*i*n );
           
-          rxre[2] = _mm256_fmadd_pd( rc31, rxre[0], rxre[3] );
-          rxim[2] = _mm256_fmadd_pd( rc31, rxim[0], rxim[3] );
+          rxre[2] = fmadd( rc31, rxre[0], rxre[3] );
+          rxim[2] = fmadd( rc31, rxim[0], rxim[3] );
           
           rxre[0] = add( rxre[0], rxre[3] );
           rxim[0] = add( rxim[0], rxim[3] );
@@ -92,13 +85,13 @@ extern inline void fxzm3b_c( const int n,
           store( x+iv1+iv+  2*i*n, rxre[0] );
           store( x+iv1+iv+n+2*i*n, rxim[0] );
           
-          rxre[0] = _mm256_fmsub_pd( rc32, rxim[1], rxre[2] );
-          rxim[0] = _mm256_fmadd_pd( rc32, rxre[1], rxim[2] );
-          rxre[3] = _mm256_fmadd_pd( rc32, rxim[1], rxre[2] );
-          rxim[3] = _mm256_fmsub_pd( rc32, rxre[1], rxim[2] );
+          rxre[0] = fmsub( rc32, rxim[1], rxre[2] );
+          rxim[0] = fmadd( rc32, rxre[1], rxim[2] );
+          rxre[3] = fmadd( rc32, rxim[1], rxre[2] );
+          rxim[3] = fmsub( rc32, rxre[1], rxim[2] );
           
-          rxre[0] = _mm256_xor_pd( rxre[0], rm00 );
-          rxim[3] = _mm256_xor_pd( rxim[3], rm00 );
+          rxre[0] = xor( rxre[0], rm00 );
+          rxim[3] = xor( rxim[3], rm00 );
           
           store( x+iv1+iv+  2*i*n+2*l*n, rxre[0] );
           store( x+iv1+iv+n+2*i*n+2*l*n, rxim[0] );
