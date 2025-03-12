@@ -2,7 +2,7 @@ program test
   use sphpack
   implicit none
   
-  integer, parameter :: jcut  = 1000
+  integer, parameter :: jcut  = 500
   integer, parameter :: jmcut = jcut*(jcut+1)/2+jcut+1
   
   real(kind=dbl)                 :: start, end

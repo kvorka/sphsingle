@@ -48,6 +48,7 @@ then
                 -ffast-math \
                 -funroll-loops \
                 -xHost \
+                -qopenmp \
                 -qopt-zmm-usage=high \
                 -D$instructions"
 
@@ -72,6 +73,7 @@ then
                 -ffast-math \
                 -funroll-loops \
                 -xHost \
+                -qopenmp \
                 -qopt-zmm-usage=high \
                 -D$instructions"
 fi
