@@ -3,25 +3,24 @@ submodule (lege_poly) fwd
 
   module procedure fwd_legesum_sub
     integer                             :: j, m, ma
-    real(kind=dbl), pointer, contiguous :: work(:), swork(:), pmm(:), pmj1(:), pmj(:), pmj2(:)
+    real(kind=dbl), pointer, contiguous :: work(:), swork(:), pmj1(:), pmj(:), pmj2(:)
     type(c_ptr)                         :: c_work
     
-    call alloc_aligned_sub( default_alig, 7*this%n, c_work, work )
+    !$omp parallel private (c_work, work, pmj2, pmj1, pmj, swork, j, ma)
+    call alloc_aligned_sub( default_alig, 6*this%n, c_work, work )
     
-    pmm   => work(          1 :   this%n )
-    pmj1  => work(   this%n+1 : 2*this%n )
-    pmj   => work( 2*this%n+1 : 3*this%n )
-    swork => work( 3*this%n+1 : 7*this%n )
+    pmj1  => work(          1 :   this%n )
+    pmj   => work(   this%n+1 : 2*this%n )
+    swork => work( 2*this%n+1 : 6*this%n )
     
-    ma  = 0
-    
+    !$omp do schedule( dynamic, 1 )
     do m = 0, this%jmax
       call fwd_shuffle_c( this%n, this%cosx, this%wght, grid(1,m), swork )
       
       !j = m
-        ma = ma+1
+        ma = this%mma(m)
         
-        call mm_set_c( ma, this%n, this%fmj(2,ma), this%cosx, this%sinx, pmm, pmj1, pmj )
+        call mm_set_c( this%n, this%cosx, this%pmm(:,m+1), pmj1, pmj )
         call fwd_sum_c( this%n, pmj, swork, cr(1,ma) )
       
       do j = 1, (this%jmax-m)/2
@@ -48,6 +47,7 @@ submodule (lege_poly) fwd
     end do
     
     call free( c_work )
+    !$omp end parallel
     
   end procedure fwd_legesum_sub
   

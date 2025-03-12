@@ -3,16 +3,18 @@ module lege_poly
   implicit none
   
   type, public :: T_legep
-    integer                     :: jmax, jms, n, nrma
-    real(kind=dbl), allocatable :: emj(:), fmj(:,:), amj(:)
-    real(kind=dbl), pointer     :: cosx(:), sinx(:), cosx2(:), wght(:)
-    type(c_ptr)                 :: c_cosx, c_sinx, c_cosx2, c_wght
+    integer                             :: jmax, jms, n, nrma
+    integer,        allocatable         :: mma(:)
+    real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
+    real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:,:)
+    type(c_ptr)                         :: c_cosx, c_cosx2, c_wght, c_pmm
     
     contains
     
     procedure, public,  pass :: init_sub       => init_lege_sub
     procedure, private, pass :: roots_sub      => find_roots_sub
     procedure, private, pass :: coeffs_sub     => compute_coeffs_sub
+    procedure, private, pass :: pmm_sub        => compute_pmm_sub
     procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
     
     procedure, public, pass :: index_bwd_sub, bwd_legesum_sub
@@ -43,13 +45,17 @@ module lege_poly
       class(T_legep), intent(inout) :: this
     end subroutine compute_coeffs_sub
     
+    module subroutine compute_pmm_sub(this)
+      class(T_legep), intent(inout) :: this
+    end subroutine compute_pmm_sub
+    
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
       complex(kind=dbl), intent(in)  :: cjm(*)
       real(kind=dbl),    intent(out) :: rcab(2,2,this%nrma)
     end subroutine index_bwd_sub
     
-    module  subroutine index_fwd_sub(this, rcab, cjm)
+    module subroutine index_fwd_sub(this, rcab, cjm)
       class(T_legep),    intent(in)    :: this
       real(kind=dbl),    intent(inout) :: rcab(2,2,this%nrma)
       complex(kind=dbl), intent(out)   :: cjm(*)
@@ -88,10 +94,9 @@ module lege_poly
       real(kind=dbl), intent(inout) :: rcab(4,n)
     end subroutine is_rescale_c
     
-    module pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj)
-      integer,        intent(in)    :: n, ma
-      real(kind=dbl), intent(in)    :: cff, cosx(n), sinx(n)
-      real(kind=dbl), intent(inout) :: pmm(n)
+    module pure subroutine mm_set_c(n, cosx, pmm, pmj1, pmj)
+      integer,        intent(in)    :: n
+      real(kind=dbl), intent(in)    :: cosx(n), pmm(n)
       real(kind=dbl), intent(out)   :: pmj1(n), pmj(n)
     end subroutine mm_set_c
     
@@ -149,12 +154,10 @@ module lege_poly
       real(kind=dbl), intent(inout) :: rcab(*)
     end subroutine is_rescale_c
     
-    module pure subroutine mm_set_c(ma, n, cff, cosx, sinx, pmm, pmj1, pmj) bind(C, name="mm_set_c")
-      integer,        value, intent(in)    :: ma, n
-      real(kind=dbl), value, intent(in)    :: cff
-      real(kind=dbl),        intent(in)    :: cosx(*), sinx(*)
-      real(kind=dbl),        intent(inout) :: pmm(*)
-      real(kind=dbl),        intent(out)   :: pmj(*), pmj1(*)
+    module pure subroutine mm_set_c(n, cosx, pmm, pmj1, pmj) bind(C, name="mm_set_c")
+      integer, value, intent(in)  :: n
+      real(kind=dbl), intent(in)  :: cosx(*), pmm(*)
+      real(kind=dbl), intent(out) :: pmj(*), pmj1(*)
     end subroutine mm_set_c
     
     module pure subroutine mj_rec_c(n, cff, cosx2, pmj1, pmj) bind(C, name="mj_rec_c")

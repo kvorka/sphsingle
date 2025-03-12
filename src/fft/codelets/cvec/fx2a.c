@@ -11,6 +11,7 @@ extern inline void fxzm2a_c( const int n,
   
   mmreg rtre, rtim, rxre[3], rxim[3];
   
+  #pragma omp parallel for private ( rtre, rtim, rxre, rxim )
   for ( int j = 0; j < k; j++ ) {
     
     rtre = broadcast( t+2*j   );

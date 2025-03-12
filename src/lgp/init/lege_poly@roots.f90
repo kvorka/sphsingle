@@ -29,7 +29,6 @@ submodule (lege_poly) roots
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
     call alloc_aligned_sub( default_alig, this%n, this%c_cosx,  this%cosx  )
-    call alloc_aligned_sub( default_alig, this%n, this%c_sinx,  this%sinx  )
     call alloc_aligned_sub( default_alig, this%n, this%c_cosx2, this%cosx2 )
     call alloc_aligned_sub( default_alig, this%n, this%c_wght,  this%wght  )
     
@@ -46,7 +45,7 @@ submodule (lege_poly) roots
       xincr = 1._qbl / n
       ncnt  = 0
       
-      !$omp parallel do private (fx1, fx2)
+      !$omp parallel do private (fx1, fx2) num_threads(omp_get_max_threads())
       do i = 1, n
         fx1 = lege_fn( 2*this%n, (i-1) * xincr )
         fx2 = lege_fn( 2*this%n, (i  ) * xincr )
@@ -72,7 +71,7 @@ submodule (lege_poly) roots
     !!**********************************************************************!!
     !!* Bisection                                                          *!!
     !!**********************************************************************!!
-    !$omp parallel do private (x1,fx1,x2,fx2,root,froot)
+    !$omp parallel do private (x1,fx1,x2,fx2,root,froot) num_threads(omp_get_max_threads())
     do i = 1, this%n
       x1  = xclose(i)
       fx1 = lege_fn(2*this%n, x1)
@@ -96,9 +95,8 @@ submodule (lege_poly) roots
       end do
       
       this%cosx(i)  = root
-      this%sinx(i)  = sqrt( 1 - root**2 )
       this%cosx2(i) = root**2
-      this%wght(i) = qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2
+      this%wght(i)  = qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2
     end do
     !$omp end parallel do
     

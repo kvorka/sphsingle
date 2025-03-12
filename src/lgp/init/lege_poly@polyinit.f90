@@ -1,0 +1,29 @@
+submodule (lege_poly) polyinit
+  implicit none; contains
+  
+  module procedure compute_pmm_sub
+    integer :: m, ma, i2
+    
+    this%c_pmm = malloc( default_alig, this%n * (this%jmax+1) * size_d )
+    call c_f_pointer( this%c_pmm, this%pmm, [this%n,this%jmax+1] )
+    
+    do m = 0, this%jmax
+      ma = this%mma(m)
+      
+      select case (ma)
+        case (1)
+          do i2 = 1, this%n
+            this%pmm(i2,m+1) = this%fmj(2,ma)
+          end do
+      
+      case default
+        do i2 = 1, this%n
+          this%pmm(i2,m+1) = this%fmj(2,ma) * sqrt( 1-this%cosx(i2)**2 ) * this%pmm(i2,m)
+        end do
+        
+      end select
+    end do
+    
+  end procedure compute_pmm_sub
+  
+end submodule polyinit

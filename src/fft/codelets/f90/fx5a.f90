@@ -2,21 +2,22 @@ submodule (fourier_transform) fx5a
   implicit none; contains
   
   module procedure fxzm5a_c
-    integer        :: i, j, ij, iv
+    integer        :: i, j, iv
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im, x3re, x3im, x4re, x4im, &
                     & t1re, t1im, t2re, t2im, t3re, t3im, t4re, t4im
     
+    !$omp parallel private (i,iv,x0re,x0im,x1re,x1im,x2re,x2im,x3re,x3im,x4re,x4im,t1re,t1im,t2re,t2im,t3re,t3im,t4re,t4im)
+    
+    !$omp do
     do j = 0, k-1
-      ij = 4 * j
-      
-      t1re = t(1,ij  )
-      t1im = t(2,ij  )
-      t2re = t(1,ij+1)
-      t2im = t(2,ij+1)
-      t3re = t(1,ij+2)
-      t3im = t(2,ij+2)
-      t4re = t(1,ij+3)
-      t4im = t(2,ij+3)
+      t1re = t(  8*j)
+      t1im = t(1+8*j)
+      t2re = t(2+8*j)
+      t2im = t(3+8*j)
+      t3re = t(4+8*j)
+      t3im = t(5+8*j)
+      t4re = t(6+8*j)
+      t4im = t(7+8*j)
       
       do i = 1, l
         do iv = 1, howmany
@@ -63,6 +64,7 @@ submodule (fourier_transform) fx5a
         end do
       end do
     end do
+    !$omp end parallel
     
   end procedure fxzm5a_c
   

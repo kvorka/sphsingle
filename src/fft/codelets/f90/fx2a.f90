@@ -5,6 +5,9 @@ submodule (fourier_transform) fx2a
     integer        :: i, j, iv
     real(kind=dbl) :: x0re, x0im, x1re, x1im, t1re, t1im
     
+    !$omp parallel private (i,iv,x0re,x0im,x1re,x1im,t1re,t1im)
+    
+    !$omp do
     do j = 0, k-1
       t1re = t(  2*j)
       t1im = t(1+2*j)
@@ -24,6 +27,7 @@ submodule (fourier_transform) fx2a
         end do
       end do
     end do
+    !$omp end parallel
     
   end procedure fxzm2a_c
   

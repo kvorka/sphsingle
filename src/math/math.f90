@@ -1,6 +1,7 @@
 module math
   use iso_fortran_env, only: real64, real128
   use iso_c_binding
+  use omp_lib
   implicit none; public
   
   integer, parameter :: dbl    = real64            !double precision

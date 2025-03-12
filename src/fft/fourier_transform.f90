@@ -53,7 +53,7 @@ module fourier_transform
       real(kind=dbl), intent(inout) :: x(howmany,2,0:this%n/2-1)
     end subroutine fft_c2r_sub
     
-    module pure subroutine fxztal(this, howmany, x)
+    module subroutine fxztal(this, howmany, x)
       class(T_fft),   intent(in)    :: this
       integer,        intent(in)    :: howmany
       real(kind=dbl), intent(inout) :: x(*)
@@ -81,92 +81,92 @@ module fourier_transform
 
 #ifdef f90
   interface
-    module pure subroutine fxzm2a_c(howmany, k, l, x, t)
+    module subroutine fxzm2a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(0:*)
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:1,0:k-1)
     end subroutine fxzm2a_c
     
-    module pure subroutine fxzm2b_c(howmany, l, x)
+    module subroutine fxzm2b_c(howmany, l, x)
       integer,        intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:1)
     end subroutine fxzm2b_c
     
-    module pure subroutine fxzm3a_c(howmany, k, l, x, t)
+    module subroutine fxzm3a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(0:*)
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:2,0:k-1)
     end subroutine fxzm3a_c
     
-    module pure subroutine fxzm3b_c(howmany, l, x)
+    module subroutine fxzm3b_c(howmany, l, x)
       integer,        intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:2)
     end subroutine fxzm3b_c
     
-    module pure subroutine fxzm4a_c(howmany, k, l, x, t)
+    module subroutine fxzm4a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(0:*)
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:3,0:k-1)
     end subroutine fxzm4a_c
     
-    module pure subroutine fxzm4b_c(howmany, l, x)
+    module subroutine fxzm4b_c(howmany, l, x)
       integer,        intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:3)
     end subroutine fxzm4b_c
     
-    module pure subroutine fxzm5a_c(howmany, k, l, x, t)
+    module subroutine fxzm5a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(2,0:*)
+      real(kind=dbl), intent(in)    :: t(0:*)
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4,0:k-1)
     end subroutine fxzm5a_c
     
-    module pure subroutine fxzm5b_c(howmany, l, x)
+    module subroutine fxzm5b_c(howmany, l, x)
       integer,        intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4)
     end subroutine fxzm5b_c
   end interface
 #else
   interface
-    module pure subroutine fxzm2a_c(howmany, k, l, x, t) bind(C, name="fxzm2a_c")
+    module subroutine fxzm2a_c(howmany, k, l, x, t) bind(C, name="fxzm2a_c")
       integer, value, intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(*)
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm2a_c
     
-    module pure subroutine fxzm2b_c(howmany, l, x) bind(C, name="fxzm2b_c")
+    module subroutine fxzm2b_c(howmany, l, x) bind(C, name="fxzm2b_c")
       integer, value, intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm2b_c
     
-    module pure subroutine fxzm3a_c(howmany, k, l, x, t) bind(C, name="fxzm3a_c")
+    module subroutine fxzm3a_c(howmany, k, l, x, t) bind(C, name="fxzm3a_c")
       integer, value, intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(*)
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm3a_c
     
-    module pure subroutine fxzm3b_c(howmany, l, x) bind(C, name="fxzm3b_c")
+    module subroutine fxzm3b_c(howmany, l, x) bind(C, name="fxzm3b_c")
       integer, value, intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm3b_c
     
-    module pure subroutine fxzm4a_c(howmany, k, l, x, t) bind(C, name="fxzm4a_c")
+    module subroutine fxzm4a_c(howmany, k, l, x, t) bind(C, name="fxzm4a_c")
       integer, value, intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(*)
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm4a_c
     
-    module pure subroutine fxzm4b_c(howmany, l, x) bind(C, name="fxzm4b_c")
+    module subroutine fxzm4b_c(howmany, l, x) bind(C, name="fxzm4b_c")
       integer, value, intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm4b_c
     
-    module pure subroutine fxzm5a_c(howmany, k, l, x, t) bind(C, name="fxzm5a_c")
+    module subroutine fxzm5a_c(howmany, k, l, x, t) bind(C, name="fxzm5a_c")
       integer, value, intent(in)    :: k, l, howmany
       real(kind=dbl), intent(in)    :: t(*)
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm5a_c
     
-    module pure subroutine fxzm5b_c(howmany, l, x) bind(C, name="fxzm5b_c")
+    module subroutine fxzm5b_c(howmany, l, x) bind(C, name="fxzm5b_c")
       integer, value, intent(in)    :: l, howmany
       real(kind=dbl), intent(inout) :: x(*)
     end subroutine fxzm5b_c
