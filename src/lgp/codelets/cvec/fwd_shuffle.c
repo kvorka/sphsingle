@@ -1,4 +1,4 @@
-#include "clgp.h"
+#include "../../../math/cvec.h"
 
 extern inline void fwd_shuffle_c( const int n,                  // howmany roots (step)
                                   const double *restrict cosx,  // roots
@@ -35,7 +35,7 @@ extern inline void fwd_shuffle_c( const int n,                  // howmany roots
     }
     
     // fwd shuffle: remainder cases
-    for ( int i2 = 0; i2 < n-n32; i2+=4 ) {
+    for ( int i2 = 0; i2 < n-n32; i2+=incr ) {
         
       rwght =      load( wght+n32+i2 );
       rwcsx = mul( load( cosx+n32+i2 ), rwght );

@@ -1,4 +1,4 @@
-#include "clgp.h"
+#include "../../../math/cvec.h"
 
 extern inline void bwd_shuffle_c( const int n,                   // howmany roots (step)
                                   const double *restrict cosx,   // roots

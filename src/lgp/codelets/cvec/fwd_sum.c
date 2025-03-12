@@ -1,4 +1,4 @@
-#include "clgp.h"
+#include "../../../math/cvec.h"
 
 extern inline void fwd_sum_c( const int n,                   // howmany roots (n)
                               const double *restrict pmj,    // Legendre polynomials

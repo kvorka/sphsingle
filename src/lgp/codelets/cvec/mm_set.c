@@ -1,4 +1,4 @@
-#include "clgp.h"
+#include "../../../math/cvec.h"
 
 extern inline void mm_set_c( const int ma,                  // identifier for m=0 case
                              const int n,                   // howmany roots (step)

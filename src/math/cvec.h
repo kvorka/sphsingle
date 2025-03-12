@@ -30,19 +30,24 @@
   
 #elif defined( avx512 )
   
-  typedef __m512d mmreg;
+typedef __m512d mmreg;
   
-  #ifndef incr
-  #define incr 8
-  #endif
-  
-  inline __m512d load( const double *arr) { return _mm512_load_pd( arr ); }
-  inline void store( double *arr, const __m512d reg ) { _mm512_store_pd( arr, reg ); }
-  
-  inline __m512d broadcast( const double *num ) { return _mm512_broadcast_sd( num ); }
-  
-  inline __m512d add( const __m512d reg1, const __m512d reg2) { return _mm512_add_pd( reg1, reg2 ); }
-  inline __m512d sub( const __m512d reg1, const __m512d reg2) { return _mm512_sub_pd( reg1, reg2 ); }
-  inline __m512d mul( const __m512d reg1, const __m512d reg2) { return _mm512_mul_pd( reg1, reg2 ); }
+#ifndef incr
+#define incr 8
+#endif
+
+inline __m512d load( const double *arr) { return _mm512_load_pd( arr ); }
+inline void store( double *arr, const __m512d reg ) { _mm512_store_pd( arr, reg ); }
+
+inline __m512d broadcast( const double *num ) { return _mm512_set1_pd( *num ); }
+inline __m512d setzero() { return _mm512_setzero_pd(); }
+inline __m512d setdbl( const double cff ) { return _mm512_set1_pd( cff ); }
+
+inline __m512d add( const __m512d reg1, const __m512d reg2 ) { return _mm512_add_pd( reg1, reg2 ); }
+inline __m512d sub( const __m512d reg1, const __m512d reg2 ) { return _mm512_sub_pd( reg1, reg2 ); }
+inline __m512d mul( const __m512d reg1, const __m512d reg2 ) { return _mm512_mul_pd( reg1, reg2 ); }
+inline __m512d dvv( const __m512d reg1, const __m512d reg2 ) { return _mm512_div_pd( reg1, reg2 ); }
+
+inline double hadd( const __m512d reg ) { return _mm512_reduce_add_pd( reg ); }
   
 #endif
