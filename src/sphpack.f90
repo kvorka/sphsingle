@@ -1,5 +1,6 @@
 module sphpack
   use lateral_grid
+  use physical_grid
   implicit none; public
   
   type(T_lateralGrid), private   :: sph
@@ -17,13 +18,19 @@ module sphpack
     
   end subroutine init_sphpack
   
-  subroutine alloc_grid(c_grid, f_grid)
-    type(c_ptr),                         intent(out) :: c_grid
-    real(kind=dbl), pointer, contiguous, intent(out) :: f_grid(:,:)
+  subroutine alloc_grid(grid)
+    class(T_grid), intent(out) :: grid
     
-    call sph%alloc_grid_sub( c_grid, f_grid )
+    call grid%alloc_sub( nth, nph )
     
   end subroutine alloc_grid
+  
+  subroutine free_grid(grid)
+    class(T_grid), intent(inout) :: grid
+    
+    call grid%free_sub()
+    
+  end subroutine free_grid
   
   subroutine harmsy(cajm, grid)
     complex(kind=dbl), intent(in)  :: cajm(*)

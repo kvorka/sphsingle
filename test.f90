@@ -10,8 +10,7 @@ program test
   real(kind=dbl)                 :: start, end
   complex(kind=dbl), allocatable :: c1(:), c2(:), cout(:)
   
-  type(c_ptr)                         :: c_grid
-  real(kind=dbl), pointer, contiguous :: grid(:,:)
+  type(T_grid) :: grid
   
   !*****************************************************************************!
   !** Init sphpack  ************************************************************!
@@ -24,14 +23,14 @@ program test
   allocate( c1(jmcut)   ) ; call fill_scalar_sub( c1 )
   allocate( cout(jmcut) ) ; cout = cmplx(0._dbl, 0._dbl, kind=dbl)
   
-  call alloc_grid( c_grid, grid )
+  call alloc_grid( grid )
   
   start = omp_get_wtime()
-    call harmsy( c1, grid )
-    call harman( grid, cout )
+    call harmsy( c1,      grid%tp )
+    call harman( grid%tp, cout    )
   end = omp_get_wtime()
   
-  call free( c_grid)
+  call free_grid( grid )
   
   write(*,*) 'harmsy/harman:'
   write(*,*) 'exec time: ',end-start

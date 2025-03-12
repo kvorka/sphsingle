@@ -2,7 +2,7 @@
 ###########################################################################################
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
-compiler="gfortran"
+compiler="ifort"
 instructions="avx"
 
 ###########################################################################################
@@ -82,6 +82,7 @@ $fcompile -c src/math/math.f90
 $fcompile -c src/fft/fourier_transform.f90
 $fcompile -c src/lgp/lege_poly.f90
 $fcompile -c src/sph/lateral_grid.f90
+$fcompile -c src/grid/physical_grid.f90
 $fcompile -c src/sphpack.f90
 
 ###########################################################################################
@@ -96,6 +97,7 @@ $fcompile -c src/lgp/indexing/*.f90 &
 $fcompile -c src/lgp/transform/*.f90 &
 $fcompile -c src/sph/init/*.f90 &
 $fcompile -c src/sph/cores/*.f90 &
+$fcompile -c src/grid/init/*.f90 &
 wait
 
 ###########################################################################################

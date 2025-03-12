@@ -12,7 +12,6 @@ module lateral_grid
     procedure :: init_sub       => init_harmonics_sub
     procedure :: deallocate_sub => deallocate_harmonics_sub
     
-    procedure :: alloc_grid_sub
     procedure :: harmsy_sub
     procedure :: harman_sub
     
@@ -27,12 +26,6 @@ module lateral_grid
     module subroutine deallocate_harmonics_sub(this)
       class(T_lateralGrid), intent(inout) :: this
     end subroutine deallocate_harmonics_sub
-    
-    module subroutine alloc_grid_sub(this, c_grid, f_grid)
-      class(T_lateralGrid),                intent(in)  :: this
-      type(c_ptr),                         intent(out) :: c_grid
-      real(kind=dbl), pointer, contiguous, intent(out) :: f_grid(:,:)
-    end subroutine alloc_grid_sub
     
     module subroutine harmsy_sub(this, cin, grid)
       class(T_lateralGrid), intent(in)  :: this
