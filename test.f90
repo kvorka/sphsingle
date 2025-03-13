@@ -1,8 +1,9 @@
 program test
   use sphpack
+  use omp_lib
   implicit none
   
-  integer, parameter :: jcut  = 500
+  integer, parameter :: jcut  = 497
   integer, parameter :: jmcut = jcut*(jcut+1)/2+jcut+1
   
   real(kind=dbl)                 :: start, end

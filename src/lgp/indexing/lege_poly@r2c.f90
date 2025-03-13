@@ -2,12 +2,11 @@ submodule (lege_poly) r2c
   implicit none; contains
   
   module procedure index_fwd_sub
-    integer                 :: m, j, jm, mj
-    type(c_ptr)             :: c_arr
-    real(kind=dbl), pointer :: cab(:,:)
+    integer                             :: m, j, jm, mj
+    type(c_ptr)                         :: c_cab
+    real(kind=dbl), pointer, contiguous :: cab(:,:)
     
-    c_arr = malloc( 32, 2 * this%jms * size_d )
-    call c_f_pointer( c_arr, cab, [2,this%jms] )
+    call alloc_aligned_2d_sub( 2, this%jms, c_cab, cab )
     
     call is_rescale_c( this%nrma, this%amj, rcab )
     call fwd_indx_c( this%jmax, this%emj, rcab, cab )
@@ -27,7 +26,7 @@ submodule (lege_poly) r2c
       end do
     end do
     
-    call free( c_arr )
+    call free( c_cab )
     
   end procedure index_fwd_sub
   

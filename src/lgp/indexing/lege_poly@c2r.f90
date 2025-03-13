@@ -2,12 +2,11 @@ submodule (lege_poly) c2r
   implicit none; contains
   
   module procedure index_bwd_sub
-    integer                 :: m, j, jm, mj
-    type(c_ptr)             :: c_arr
-    real(kind=dbl), pointer :: cab(:,:)
+    integer                             :: m, j, jm, mj
+    type(c_ptr)                         :: c_cab
+    real(kind=dbl), pointer, contiguous :: cab(:,:)
     
-    c_arr = malloc( 32, 2 * this%jms * size_d )
-    call c_f_pointer( c_arr, cab, [2,this%jms] )
+    call alloc_aligned_2d_sub( 2, this%jms, c_cab, cab )
     
     do m = 0, this%jmax
       do j = m, this%jmax
@@ -22,7 +21,7 @@ submodule (lege_poly) c2r
     call bwd_indx_c( this%jmax, this%emj, cab, rcab )
     call is_rescale_c( this%nrma, this%amj, rcab )
     
-    call free( c_arr )
+    call free( c_cab )
     
   end procedure index_bwd_sub
   

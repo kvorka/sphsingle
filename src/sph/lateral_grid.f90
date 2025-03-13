@@ -29,14 +29,14 @@ module lateral_grid
     
     module subroutine harmsy_sub(this, cin, grid)
       class(T_lateralGrid), intent(in)  :: this
-      complex(kind=dbl),    intent(in)  :: cin(*)
-      real(kind=dbl),       intent(out) :: grid(*)
+      complex(kind=dbl),    intent(in)  :: cin(this%lgp%jms)
+      real(kind=dbl),       intent(out) :: grid(2*this%lgp%n*this%fourtrans%n)
     end subroutine harmsy_sub
     
     module subroutine harman_sub(this, grid, cout)
       class(T_lateralGrid), intent(in)    :: this
-      real(kind=dbl),       intent(inout) :: grid(*)
-      complex(kind=dbl),    intent(out)   :: cout(*)
+      real(kind=dbl),       intent(inout) :: grid(2*this%lgp%n*this%fourtrans%n)
+      complex(kind=dbl),    intent(out)   :: cout(this%lgp%jms)
     end subroutine harman_sub
   end interface
   

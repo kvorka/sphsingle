@@ -28,9 +28,9 @@ submodule (lege_poly) roots
     !!**********************************************************************!!
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
-    call alloc_aligned_sub( default_alig, this%n, this%c_cosx,  this%cosx  )
-    call alloc_aligned_sub( default_alig, this%n, this%c_cosx2, this%cosx2 )
-    call alloc_aligned_sub( default_alig, this%n, this%c_wght,  this%wght  )
+    call alloc_aligned_sub( this%n, this%c_cosx,  this%cosx  )
+    call alloc_aligned_sub( this%n, this%c_cosx2, this%cosx2 )
+    call alloc_aligned_sub( this%n, this%c_wght,  this%wght  )
     
     !!**********************************************************************!!
     !!* Seek for efficient stepping to use within the bisection method and *!!
@@ -45,7 +45,7 @@ submodule (lege_poly) roots
       xincr = 1._qbl / n
       ncnt  = 0
       
-      !$omp parallel do private (fx1, fx2) num_threads(omp_get_max_threads())
+      !$omp parallel do private (fx1, fx2)
       do i = 1, n
         fx1 = lege_fn( 2*this%n, (i-1) * xincr )
         fx2 = lege_fn( 2*this%n, (i  ) * xincr )
@@ -71,7 +71,7 @@ submodule (lege_poly) roots
     !!**********************************************************************!!
     !!* Bisection                                                          *!!
     !!**********************************************************************!!
-    !$omp parallel do private (x1,fx1,x2,fx2,root,froot) num_threads(omp_get_max_threads())
+    !$omp parallel do private (x1,fx1,x2,fx2,root,froot)
     do i = 1, this%n
       x1  = xclose(i)
       fx1 = lege_fn(2*this%n, x1)

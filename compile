@@ -3,7 +3,6 @@
 ####                              COMPILER CHOICE                                      ####
 ###########################################################################################
 compiler="gfortran"
-instructions="avx"
 
 ###########################################################################################
 ####                              COMPILER SET UP                                      ####
@@ -16,18 +15,7 @@ then
                         -fno-bounds-check \
                         -flto=auto \
                         -fwhole-program \
-                        -fopenmp \
-                        -cpp -D$instructions"
-  
-  ccompile="gcc-12 -Ofast \
-                   -fno-strict-aliasing \
-                   -fomit-frame-pointer \
-                   -march=native \
-                   -mprefer-vector-width=512 \
-                   -flto=auto \
-                   -fwhole-program \
-                   -fopenmp \
-                   -cpp -D$instructions"
+                        -fopenmp"
 
 elif [ "$compiler" = "ifx" ];
 then
@@ -38,19 +26,7 @@ then
                 -funroll-loops \
                 -xHost \
                 -qopt-zmm-usage=high \
-                -qopenmp \
-                -cpp -D$instructions"
-  
-  ccompile="icx -fast \
-                -Ofast \
-                -no-ansi-alias \
-                -ipo \
-                -ffast-math \
-                -funroll-loops \
-                -xHost \
-                -qopenmp \
-                -qopt-zmm-usage=high \
-                -D$instructions"
+                -qopenmp"
 
 elif [ "$compiler" = "ifort" ];
 then
@@ -64,18 +40,7 @@ then
                   -qopenmp \
                   -diag-disable=10448 \
                   -diag-disable=11003 \
-                  -diag-disable=11021 \
-                  -cpp -D$instructions"
-  
-  ccompile="icx -fast \
-                -Ofast \
-                -no-ansi-alias \
-                -ffast-math \
-                -funroll-loops \
-                -xHost \
-                -qopenmp \
-                -qopt-zmm-usage=high \
-                -D$instructions"
+                  -diag-disable=11021"
 fi
 
 ###########################################################################################
@@ -91,35 +56,19 @@ $fcompile -c src/sphpack.f90
 ###########################################################################################
 ####                         BUILDING FORTRAN IMPLEMENTATIONS                          ####
 ###########################################################################################
-$fcompile -c src/math/arr/alloc.f90 &
+$fcompile -c src/math/arr/*.f90 &
 $fcompile -c src/fft/init/*.f90 &
+$fcompile -c src/fft/codelets/*.f90 &
 $fcompile -c src/fft/cores/*.f90 &
 $fcompile -c src/fft/transform/*.f90 &
 $fcompile -c src/lgp/init/*.f90 &
+$fcompile -c src/lgp/codelets/*.f90 &
 $fcompile -c src/lgp/indexing/*.f90 &
 $fcompile -c src/lgp/transform/*.f90 &
 $fcompile -c src/sph/init/*.f90 &
 $fcompile -c src/sph/cores/*.f90 &
 $fcompile -c src/grid/init/*.f90 &
 wait
-
-###########################################################################################
-####                            BUILDING CORE IMPLEMENTATIONS                          ####
-###########################################################################################
-if [ "$instructions" = "f90" ];
-then
-  $fcompile -c src/math/arr/f90/arrzero.f90 &
-  $fcompile -c src/math/arr/f90/arrcopy.f90 &
-  $fcompile -c src/lgp/codelets/f90/*.f90 &
-  $fcompile -c src/fft/codelets/f90/*.f90 &
-  wait
-else
-  $ccompile -c src/math/arr/cvec/arrzero.c &
-  $ccompile -c src/math/arr/cvec/arrcopy.c &
-  $ccompile -c src/lgp/codelets/cvec/*.c &
-  $ccompile -c src/fft/codelets/cvec/*.c &
-  wait
-fi
 
 ###########################################################################################
 ####                              LINKING TO MAIN CODE                                 ####

@@ -3,8 +3,7 @@ submodule (physical_grid) alloc
   
   module procedure alloc_grid_sub
     
-    this%c_grid = malloc( default_alig, nth * nph * size_d )
-    call c_f_pointer( this%c_grid, this%tp, [nth,nph] )
+    call alloc_aligned_2d_sub( nth, nph, this%c_grid, this%tp )
     
   end procedure alloc_grid_sub
   

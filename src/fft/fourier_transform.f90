@@ -78,8 +78,7 @@ module fourier_transform
       real(kind=dbl), intent(out) :: t(2,0:n-1)
     end subroutine fxzini
   end interface
-
-#ifdef f90
+  
   interface
     module subroutine fxzm2a_c(howmany, k, l, x, t)
       integer,        intent(in)    :: k, l, howmany
@@ -125,52 +124,5 @@ module fourier_transform
       real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4)
     end subroutine fxzm5b_c
   end interface
-#else
-  interface
-    module subroutine fxzm2a_c(howmany, k, l, x, t) bind(C, name="fxzm2a_c")
-      integer, value, intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(*)
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm2a_c
-    
-    module subroutine fxzm2b_c(howmany, l, x) bind(C, name="fxzm2b_c")
-      integer, value, intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm2b_c
-    
-    module subroutine fxzm3a_c(howmany, k, l, x, t) bind(C, name="fxzm3a_c")
-      integer, value, intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(*)
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm3a_c
-    
-    module subroutine fxzm3b_c(howmany, l, x) bind(C, name="fxzm3b_c")
-      integer, value, intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm3b_c
-    
-    module subroutine fxzm4a_c(howmany, k, l, x, t) bind(C, name="fxzm4a_c")
-      integer, value, intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(*)
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm4a_c
-    
-    module subroutine fxzm4b_c(howmany, l, x) bind(C, name="fxzm4b_c")
-      integer, value, intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm4b_c
-    
-    module subroutine fxzm5a_c(howmany, k, l, x, t) bind(C, name="fxzm5a_c")
-      integer, value, intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(*)
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm5a_c
-    
-    module subroutine fxzm5b_c(howmany, l, x) bind(C, name="fxzm5b_c")
-      integer, value, intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxzm5b_c
-  end interface
-#endif
-
+  
 end module fourier_transform

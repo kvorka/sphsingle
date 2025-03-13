@@ -4,8 +4,7 @@ submodule (lege_poly) polyinit
   module procedure compute_pmm_sub
     integer :: m, ma, i2
     
-    this%c_pmm = malloc( default_alig, this%n * (this%jmax+1) * size_d )
-    call c_f_pointer( this%c_pmm, this%pmm, [this%n,this%jmax+1] )
+    call alloc_aligned_2d_sub( this%n, this%jmax+1, this%c_pmm, this%pmm )
     
     do m = 0, this%jmax
       ma = this%mma(m)
@@ -22,6 +21,12 @@ submodule (lege_poly) polyinit
         end do
         
       end select
+    end do
+    
+    do m = 0, this%jmax
+      do i2 = 1, this%n
+        this%pmm(i2,m+1) = this%pmm(i2,m+1) / this%cosx(i2)
+      end do
     end do
     
   end procedure compute_pmm_sub

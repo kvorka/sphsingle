@@ -6,7 +6,7 @@ submodule (lateral_grid) harman
     real(kind=dbl), pointer, contiguous :: rcr(:)
     
     !Allocate input array
-    call alloc_aligned_sub( 32, 4*this%lgp%nrma, c_rcr, rcr )
+    call alloc_aligned_sub( 4*this%lgp%nrma, c_rcr, rcr )
     
     !Transform
     call this%fourtrans%fft_r2c_sub( 2*this%lgp%n, grid )
