@@ -58,18 +58,18 @@ module lege_poly
     module subroutine mm_set_sub(this, m, pmj1, pmj)
       class(T_legep),         intent(in)  :: this
       integer,                intent(in)  :: m
-      real(kind=dbl), target, intent(out) :: pmj1(this%n), pmj(this%n)
+      real(kind=dbl), target, intent(out) :: pmj1(*), pmj(*)
     end subroutine mm_set_sub
     
     module subroutine mj_rec_sub(this, ima, pmj1, pmj)
       class(T_legep),         intent(in)    :: this
       integer,                intent(in)    :: ima
-      real(kind=dbl), target, intent(inout) :: pmj1(this%n), pmj(this%n)
+      real(kind=dbl), target, intent(inout) :: pmj1(*), pmj(*)
     end subroutine mj_rec_sub
     
     module subroutine is_rescale_sub(this, rcab)
       class(T_legep), intent(in)    :: this
-      real(kind=dbl), intent(inout) :: rcab(4,this%nrma)
+      real(kind=dbl), intent(inout) :: rcab(4,*)
     end subroutine is_rescale_sub
     
     module subroutine bwd_indx_sub(this, icab, ocab)
@@ -80,27 +80,27 @@ module lege_poly
     
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
-      complex(kind=dbl), intent(in)  :: cjm(this%jms)
-      real(kind=dbl),    intent(out) :: rcab(4*this%nrma)
+      complex(kind=dbl), intent(in)  :: cjm(*)
+      real(kind=dbl),    intent(out) :: rcab(*)
     end subroutine index_bwd_sub
     
     module subroutine bwd_sum_sub(this, pmj, cc, swork)
       class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: pmj(this%n)
-      real(kind=dbl), intent(in)  :: cc(4)
-      real(kind=dbl), intent(out) :: swork(this%n,4)
+      real(kind=dbl), intent(in)  :: pmj(*)
+      real(kind=dbl), intent(in)  :: cc(*)
+      real(kind=dbl), intent(out) :: swork(this%n,*)
     end subroutine bwd_sum_sub
     
     module subroutine bwd_shuffle_sub(this, swork, grid)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl), target, intent(in)  :: swork(this%n,2,2)
-      real(kind=dbl), target, intent(out) :: grid(this%n,2,2)
+      real(kind=dbl), target, intent(in)  :: swork(this%n,2,*)
+      real(kind=dbl), target, intent(out) :: grid(this%n,2,*)
     end subroutine bwd_shuffle_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid)
       class(T_legep),         intent(in)  :: this
       real(kind=dbl), target, intent(out) :: grid(4*this%n,0:*)
-      real(kind=dbl),         intent(in)  :: cc(4,this%nrma)
+      real(kind=dbl),         intent(in)  :: cc(4,*)
     end subroutine bwd_legesum_sub
     
     module subroutine fwd_indx_sub(this, ocab, icab)
@@ -111,27 +111,27 @@ module lege_poly
     
     module subroutine index_fwd_sub(this, rcab, cjm)
       class(T_legep),    intent(in)    :: this
-      real(kind=dbl),    intent(inout) :: rcab(4*this%nrma)
-      complex(kind=dbl), intent(out)   :: cjm(this%jms)
+      real(kind=dbl),    intent(inout) :: rcab(*)
+      complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
     
     module subroutine fwd_sum_sub(this, pmj, swork, cr)
       class(T_legep),         intent(in)    :: this
-      real(kind=dbl), target, intent(in)    :: pmj(this%n)
-      real(kind=dbl), target, intent(in)    :: swork(this%n,4)
-      real(kind=dbl),         intent(inout) :: cr(4)
+      real(kind=dbl), target, intent(in)    :: pmj(*)
+      real(kind=dbl), target, intent(in)    :: swork(this%n,*)
+      real(kind=dbl),         intent(inout) :: cr(*)
     end subroutine fwd_sum_sub
     
     module subroutine fwd_shuffle_sub(this, grid, swork)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl), target, intent(in)  :: grid(this%n,2,2)
-      real(kind=dbl), target, intent(out) :: swork(this%n,2,2)
+      real(kind=dbl), target, intent(in)  :: grid(this%n,2,*)
+      real(kind=dbl), target, intent(out) :: swork(this%n,2,*)
     end subroutine fwd_shuffle_sub
     
     module subroutine fwd_legesum_sub(this, grid, cr)
       class(T_legep),         intent(in)    :: this
       real(kind=dbl), target, intent(inout) :: grid(4*this%n,0:*)
-      real(kind=dbl),         intent(inout) :: cr(4,this%nrma)
+      real(kind=dbl),         intent(inout) :: cr(4,*)
     end subroutine fwd_legesum_sub
   end interface
   
