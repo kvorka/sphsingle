@@ -11,118 +11,133 @@ module fourier_transform
     
     contains
     
-    procedure, public,  pass :: init_sub       => fft_init_sub
-    procedure, public,  pass :: deallocate_sub => fft_deallocate_sub
-    
-    procedure, private, pass :: fxztal
-    procedure, private, pass :: fxzshf
-    
-    procedure, public,  pass :: fft_r2c_sub
-    procedure, public,  pass :: fft_c2r_sub
+    procedure, public, pass :: init_sub       => fft_init_sub
+    procedure, public, pass :: deallocate_sub => fft_deallocate_sub
+    procedure, public, pass :: fft_r2c_sub, fft_c2r_sub
     
   end type T_fft
   
   integer,        parameter :: imm = -2e4
   real(kind=dbl), parameter :: pi  = acos(-1._dbl)
-  real(kind=dbl), parameter :: C31 = -0.5_dbl
-  real(kind=dbl), parameter :: C32 = +0.86602540378443864676_dbl
-  real(kind=dbl), parameter :: C51 = +0.25_dbl
-  real(kind=dbl), parameter :: C52 = +0.5590169943749474241_dbl
-  real(kind=dbl), parameter :: C53 = +0.6180339887498948482_dbl
-  real(kind=dbl), parameter :: C54 = -0.9510565162951535721_dbl
   
   interface
-    module pure subroutine fft_init_sub(this, n)
+    module subroutine fft_init_sub(this, n)
       class(T_fft), intent(inout) :: this
       integer,      intent(in)    :: n
     end subroutine fft_init_sub
     
-    module pure subroutine fft_deallocate_sub(this)
+    module subroutine fft_deallocate_sub(this)
       class(T_fft), intent(inout) :: this
     end subroutine fft_deallocate_sub
     
-     module subroutine fft_r2c_sub(this, howmany, x)
-      class(T_fft),   intent(in)    :: this
-      integer,        intent(in)    :: howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,0:this%n/2-1)
+     module subroutine fft_r2c_sub(this, m, x)
+      class(T_fft),      intent(in)    :: this
+      integer,           intent(in)    :: m
+      real(kind=dbl),    intent(inout) :: x(m*32,2,0:this%n/2-1)
     end subroutine fft_r2c_sub
     
-    module subroutine fft_c2r_sub(this, howmany, x)
+    module subroutine fft_c2r_sub(this, m, x)
       class(T_fft),   intent(in)    :: this
-      integer,        intent(in)    :: howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,0:this%n/2-1)
+      integer,        intent(in)    :: m
+      real(kind=dbl), intent(inout) :: x(m*32,2,0:this%n/2-1)
     end subroutine fft_c2r_sub
-    
-    module subroutine fxztal(this, howmany, x)
-      class(T_fft),   intent(in)    :: this
-      integer,        intent(in)    :: howmany
-      real(kind=dbl), intent(inout) :: x(*)
-    end subroutine fxztal
-    
-    module subroutine fxzshf(this, howmany, x)
-      class(T_fft),   intent(in)    :: this
-      integer,        intent(in)    :: howmany
-      real(kind=dbl), intent(inout) :: x(2*howmany,0:this%n/2-1)
-    end subroutine fxzshf
   end interface
   
   interface
-    module pure function prime_adjustement_sub(n) result (nn)
+    module function prime_adjustement_sub(n) result (nn)
       integer, intent(in) :: n
       integer             :: nn
     end function prime_adjustement_sub
     
-    module pure subroutine fxzini(n, it, t)
+    module subroutine fxzini(n, it, t)
       integer,        intent(in)  :: n
       integer,        intent(out) :: it(n)
       real(kind=dbl), intent(out) :: t(2,0:n-1)
     end subroutine fxzini
-  end interface
-  
-  interface
-    module subroutine fxzm2a_c(howmany, k, l, x, t)
-      integer,        intent(in)    :: k, l, howmany
+    
+    module subroutine fxzshf(n, it, m, x)
+      integer,        intent(in)    :: n, m, it(*)
+      real(kind=dbl), intent(inout) :: x(m*32,0:n/2-1)
+    end subroutine fxzshf
+    
+    module subroutine fxztal(n, it, t, m, x)
+      integer,        intent(in)    :: n, m, it(2)
       real(kind=dbl), intent(in)    :: t(0:*)
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:1,0:k-1)
-    end subroutine fxzm2a_c
+      real(kind=dbl), intent(inout) :: x(*)
+    end subroutine fxztal
     
-    module subroutine fxzm2b_c(howmany, l, x)
-      integer,        intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:1)
-    end subroutine fxzm2b_c
+    module subroutine fxzm2a(m, k, l, x, t)
+      integer,        intent(in)    :: m, k, l
+      real(kind=dbl), intent(in)    :: t(2,0:*)
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/2,0:1,0:k-1)
+    end subroutine fxzm2a
     
-    module subroutine fxzm3a_c(howmany, k, l, x, t)
-      integer,        intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(0:*)
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:2,0:k-1)
-    end subroutine fxzm3a_c
+    module subroutine fxzm2b(m, l, x)
+      integer,        intent(in)    :: m, l
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/2,0:1)
+    end subroutine fxzm2b
     
-    module subroutine fxzm3b_c(howmany, l, x)
-      integer,        intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:2)
-    end subroutine fxzm3b_c
+    module subroutine fxzm3a(m, k, l, x, t)
+      integer,        intent(in)    :: m, k, l
+      real(kind=dbl), intent(in)    :: t(2,0:*)
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/3,0:2,0:k-1)
+    end subroutine fxzm3a
     
-    module subroutine fxzm4a_c(howmany, k, l, x, t)
-      integer,        intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(0:*)
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:3,0:k-1)
-    end subroutine fxzm4a_c
+    module subroutine fxzm3b(m, l, x)
+      integer,        intent(in)    :: m, l
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/3,0:2)
+    end subroutine fxzm3b
     
-    module subroutine fxzm4b_c(howmany, l, x)
-      integer,        intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:3)
-    end subroutine fxzm4b_c
+    module subroutine fxzm4a(m, k, l, x, t)
+      integer,        intent(in)    :: m, k, l
+      REAL(kind=dbl), intent(in)    :: t(2,0:*)
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/4,0:3,0:k-1)
+    end subroutine fxzm4a
     
-    module subroutine fxzm5a_c(howmany, k, l, x, t)
-      integer,        intent(in)    :: k, l, howmany
-      real(kind=dbl), intent(in)    :: t(0:*)
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4,0:k-1)
-    end subroutine fxzm5a_c
+    module subroutine fxzm4b(m, l, x)
+      integer,        intent(in)    :: m, l
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/4,0:3)
+    end subroutine fxzm4b
     
-    module subroutine fxzm5b_c(howmany, l, x)
-      integer,        intent(in)    :: l, howmany
-      real(kind=dbl), intent(inout) :: x(howmany,2,l,0:4)
-    end subroutine fxzm5b_c
+    module subroutine fxzm5a(m, k, l, x, t)
+      integer,        intent(in)    :: m, k, l
+      real(kind=dbl), intent(in)    :: t(2,0:*)
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/5,0:4,0:k-1)
+    end subroutine fxzm5a
+    
+    module subroutine fxzm5b(m, l, x)
+      integer,        intent(in)    :: m, l
+      real(kind=dbl), intent(inout) :: x(32,m,2,l/5,0:4)
+    end subroutine fxzm5b
+    
+    module subroutine fxcpy(m, arr_from, arr_to)
+      integer,        intent(in)  :: m
+      real(kind=dbl), intent(in)  :: arr_from(32,m)
+      real(kind=dbl), intent(out) :: arr_to(32,m)
+    end subroutine fxcpy
+    
+    module subroutine fxaddsub(m, arr1, arr2)
+      integer,        intent(in)    :: m
+      real(kind=dbl), intent(inout) :: arr1(32,m), arr2(32,m)
+    end subroutine fxaddsub
+    
+    module subroutine fxrsc(m, fac, arr)
+      integer,        intent(in)    :: m
+      integer,        intent(in)    :: fac
+      real(kind=dbl), intent(inout) :: arr(32,m)
+    end subroutine fxrsc
+    
+    module subroutine fxc2r(m, t, x11, x12, x21, x22)
+      integer,        intent(in)    :: m
+      real(kind=dbl), intent(in)    :: t(2)
+      real(kind=dbl), intent(inout) :: x11(32,m), x12(32,m), x21(32,m), x22(32,m)
+    end subroutine fxc2r
+    
+    module subroutine fxr2c(m, t, x11, x12, x21, x22)
+      integer,        intent(in)    :: m
+      real(kind=dbl), intent(in)    :: t(2)
+      real(kind=dbl), intent(inout) :: x11(32,m), x12(32,m), x21(32,m), x22(32,m)
+    end subroutine fxr2c
   end interface
   
 end module fourier_transform

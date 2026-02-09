@@ -1,74 +1,27 @@
 #!/bin/bash
 ###########################################################################################
-####                              COMPILER CHOICE                                      ####
+####                                   COMPILER CHOICE                                 ####
 ###########################################################################################
-compiler="gfortran"
+compiler="ifort"
 
 ###########################################################################################
-####                              COMPILER SET UP                                      ####
+####                               PREPARING THE SCRIPTS                               ####
 ###########################################################################################
-if [ "$compiler" = "gfortran" ];
-then
-  fcompile="gfortran-12 -Ofast \
-                        -march=native \
-                        -mprefer-vector-width=512 \
-                        -fno-bounds-check \
-                        -flto=auto \
-                        -fwhole-program \
-                        -fopenmp"
-
-elif [ "$compiler" = "ifx" ];
-then
-  fcompile="ifx -fast \
-                -Ofast \
-                -ipo \
-                -ffast-math \
-                -funroll-loops \
-                -xHost \
-                -qopt-zmm-usage=high \
-                -qopenmp"
-
-elif [ "$compiler" = "ifort" ];
-then
-  fcompile="ifort -fast \
-                  -Ofast \
-                  -ipo \
-                  -ffast-math \
-                  -funroll-loops \
-                  -xHost \
-                  -qopt-zmm-usage=high \
-                  -qopenmp \
-                  -diag-disable=10448 \
-                  -diag-disable=11003 \
-                  -diag-disable=11021"
-fi
+source ./shell/compiler.sh
 
 ###########################################################################################
-####                            BUILDING OBJ INTERFACES                                ####
+####                                 COMPILING KERNELS                                 ####
 ###########################################################################################
-$fcompile -c src/math/math.f90
-$fcompile -c src/fft/fourier_transform.f90
-$fcompile -c src/lgp/lege_poly.f90
-$fcompile -c src/sph/lateral_grid.f90
-$fcompile -c src/grid/physical_grid.f90
+libfcompile src/math math.f90
+libfcompile src/fft fourier_transform.f90
+libfcompile src/lgp lege_poly.f90
+libfcompile src/grid physical_grid.f90
+libfcompile src/sph lateral_grid.f90
+
+###########################################################################################
+####                                 COMPILING INTERFACE                               ####
+###########################################################################################
 $fcompile -c src/sphpack.f90
-
-###########################################################################################
-####                         BUILDING FORTRAN IMPLEMENTATIONS                          ####
-###########################################################################################
-$fcompile -c src/math/arr/*.f90 &
-$fcompile -c src/fft/init/*.f90 &
-$fcompile -c src/fft/codelets/*.f90 &
-$fcompile -c src/fft/cores/*.f90 &
-$fcompile -c src/fft/transform/*.f90 &
-$fcompile -c src/lgp/init/*.f90 &
-$fcompile -c src/lgp/codelets/*.f90 &
-$fcompile -c src/lgp/indexing/*.f90 &
-$fcompile -c src/lgp/transform/*.f90 &
-$fcompile -c src/sph/init/*.f90 &
-$fcompile -c src/sph/cores/*.f90 &
-$fcompile -c src/grid/init/*.f90 &
-wait
 
 ###########################################################################################
 ####                              LINKING TO MAIN CODE                                 ####
@@ -78,4 +31,4 @@ $fcompile test.f90 *.o -o sph_test
 ###########################################################################################
 ####                                      CLEANING                                     ####
 ###########################################################################################
-rm *.o *.mod *.smod
+libfclean

@@ -4,6 +4,7 @@ module physical_grid
   
   type, public :: T_grid
     type(c_ptr)                         :: c_grid
+    real(kind=dbl), pointer, contiguous :: grid(:)
     real(kind=dbl), pointer, contiguous :: tp(:,:)
     
     contains

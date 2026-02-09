@@ -6,7 +6,7 @@ module math
   integer, parameter :: dbl    = real64            !double precision
   integer, parameter :: qbl    = real128           !quadruple precision
   integer, parameter :: size_d = c_sizeof(0._dbl)  !size of double
-  integer, parameter :: alig   = 64                !memory alignement
+  integer, parameter :: alig   = 32                !memory alignement
   
   interface
     module subroutine alloc_aligned_sub( n, c_arr, f_arr )
