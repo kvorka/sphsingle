@@ -1,16 +1,19 @@
 submodule (lege_poly) is_rescale
   implicit none; contains
   
-  module procedure is_rescale_c
-    integer :: i1, i2
+  module procedure is_rescale_sub
+    integer        :: i1, i2
+    real(kind=dbl) :: cff
     
-    !$omp simd collapse (2)
-    do i2 = 1, n
+    do i2 = 1, this%nrma
+      cff = this%amj(i2)
+      
+      !$omp simd
       do i1 = 1, 4
-        rcab(i1,i2) = cff(i2) * rcab(i1,i2)
+        rcab(i1,i2) = cff * rcab(i1,i2)
       end do
     end do
     
-  end procedure is_rescale_c
+  end procedure is_rescale_sub
   
 end submodule is_rescale

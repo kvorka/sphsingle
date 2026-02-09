@@ -3,7 +3,7 @@ module lege_poly
   implicit none
   
   type, public :: T_legep
-    integer                             :: jmax, jms, n, n16, n32, n64, nrma
+    integer                             :: jmax, jms, n, n32, n64, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
     real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:,:)
@@ -18,7 +18,7 @@ module lege_poly
     procedure, private, pass :: get_nma_sub    => get_nma_sub
     procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
     
-    procedure, public, pass :: mm_set_sub, mj_rec_sub
+    procedure, public, pass :: mm_set_sub, mj_rec_sub, is_rescale_sub
     procedure, public, pass :: bwd_indx_sub, index_bwd_sub, bwd_legesum_sub, bwd_sum_sub, bwd_shuffle_sub
     procedure, public, pass :: fwd_indx_sub, index_fwd_sub, fwd_legesum_sub, fwd_sum_sub, fwd_shuffle_sub
     
@@ -67,6 +67,11 @@ module lege_poly
       real(kind=dbl), target, intent(inout) :: pmj1(this%n), pmj(this%n)
     end subroutine mj_rec_sub
     
+    module subroutine is_rescale_sub(this, rcab)
+      class(T_legep), intent(in)    :: this
+      real(kind=dbl), intent(inout) :: rcab(4,this%nrma)
+    end subroutine is_rescale_sub
+    
     module subroutine bwd_indx_sub(this, icab, ocab)
       class(T_legep), intent(in)  :: this
       real(kind=dbl), intent(in)  :: icab(2,*)
@@ -87,9 +92,9 @@ module lege_poly
     end subroutine bwd_sum_sub
     
     module subroutine bwd_shuffle_sub(this, swork, grid)
-      class(T_legep), intent(in)    :: this
-      real(kind=dbl), intent(inout) :: swork(16,this%n16,2,2)
-      real(kind=dbl), intent(out)   :: grid(16,this%n16,2,2)
+      class(T_legep),         intent(in)  :: this
+      real(kind=dbl), target, intent(in)  :: swork(this%n,2,2)
+      real(kind=dbl), target, intent(out) :: grid(this%n,2,2)
     end subroutine bwd_shuffle_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid)
@@ -118,9 +123,9 @@ module lege_poly
     end subroutine fwd_sum_sub
     
     module subroutine fwd_shuffle_sub(this, grid, swork)
-      class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: grid(16,this%n16,2,2)
-      real(kind=dbl), intent(out) :: swork(16,this%n16,2,2)
+      class(T_legep),         intent(in)  :: this
+      real(kind=dbl), target, intent(in)  :: grid(this%n,2,2)
+      real(kind=dbl), target, intent(out) :: swork(this%n,2,2)
     end subroutine fwd_shuffle_sub
     
     module subroutine fwd_legesum_sub(this, grid, cr)
@@ -128,14 +133,6 @@ module lege_poly
       real(kind=dbl), target, intent(inout) :: grid(4*this%n,0:*)
       real(kind=dbl),         intent(inout) :: cr(4,this%nrma)
     end subroutine fwd_legesum_sub
-  end interface
-  
-  interface
-    module pure subroutine is_rescale_c(n, cff, rcab)
-      integer,        intent(in)    :: n
-      real(kind=dbl), intent(in)    :: cff(n)
-      real(kind=dbl), intent(inout) :: rcab(4,n)
-    end subroutine is_rescale_c
   end interface
   
 end module lege_poly

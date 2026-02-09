@@ -3,17 +3,27 @@ submodule (lege_poly) bwd_shuffle
   
   module procedure bwd_shuffle_sub
     integer                             :: i1, i2
-    real(kind=dbl), pointer, contiguous :: cosx(:,:)
+    real(kind=dbl), pointer, contiguous :: cosx(:), g1(:), g2(:), g3(:), g4(:), s1(:), s2(:), s3(:), s4(:)
     
-    cosx(1:16,1:this%n16) => this%cosx
-    
-    do i2 = 1, this%n16
-      !$omp simd
+    do i2 = 1, this%n, 16
+      cosx(1:16) => this%cosx(i2:i2+15)
+      
+      g1(1:16) => grid(i2:i2+15,1,1)
+      g2(1:16) => grid(i2:i2+15,2,1)
+      g3(1:16) => grid(i2:i2+15,1,2)
+      g4(1:16) => grid(i2:i2+15,2,2)
+      
+      s1(1:16) => swork(i2:i2+15,1,1)
+      s2(1:16) => swork(i2:i2+15,2,1)
+      s3(1:16) => swork(i2:i2+15,1,2)
+      s4(1:16) => swork(i2:i2+15,2,2)
+      
+      !$omp simd aligned (cosx,g1,g2,g3,g4,s1,s2,s3,s4:alig)
       do i1 = 1, 16
-        grid(i1,i2,1,1) = swork(i1,i2,1,2) * cosx(i1,i2) + swork(i1,i2,1,1)
-        grid(i1,i2,2,1) = swork(i1,i2,1,2) * cosx(i1,i2) - swork(i1,i2,1,1)
-        grid(i1,i2,1,2) = swork(i1,i2,2,2) * cosx(i1,i2) + swork(i1,i2,2,1)
-        grid(i1,i2,2,2) = swork(i1,i2,2,2) * cosx(i1,i2) - swork(i1,i2,2,1)
+        g1(i1) = s3(i1) * cosx(i1) + s1(i1)
+        g2(i1) = s3(i1) * cosx(i1) - s1(i1)
+        g3(i1) = s4(i1) * cosx(i1) + s2(i1)
+        g4(i1) = s4(i1) * cosx(i1) - s2(i1)
       end do
     end do
     

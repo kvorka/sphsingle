@@ -9,7 +9,7 @@ submodule (lateral_grid) harman
     call alloc_aligned_sub( 4*this%lgp%nrma, c_rcr, rcr )
     
     !Transform
-    call this%fourtrans%fft_r2c_sub( this%lgp%n16, grid )
+    call this%fourtrans%fft_r2c_sub( this%lgp%n/16, grid )
     call this%lgp%fwd_legesum_sub( grid, rcr )
     
     !Reindex output array

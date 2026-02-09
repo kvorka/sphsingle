@@ -29,7 +29,7 @@ submodule (lateral_grid) harmsy
     end do
     
     !! Fourier transform into the physical space.
-    call this%fourtrans%fft_c2r_sub( this%lgp%n16, grid )
+    call this%fourtrans%fft_c2r_sub( this%lgp%n/16, grid )
     
     !! Cleaning
     call free( c_rcc )
