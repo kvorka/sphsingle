@@ -3,31 +3,38 @@ submodule (lege_poly) poly_mj
   
   module procedure mj_rec_sub
     integer                             :: i1, i2
-    real(kind=dbl)                      :: cff0, cff1, cff2
-    real(kind=dbl), pointer, contiguous :: p_pmj(:), p_pmj1(:), p_cosx2(:)
+    real(kind=dbl)                      :: cff1, cff2
+    real(kind=dbl), pointer, contiguous :: p1_pmj(:), p1_pmj1(:), p1_cosx2(:), &
+                                         & p2_pmj(:), p2_pmj1(:), p2_cosx2(:)
     
     cff1 = this%fmj(1,ima)
     cff2 = this%fmj(2,ima)
     
-    do i2 = 1, this%n64, 64
-      p_cosx2(1:64) => this%cosx2(i2:i2+63)
-      p_pmj(1:64)   => pmj(i2:i2+63)
-      p_pmj1(1:64)  => pmj1(i2:i2+63)
+    do i2 = 1, this%n32, 32
+      p1_cosx2(1:16) => this%cosx2(i2   :i2+15)
+      p2_cosx2(1:16) => this%cosx2(i2+16:i2+31)
       
-      !$omp simd aligned (p_pmj,p_pmj1,p_cosx2:alig)
-      do i1 = 1, 64
-        p_pmj(i1) = ( cff1 * p_cosx2(i1) - cff2 ) * p_pmj1(i1) - p_pmj(i1)
+      p1_pmj(1:16) => pmj(i2   :i2+15)
+      p2_pmj(1:16) => pmj(i2+16:i2+31)
+      
+      p1_pmj1(1:16) => pmj1(i2   :i2+15)
+      p2_pmj1(1:16) => pmj1(i2+16:i2+31)
+      
+      !$omp simd aligned (p1_pmj,p1_pmj1,p1_cosx2,p2_pmj,p2_pmj1,p2_cosx2:alig)
+      do i1 = 1, 16
+        p1_pmj(i1) = ( cff1 * p1_cosx2(i1) - cff2 ) * p1_pmj1(i1) - p1_pmj(i1)
+        p2_pmj(i1) = ( cff1 * p2_cosx2(i1) - cff2 ) * p2_pmj1(i1) - p2_pmj(i1)
       end do
     end do
     
-    do i2 = this%n64+1, this%n, 16
-      p_cosx2(1:16) => this%cosx2(i2:i2+15)
-      p_pmj(1:16)   => pmj(i2:i2+15)
-      p_pmj1(1:16)  => pmj1(i2:i2+15)
+    do i2 = this%n32+1, this%n, 16
+      p1_cosx2(1:16) => this%cosx2(i2:i2+15)
+      p1_pmj(1:16)   => pmj(i2:i2+15)
+      p1_pmj1(1:16)  => pmj1(i2:i2+15)
       
-      !$omp simd aligned (p_pmj,p_pmj1,p_cosx2:alig)
+      !$omp simd aligned (p1_pmj,p1_pmj1,p1_cosx2:alig)
       do i1 = 1, 16
-        p_pmj(i1) = ( cff1 * p_cosx2(i1) - cff2 ) * p_pmj1(i1) - p_pmj(i1)
+        p1_pmj(i1) = ( cff1 * p1_cosx2(i1) - cff2 ) * p1_pmj1(i1) - p1_pmj(i1)
       end do
     end do
     
