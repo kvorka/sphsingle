@@ -2,21 +2,19 @@ submodule (lege_poly) fwd_sum
   implicit none; contains
   
   module procedure fwd_sum_sub
-    integer                             :: i1, i2, n64
+    integer                             :: i1, i2
     real(kind=dbl)                      :: c1, c2, c3, c4
     real(kind=dbl), pointer, contiguous :: p1(:), p2(:), p3(:), p4(:), s11(:), s21(:), s31(:), s41(:), &
                                                                      & s12(:), s22(:), s32(:), s42(:), &
                                                                      & s13(:), s23(:), s33(:), s43(:), &
                                                                      & s14(:), s24(:), s34(:), s44(:)
     
-    n64 = (this%n/64)*64
-    
     c1 = cr(1)
     c2 = cr(2)
     c3 = cr(3)
     c4 = cr(4)
     
-    do i2 = 1, n64, 64
+    do i2 = 1, this%n64, 64
       p1(1:16)  => pmj(i2   :i2+15)
       p2(1:16)  => pmj(i2+16:i2+31)
       p3(1:16)  => pmj(i2+32:i2+47)
@@ -51,7 +49,7 @@ submodule (lege_poly) fwd_sum
       end do
     end do
     
-    do i2 = n64+1, this%n, 16
+    do i2 = this%n64+1, this%n, 16
       p1(1:16)  => pmj(i2:i2+15)
       
       s11(1:16) => swork(i2:i2+15,1)
