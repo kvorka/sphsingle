@@ -3,7 +3,7 @@ submodule (lege_poly) poly_mj
   
   module procedure mj_rec_sub
     integer                             :: i1, i2
-    real(kind=dbl)                      :: cff1, cff2, fac1, fac2, pmjA, pmjB
+    real(kind=dbl)                      :: cff1, cff2
     real(kind=dbl), pointer, contiguous :: p1_pmj(:), p1_pmj1(:), p1_cosx2(:), &
                                          & p2_pmj(:), p2_pmj1(:), p2_cosx2(:)
     
@@ -22,14 +22,8 @@ submodule (lege_poly) poly_mj
       
       !$omp simd aligned (p1_pmj,p1_pmj1,p1_cosx2,p2_pmj,p2_pmj1,p2_cosx2:alig)
       do i1 = 1, 16
-        fac1 = cff1 * p1_cosx2(i1) - cff2
-        fac2 = cff1 * p2_cosx2(i1) - cff2
-        
-        pmjA = p1_pmj(i1)
-        pmjB = p2_pmj(i1)
-        
-        p1_pmj(i1) = fac1 * p1_pmj1(i1) - pmjA
-        p2_pmj(i1) = fac2 * p2_pmj1(i1) - pmjB
+        p1_pmj(i1) = ( cff1 * p1_cosx2(i1) - cff2 ) * p1_pmj1(i1) - p1_pmj(i1)
+        p2_pmj(i1) = ( cff1 * p2_cosx2(i1) - cff2 ) * p2_pmj1(i1) - p2_pmj(i1)
       end do
     end do
     
@@ -40,11 +34,7 @@ submodule (lege_poly) poly_mj
       
       !$omp simd aligned (p1_pmj,p1_pmj1,p1_cosx2:alig)
       do i1 = 1, 16
-        fac1 = cff1 * p1_cosx2(i1) - cff2
-        
-        pmjA = p1_pmj(i1)
-        
-        p1_pmj(i1) = fac1 * p1_pmj1(i1) - pmjA
+        p1_pmj(i1) = ( cff1 * p1_cosx2(i1) - cff2 ) * p1_pmj1(i1) - p1_pmj(i1)
       end do
     end do
     

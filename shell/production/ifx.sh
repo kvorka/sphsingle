@@ -9,8 +9,14 @@ fcompile="ifx -fast \
               -funroll-loops \
               -fomit-frame-pointer \
               -fno-stack-protector \
+              -fvec-remainder-loops \
+              -flto \
               -xHost \
+              -fma \
               -qopt-zmm-usage=high \
+              -assume contiguous_assumed_shape \
+              -assume contiguous_pointer \
+              -assume nodummy_aliases \
               -qopenmp \
               -D$memory \
               -cpp"

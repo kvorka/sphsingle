@@ -31,8 +31,8 @@ submodule (lege_poly) init
     this%cosx2 => null()
     this%wght  => null()
     
-    deallocate( this%emj )
     deallocate( this%amj )
+    deallocate( this%emj )
     deallocate( this%fmj )
     deallocate( this%mamj )
     

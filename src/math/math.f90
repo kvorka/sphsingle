@@ -23,6 +23,13 @@ module math
       real(kind=dbl), pointer, intent(out) :: f_arr(:)
     end subroutine alloc_aligned_sub
     
+    module pure subroutine zero_rarray_sub(n, arr)
+      integer,        intent(in)  :: n
+      real(kind=dbl), intent(out) :: arr(n)
+    end subroutine zero_rarray_sub
+  end interface
+  
+  interface
     type(c_ptr) function malloc(alignement, n) bind(C, name='aligned_alloc')
       import         :: c_ptr
       integer, value :: alignement, n
