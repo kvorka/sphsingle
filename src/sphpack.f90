@@ -14,7 +14,7 @@ module sphpack
     call sph%init_sub( jcut )
     
     nth = 2 * sph%lgp%n
-    nph = sph%fourtrans%n
+    nph = sph%fft%n
     
   end subroutine init_sphpack
   

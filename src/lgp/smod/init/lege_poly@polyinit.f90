@@ -4,7 +4,8 @@ submodule (lege_poly) polyinit
   module procedure compute_pmm_sub
     integer :: m, ma, i2
     
-    call alloc_aligned_2d_sub( this%n, this%jmax+1, this%c_pmm, this%pmm )
+    this%c_pmm = malloc( alig, this%n * (this%jmax+1) * size_d )
+    call c_f_pointer( this%c_pmm, this%pmm, [this%n,this%jmax+1] )
     
     do m = 0, this%jmax
       ma = this%mamj(m)

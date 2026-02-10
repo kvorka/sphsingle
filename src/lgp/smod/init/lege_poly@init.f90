@@ -21,20 +21,20 @@ submodule (lege_poly) init
   
   module procedure deallocate_lege_sub
     
-    if ( c_associated(this%c_cosx)  ) call free( this%c_cosx  )
-    if ( c_associated(this%c_pmm)   ) call free( this%c_pmm   )
-    if ( c_associated(this%c_cosx2) ) call free( this%c_cosx2 )
-    if ( c_associated(this%c_wght)  ) call free( this%c_wght  )
+    call free( this%c_cosx  )
+    call free( this%c_pmm   )
+    call free( this%c_cosx2 )
+    call free( this%c_wght  )
     
     this%cosx  => null()
     this%pmm   => null()
     this%cosx2 => null()
     this%wght  => null()
     
-    if ( allocated(this%amj)  ) deallocate( this%emj )
-    if ( allocated(this%emj)  ) deallocate( this%emj )
-    if ( allocated(this%fmj)  ) deallocate( this%fmj )
-    if ( allocated(this%mamj) ) deallocate( this%mamj )
+    deallocate( this%emj )
+    deallocate( this%amj )
+    deallocate( this%fmj )
+    deallocate( this%mamj )
     
   end procedure deallocate_lege_sub
   

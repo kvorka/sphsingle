@@ -5,7 +5,7 @@ module lateral_grid
   
   type, public :: T_lateralGrid
     type(T_legep), public :: lgp
-    type(T_fft),   public :: fourtrans
+    type(T_fft),   public :: fft
     
     contains
     

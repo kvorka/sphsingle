@@ -16,7 +16,10 @@ submodule (lege_poly) bwd
       ima1 = ima2+1
       ima2 = this%mamj(im+1)-1
       
-      call zero_rarray_c( 4*this%n, swork )
+      !$omp simd aligned (swork:alig)
+      do i1 = 1, 4*this%n
+        swork(i1) = 0._dbl
+      end do
       
       !ima = ima1
         call this%mm_set_sub( im, pmj1, pmj )

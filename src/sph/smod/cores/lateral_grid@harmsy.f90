@@ -9,7 +9,7 @@ submodule (lateral_grid) harmsy
     !! Size of the whole grid and size of the space used by the  backword Legendre transform. High frequencies are used
     !! to dealias fft transform and will be set to zero. Definition incorporates factor of 32 to leverage that lgp%n is
     !! divisible by 16 by construction.
-    nGrid32 = 2 * this%lgp%n * this%fourtrans%n    / 32
+    nGrid32 = 2 * this%lgp%n * this%fft%n    / 32
     nLege32 = 4 * this%lgp%n * ( this%lgp%jmax+1 ) / 32
     
     !! Reindex the array into suitable form and store the input into an aligned array.
@@ -29,7 +29,7 @@ submodule (lateral_grid) harmsy
     end do
     
     !! Fourier transform into the physical space.
-    call this%fourtrans%fft_c2r_sub( this%lgp%n/16, grid )
+    call this%fft%fft_c2r_sub( this%lgp%n/16, grid )
     
     !! Cleaning
     call free( c_rcc )
