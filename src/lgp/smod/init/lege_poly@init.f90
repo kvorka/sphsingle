@@ -5,8 +5,8 @@ submodule (lege_poly) init
     integer :: j, m
     
     this%n    = n
+    this%n_16 = n / 16
     this%n32  = ( n / 32 ) * 32
-    this%n64  = ( n / 64 ) * 64
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     

@@ -3,29 +3,15 @@ submodule (lege_poly) poly_mm
   
   module procedure mm_set_sub
     integer                             :: i1, i2
-    real(kind=dbl), pointer, contiguous :: p_pmm(:), p_pmj(:), p_pmj1(:)
+    real(kind=dbl), pointer, contiguous :: pmm(:,:)
     
-    do i2 = 1, this%n64, 64
-      p_pmm(1:64)   => this%pmm(i2:i2+63,m+1)
-      p_pmj(1:64)   => pmj(i2:i2+63)
-      p_pmj1(1:64)  => pmj1(i2:i2+63)
-      
-      !$omp simd aligned (p_pmm,p_pmj,p_pmj1:alig)
-      do i1 = 1, 64
-        p_pmj1(i1) = 0._dbl
-        p_pmj(i1)  = p_pmm(i1)
-      end do
-    end do
+    pmm(1:16,1:this%n_16) => this%pmm(1:this%n,m+1)
     
-    do i2 = this%n64+1, this%n, 16
-      p_pmm(1:16)   => this%pmm(i2:i2+15,m+1)
-      p_pmj(1:16)   => pmj(i2:i2+15)
-      p_pmj1(1:16)  => pmj1(i2:i2+15)
-      
-      !$omp simd aligned (p_pmm,p_pmj,p_pmj1:alig)
+    do i2 = 1, this%n_16
+      !$omp simd aligned (pmm:alig)
       do i1 = 1, 16
-        p_pmj1(i1) = 0._dbl
-        p_pmj(i1)  = p_pmm(i1)
+        pmj1(i1,i2) = 0._dbl
+        pmj(i1,i2)  = pmm(i1,i2)
       end do
     end do
     
