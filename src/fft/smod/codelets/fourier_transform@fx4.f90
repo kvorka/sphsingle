@@ -16,7 +16,7 @@ submodule (fourier_transform) fx4
       do i3 = 1, l/4
         do i2 = 1, m
           !$omp simd
-          do i1 = 1, 16
+          do i1 = 1, fstep
             x2re = ( x(i1,i2,1,i3,0,i4) - t2re * x(i1,i2,1,i3,2,i4) ) + t2im * x(i1,i2,2,i3,2,i4)
             x2im = ( x(i1,i2,2,i3,0,i4) - t2im * x(i1,i2,1,i3,2,i4) ) - t2re * x(i1,i2,2,i3,2,i4)
             x3re = ( x(i1,i2,1,i3,1,i4) - t2re * x(i1,i2,1,i3,3,i4) ) + t2im * x(i1,i2,2,i3,3,i4)
@@ -49,7 +49,7 @@ submodule (fourier_transform) fx4
     do i3 = 1, l/4
       do i2 = 1, m
         !$omp simd
-        do i1 = 1, 16
+        do i1 = 1, fstep
           x2re = x(i1,i2,1,i3,0) - x(i1,i2,1,i3,2)
           x2im = x(i1,i2,2,i3,0) - x(i1,i2,2,i3,2)
           x0re = x(i1,i2,1,i3,0) + x(i1,i2,1,i3,2)

@@ -14,7 +14,10 @@ module math
   integer, parameter :: alig = 16  !! default alignement
 #endif
   
-  integer, parameter :: size_d = c_sizeof(0._dbl)  !size of double
+  integer, parameter :: size_d = c_sizeof(0._dbl)  !! size of double
+  integer, parameter :: ndbl   = alig / 8          !! number of doubles in one registry
+  integer, parameter :: lstep  = 2 * ndbl          !! stepping through the latitudinal grid
+  integer, parameter :: fstep  = 2 * lstep         !! vectorizing the fft
   
   interface
     module subroutine alloc_aligned_sub( n, c_arr, f_arr )

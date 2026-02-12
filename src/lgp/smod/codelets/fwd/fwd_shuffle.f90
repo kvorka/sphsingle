@@ -5,12 +5,12 @@ submodule (lege_poly) fwd_shuffle
     integer                             :: i1, i2
     real(kind=dbl), pointer, contiguous :: w(:,:,:), cosx(:,:,:)
     
-    cosx(1:4,1:2,1:this%n_8) => this%cosx
-    w(1:4,1:2,1:this%n_8)    => this%wght
+    cosx(1:ndbl,1:2,1:this%n_step) => this%cosx
+    w(1:ndbl,1:2,1:this%n_step)    => this%wght
     
-    do i2 = 1, this%n_8
+    do i2 = 1, this%n_step
       !$omp simd aligned (w,cosx:alig)
-      do i1 = 1, 4
+      do i1 = 1, ndbl
         swork(i1,1,i2,1,1) = ( grid(i1,1,i2,1,1) - grid(i1,1,i2,2,1) ) * w(i1,1,i2)
         swork(i1,1,i2,1,2) = ( grid(i1,1,i2,1,1) + grid(i1,1,i2,2,1) ) * w(i1,1,i2) * cosx(i1,1,i2)
         swork(i1,2,i2,1,1) = ( grid(i1,2,i2,1,1) - grid(i1,2,i2,2,1) ) * w(i1,2,i2)

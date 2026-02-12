@@ -6,14 +6,14 @@ submodule (lege_poly) fwd_sum
     
     do i2 = 1, 4
       !$omp simd
-      do i1 = 1, 4
+      do i1 = 1, ndbl
         acc(i1,i2) = 0._dbl
       end do
     end do
     
     do i2 = 1, this%nUnroll3, 3
       !$omp simd
-      do i1 = 1, 4
+      do i1 = 1, ndbl
         acc(i1,1) = acc(i1,1) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,1) + pmj(i1,2,i2  ) * swork(i1,2,i2,  1) + &
                               & pmj(i1,1,i2+1) * swork(i1,1,i2+1,1) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,1) + &
                               & pmj(i1,1,i2+2) * swork(i1,1,i2+2,1) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,1)
@@ -29,9 +29,9 @@ submodule (lege_poly) fwd_sum
       end do
     end do
     
-    do i2 = this%nUnroll3+1, this%n_8
+    do i2 = this%nUnroll3+1, this%n_step
       !$omp simd
-      do i1 = 1, 4
+      do i1 = 1, ndbl
         acc(i1,1) = acc(i1,1) + pmj(i1,1,i2) * swork(i1,1,i2,1) + pmj(i1,2,i2) * swork(i1,2,i2,1)
         acc(i1,2) = acc(i1,2) + pmj(i1,1,i2) * swork(i1,1,i2,2) + pmj(i1,2,i2) * swork(i1,2,i2,2)
         acc(i1,3) = acc(i1,3) + pmj(i1,1,i2) * swork(i1,1,i2,3) + pmj(i1,2,i2) * swork(i1,2,i2,3)
@@ -40,7 +40,7 @@ submodule (lege_poly) fwd_sum
     end do
     
     !$omp simd
-    do i1 = 1, 4
+    do i1 = 1, ndbl
       cr(1) = cr(1) + acc(i1,1)
       cr(2) = cr(2) + acc(i1,2)
       cr(3) = cr(3) + acc(i1,3)

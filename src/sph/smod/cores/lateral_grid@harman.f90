@@ -9,8 +9,8 @@ submodule (lateral_grid) harman
     call alloc_aligned_sub( 4*this%lgp%nrma, c_rcr, rcr )
     
     !! Fourier transform from the physical space. FFT package leverages
-    !! the fact that lgp%n is multiple of 8 for vectorization.
-    call this%fft%fft_r2c_sub( this%lgp%n/8, grid )
+    !! the fact that lgp%n is multiple of step for vectorization.
+    call this%fft%fft_r2c_sub( this%lgp%n_step, grid )
     
     !! Gauss-Legendre quadrature into the associated Legendre polynomials.
     call this%lgp%fwd_legesum_sub( grid, rcr )

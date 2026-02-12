@@ -10,7 +10,7 @@ submodule (fourier_transform) fxc
     
     do i2 = 1, m
       !$omp simd
-      do i1 = 1, 16
+      do i1 = 1, fstep
         addre = x11(i1,i2) + x21(i1,i2)
         subre = x11(i1,i2) - x21(i1,i2)
         addim = x12(i1,i2) + x22(i1,i2)

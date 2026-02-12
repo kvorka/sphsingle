@@ -4,9 +4,9 @@ submodule (lege_poly) bwd_sum
   module procedure bwd_sum_sub
     integer :: i1, i2
     
-    do i2 = 1, this%n_8
+    do i2 = 1, this%n_step
       !$omp simd
-      do i1 = 1, 4
+      do i1 = 1, ndbl
         swork(i1,1,i2,1) = swork(i1,1,i2,1) + pmj(i1,1,i2) * cc(1)
         swork(i1,2,i2,1) = swork(i1,2,i2,1) + pmj(i1,2,i2) * cc(1)
         swork(i1,1,i2,2) = swork(i1,1,i2,2) + pmj(i1,1,i2) * cc(2)
