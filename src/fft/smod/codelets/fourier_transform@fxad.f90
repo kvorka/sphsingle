@@ -7,7 +7,7 @@ submodule (fourier_transform) fxad
     
     do i2 = 1, m
       !$omp simd
-      do i1 = 1, 32
+      do i1 = 1, 16
         add         =               arr1(i1,i2)
         arr1(i1,i2) = arr1(i1,i2) + arr2(i1,i2)
         arr2(i1,i2) = add         - arr2(i1,i2)

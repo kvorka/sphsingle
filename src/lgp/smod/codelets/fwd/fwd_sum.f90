@@ -2,39 +2,49 @@ submodule (lege_poly) fwd_sum
   implicit none; contains
   
   module procedure fwd_sum_sub
-    integer                             :: i1, i2
-    real(kind=dbl), pointer, contiguous :: p1(:,:), s1(:,:), s2(:,:), s3(:,:), s4(:,:)
+    integer :: i1, i2
     
-    do i2 = 1, this%n32, 32
-      p1(1:16,1:2) => pmj(i2:i2+31)
-      s1(1:16,1:2) => swork(i2:i2+31,1)
-      s2(1:16,1:2) => swork(i2:i2+31,2)
-      s3(1:16,1:2) => swork(i2:i2+31,3)
-      s4(1:16,1:2) => swork(i2:i2+31,4)
-      
-      !$omp simd aligned (p1,s1,s2,s3,s4:alig)
-      do i1 = 1, 16
-        cr(1) = cr(1) + p1(i1,1) * s1(i1,1) + p1(i1,2) * s1(i1,2)
-        cr(2) = cr(2) + p1(i1,1) * s2(i1,1) + p1(i1,2) * s2(i1,2)
-        cr(3) = cr(3) + p1(i1,1) * s3(i1,1) + p1(i1,2) * s3(i1,2)
-        cr(4) = cr(4) + p1(i1,1) * s4(i1,1) + p1(i1,2) * s4(i1,2)
+    do i2 = 1, 4
+      !$omp simd
+      do i1 = 1, 4
+        acc(i1,i2) = 0._dbl
       end do
     end do
     
-    do i2 = this%n32+1, this%n, 16
-      p1(1:16,1:1) => pmj(i2:i2+15)
-      s1(1:16,1:1) => swork(i2:i2+15,1)
-      s2(1:16,1:1) => swork(i2:i2+15,2)
-      s3(1:16,1:1) => swork(i2:i2+15,3)
-      s4(1:16,1:1) => swork(i2:i2+15,4)
-      
-      !$omp simd aligned (p1,s1,s2,s3,s4:alig)
-      do i1 = 1, 16
-        cr(1) = cr(1) + p1(i1,1) * s1(i1,1)
-        cr(2) = cr(2) + p1(i1,1) * s2(i1,1)
-        cr(3) = cr(3) + p1(i1,1) * s3(i1,1)
-        cr(4) = cr(4) + p1(i1,1) * s4(i1,1)
+    do i2 = 1, this%nUnroll3, 3
+      !$omp simd
+      do i1 = 1, 4
+        acc(i1,1) = acc(i1,1) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,1) + pmj(i1,2,i2  ) * swork(i1,2,i2,  1) + &
+                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,1) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,1) + &
+                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,1) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,2) + pmj(i1,2,i2  ) * swork(i1,2,i2,  2) + &
+                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,2) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,2) + &
+                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,2) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,3) + pmj(i1,2,i2  ) * swork(i1,2,i2,  3) + &
+                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,3) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,3) + &
+                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,3) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,3)
+        acc(i1,4) = acc(i1,4) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,4) + pmj(i1,2,i2  ) * swork(i1,2,i2,  4) + &
+                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,4) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,4) + &
+                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,4) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,4)
       end do
+    end do
+    
+    do i2 = this%nUnroll3+1, this%n_8
+      !$omp simd
+      do i1 = 1, 4
+        acc(i1,1) = acc(i1,1) + pmj(i1,1,i2) * swork(i1,1,i2,1) + pmj(i1,2,i2) * swork(i1,2,i2,1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,1,i2) * swork(i1,1,i2,2) + pmj(i1,2,i2) * swork(i1,2,i2,2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,1,i2) * swork(i1,1,i2,3) + pmj(i1,2,i2) * swork(i1,2,i2,3)
+        acc(i1,4) = acc(i1,4) + pmj(i1,1,i2) * swork(i1,1,i2,4) + pmj(i1,2,i2) * swork(i1,2,i2,4)
+      end do
+    end do
+    
+    !$omp simd
+    do i1 = 1, 4
+      cr(1) = cr(1) + acc(i1,1)
+      cr(2) = cr(2) + acc(i1,2)
+      cr(3) = cr(3) + acc(i1,3)
+      cr(4) = cr(4) + acc(i1,4)
     end do
     
   end procedure fwd_sum_sub

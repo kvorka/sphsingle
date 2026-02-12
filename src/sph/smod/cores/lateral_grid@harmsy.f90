@@ -22,7 +22,7 @@ submodule (lateral_grid) harmsy
     call zero_rarray_sub( nGrid-nLege, grid(nLege+1) )
     
     !! Fourier transform into the physical space.
-    call this%fft%fft_c2r_sub( this%lgp%n/16, grid )
+    call this%fft%fft_c2r_sub( this%lgp%n/8, grid )
     
     !! Cleaning
     call free( c_rcc )

@@ -6,7 +6,7 @@ submodule (fourier_transform) fxcp
     
     do i2 = 1, m
       !$omp simd
-      do i1 = 1, 32
+      do i1 = 1, 16
         arr_to(i1,i2) = arr_from(i1,i2)
       end do
     end do

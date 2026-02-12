@@ -4,9 +4,10 @@ submodule (lege_poly) init
   module procedure init_lege_sub
     integer :: j, m
     
-    this%n    = n
-    this%n_16 = n / 16
-    this%n32  = ( n / 32 ) * 32
+    this%n        = n
+    this%n_8      = n / 8
+    this%nUnroll  = ( ( n / 8 ) / 2 ) * 2
+    this%nUnroll3 = ( ( n / 8 ) / 3 ) * 3
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     

@@ -6,7 +6,7 @@ submodule (fourier_transform) fxshf
     real(kind=dbl), pointer, contiguous :: y(:)
     type(c_ptr)                         :: c_y
     
-    call alloc_aligned_sub( m*32, c_y, y )
+    call alloc_aligned_sub( m*16, c_y, y )
     
     j = 1
     
