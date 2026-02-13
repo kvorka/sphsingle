@@ -5,8 +5,8 @@
 fcompile="ifort -fast \
                 -Ofast \
                 -ipo \
+                -fma \
                 -ffast-math \
-                -funroll-loops \
                 -fomit-frame-pointer \
                 -fno-stack-protector \
                 -xHost \

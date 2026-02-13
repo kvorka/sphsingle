@@ -4,38 +4,21 @@ submodule (lege_poly) fwd_sum
   module procedure fwd_sum_sub
     integer :: i1, i2
     
-    do i2 = 1, 4
-      !$omp simd
-      do i1 = 1, ndbl
-        acc(i1,i2) = 0._dbl
-      end do
+    !$omp simd
+    do i1 = 1, ndbl
+      acc(i1,1) = 0._dbl
+      acc(i1,2) = 0._dbl
+      acc(i1,3) = 0._dbl
+      acc(i1,4) = 0._dbl
     end do
     
-    do i2 = 1, this%nUnroll3, 3
+    do i2 = 1, this%n_dbl, 2
       !$omp simd
       do i1 = 1, ndbl
-        acc(i1,1) = acc(i1,1) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,1) + pmj(i1,2,i2  ) * swork(i1,2,i2,  1) + &
-                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,1) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,1) + &
-                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,1) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,1)
-        acc(i1,2) = acc(i1,2) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,2) + pmj(i1,2,i2  ) * swork(i1,2,i2,  2) + &
-                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,2) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,2) + &
-                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,2) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,2)
-        acc(i1,3) = acc(i1,3) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,3) + pmj(i1,2,i2  ) * swork(i1,2,i2,  3) + &
-                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,3) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,3) + &
-                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,3) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,3)
-        acc(i1,4) = acc(i1,4) + pmj(i1,1,i2  ) * swork(i1,1,i2  ,4) + pmj(i1,2,i2  ) * swork(i1,2,i2,  4) + &
-                              & pmj(i1,1,i2+1) * swork(i1,1,i2+1,4) + pmj(i1,2,i2+1) * swork(i1,2,i2+1,4) + &
-                              & pmj(i1,1,i2+2) * swork(i1,1,i2+2,4) + pmj(i1,2,i2+2) * swork(i1,2,i2+2,4)
-      end do
-    end do
-    
-    do i2 = this%nUnroll3+1, this%n_step
-      !$omp simd
-      do i1 = 1, ndbl
-        acc(i1,1) = acc(i1,1) + pmj(i1,1,i2) * swork(i1,1,i2,1) + pmj(i1,2,i2) * swork(i1,2,i2,1)
-        acc(i1,2) = acc(i1,2) + pmj(i1,1,i2) * swork(i1,1,i2,2) + pmj(i1,2,i2) * swork(i1,2,i2,2)
-        acc(i1,3) = acc(i1,3) + pmj(i1,1,i2) * swork(i1,1,i2,3) + pmj(i1,2,i2) * swork(i1,2,i2,3)
-        acc(i1,4) = acc(i1,4) + pmj(i1,1,i2) * swork(i1,1,i2,4) + pmj(i1,2,i2) * swork(i1,2,i2,4)
+        acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,i2,1) + pmj(i1,i2+1) * swork(i1,i2+1,1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,i2) * swork(i1,i2,2) + pmj(i1,i2+1) * swork(i1,i2+1,2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,i2) * swork(i1,i2,3) + pmj(i1,i2+1) * swork(i1,i2+1,3)
+        acc(i1,4) = acc(i1,4) + pmj(i1,i2) * swork(i1,i2,4) + pmj(i1,i2+1) * swork(i1,i2+1,4)
       end do
     end do
     

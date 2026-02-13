@@ -15,14 +15,16 @@ submodule (lateral_grid) harmsy
     call alloc_aligned_sub( 4*this%lgp%nrma, c_rcc, rcc )
     call this%lgp%index_bwd_sub( cin, rcc )
     
-    !! Backword associated Legendre polynomials sum.
+    !! Sum of associated Legendre polynomials.
     call this%lgp%bwd_legesum_sub( rcc, grid )
     
     !! Zero the high frequencies, which were used as work arrays during the previous operations.
     call zero_rarray_sub( nGrid-nLege, grid(nLege+1) )
     
-    !! Fourier transform into the physical space.
-    call this%fft%fft_c2r_sub( this%lgp%n_step, grid )
+    !! Fourier transform into the physical space. FFT package leverages the fact that lgp%n is multiple of 2*n_dbl. 
+    !! Therefore, the total number of independent FFTs is 2*n_dbl*this%lgp%n_dbl. The default simd length is set to 
+    !! step = 2*n_dbl within the package.
+    call this%fft%fft_c2r_sub( this%lgp%n_dbl, grid )
     
     !! Cleaning
     call free( c_rcc )

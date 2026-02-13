@@ -10,15 +10,24 @@ submodule (lege_poly) r2c
     call this%is_rescale_sub( rcab )
     call this%fwd_indx_sub( rcab, cab )
     
-    do j = 0, this%jmax
-      !m = 0
+    m = 0
+      !$omp simd
+      do j = 0, this%jmax
         jm = j*(j+1)/2+1
-        cjm(jm) = cmplx( cab(1,j+1), 0._dbl, kind=dbl )
+        
+        cjm(jm)%re = cab(1,1+j)
+        cjm(jm)%im = 0._dbl
+      end do
+    
+    do m = 1, this%jmax
+      mj = m*(this%jmax+1)-m*(m+1)/2+1
       
       !$omp simd
-      do m = 1, j
-        mj = m*(this%jmax+1)-m*(m+1)/2+j+1
-        cjm(jm+m) = cmplx( cab(1,mj), cab(2,mj), kind=dbl )
+      do j = m, this%jmax
+        jm = j*(j+1)/2+m+1
+        
+        cjm(jm)%re = cab(1,mj+j)
+        cjm(jm)%im = cab(2,mj+j)
       end do
     end do
     

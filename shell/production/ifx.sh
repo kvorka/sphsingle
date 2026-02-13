@@ -12,7 +12,6 @@ fcompile="ifx -fast \
               -fvec-remainder-loops \
               -flto \
               -xHost \
-              -fma \
               -qopt-zmm-usage=high \
               -assume contiguous_assumed_shape \
               -assume contiguous_pointer \

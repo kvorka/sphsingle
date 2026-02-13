@@ -7,9 +7,11 @@ submodule (lege_poly) init
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     
-    this%n        = n
-    this%n_step   = n / lstep
-    this%nUnroll3 = ( this%n_step / 3 ) * 3
+    this%n     = n
+    this%n_dbl = n / ndbl
+    
+    this%n_dbl4 = ( this%n_dbl / 4 ) * 4
+    this%n_dbl_div_4 = .not. ( this%n_dbl == this%n_dbl4 )
     
     call this%get_nma_sub()
     call this%roots_sub()

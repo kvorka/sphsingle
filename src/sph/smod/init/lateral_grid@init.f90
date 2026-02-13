@@ -4,7 +4,7 @@ submodule (lateral_grid) init
   module procedure init_harmonics_sub
     integer :: nL, nF
     
-    nL = (3*jmax/2+1)/2+lstep+1-mod((3*jmax/2+1)/2+1,lstep)
+    nL = (3*jmax/2+1)/2+step+1-mod((3*jmax/2+1)/2+1,step)
     nF = prime_adjustement_sub(3*jmax+1)
     
     call this%fft%init_sub( nF )

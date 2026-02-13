@@ -6,18 +6,19 @@ module math
                          & c_f_pointer
   implicit none; public
 
-#if defined ( avx512 )
+#if defined ( mem64 )
   integer, parameter :: alig = 64  !! avx512 alignement
-#elif defined ( avx2 )
+  integer, parameter :: ndbl = 8   !! number of doubles in one avx512 registry
+#elif defined ( mem32 )
   integer, parameter :: alig = 32  !! avx2 alignement
+  integer, parameter :: ndbl = 4   !! number of doubles in one avx registry
 #else
-  integer, parameter :: alig = 16  !! default alignement
+  integer, parameter :: alig = 16  !! default alignement fallback to SSE
+  integer, parameter :: ndbl = 2   !! number of doubles in one SSE registry
 #endif
   
   integer, parameter :: size_d = c_sizeof(0._dbl)  !! size of double
-  integer, parameter :: ndbl   = alig / 8          !! number of doubles in one registry
-  integer, parameter :: lstep  = 2 * ndbl          !! stepping through the latitudinal grid
-  integer, parameter :: fstep  = 2 * lstep         !! vectorizing the fft
+  integer, parameter :: step   = 2 * ndbl          !! stepping through the latitudinal grid
   
   interface
     module subroutine alloc_aligned_sub( n, c_arr, f_arr )
