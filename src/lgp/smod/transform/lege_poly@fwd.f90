@@ -10,11 +10,8 @@ submodule (lege_poly) fwd
     swork => grid( 1:4*this%n, this%jmax+3 )
     acc   => grid( 1:4*ndbl,   this%jmax+4 )
     
-    ima1 = 0
-    ima2 = this%mamj(0)-1
-    
     do im = 0, this%jmax
-      ima1 = ima2+1
+      ima1 = this%mamj(im)
       ima2 = this%mamj(im+1)-1
       
       call this%fwd_shuffle_sub( grid(1,im), swork )

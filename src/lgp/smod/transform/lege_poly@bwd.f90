@@ -9,11 +9,8 @@ submodule (lege_poly) bwd
     pmj   => grid( 1:  this%n, this%jmax+2 )
     swork => grid( 1:4*this%n, this%jmax+3 )
     
-    ima1 = 0
-    ima2 = this%mamj(0)-1
-    
     do im = 0, this%jmax
-      ima1 = ima2+1
+      ima1 = this%mamj(im)
       ima2 = this%mamj(im+1)-1
       
       call zero_rarray_sub( 4*this%n, swork )
