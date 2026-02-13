@@ -6,7 +6,7 @@ submodule (fourier_transform) init
     
     this%n = n
       allocate( this%it(n/2)  ) ; this%it = 0
-      allocate( this%t(3*n/2) ) ; this%t = 0._dbl
+      allocate( this%t(3*n/2) ) ; this%t = zero
     
     call fxzini( n/2, this%it, this%t )
     

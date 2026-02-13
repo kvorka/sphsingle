@@ -6,10 +6,10 @@ submodule (lege_poly) fwd_sum
     
     !$omp simd
     do i1 = 1, ndbl
-      acc(i1,1) = 0._dbl
-      acc(i1,2) = 0._dbl
-      acc(i1,3) = 0._dbl
-      acc(i1,4) = 0._dbl
+      acc(i1,1) = zero
+      acc(i1,2) = zero
+      acc(i1,3) = zero
+      acc(i1,4) = zero
     end do
     
     do i2 = 1, this%n_dbl, 2

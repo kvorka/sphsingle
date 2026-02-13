@@ -20,7 +20,7 @@ program test
   !** harmsy/harman test  ******************************************************!
   !*****************************************************************************!
   allocate( c1(jmcut)   ) ; call fill_scalar_sub( c1 )
-  allocate( cout(jmcut) ) ; cout = cmplx(0._dbl, 0._dbl, kind=dbl)
+  allocate( cout(jmcut) ) ; cout = cmplx(zero, zero, kind=dbl)
   
   call alloc_grid( grid )
   
@@ -53,7 +53,7 @@ program test
       m = 0
         jm = j*(j+1)/2+m+1
         
-        call random_number( val ); cs(jm)%re = val+2; cs(jm)%im = 0._dbl
+        call random_number( val ); cs(jm)%re = val+2; cs(jm)%im = zero
       
       do m = 1, j
         jm = j*(j+1)/2+m+1

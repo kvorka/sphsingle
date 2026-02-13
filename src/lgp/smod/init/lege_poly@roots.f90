@@ -50,7 +50,7 @@ submodule (lege_poly) roots
         fx1 = lege_fn( 2*this%n, (i-1) * xincr )
         fx2 = lege_fn( 2*this%n, (i  ) * xincr )
         
-        if ( fx1 * fx2 < 0._qbl ) then
+        if ( fx1 * fx2 < qzero ) then
           !$omp critical
           ncnt         = ncnt+1
           xclose(ncnt) = (i-1) * xincr
@@ -63,7 +63,7 @@ submodule (lege_poly) roots
         exit
       else
         do i = 1, ncnt
-          xclose(i) = 0._qbl
+          xclose(i) = qzero
         end do
       end if
     end do
@@ -85,7 +85,7 @@ submodule (lege_poly) roots
         
         if ( abs(froot) < qeps ) then
           exit
-        else if ( fx1 * froot < 0._qbl ) then
+        else if ( fx1 * froot < qzero ) then
           x2  = root
           fx2 = froot
         else

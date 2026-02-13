@@ -8,7 +8,7 @@ submodule (fourier_transform) fxi
     allocate( ipn(4), itc(2:5), itw(0:n-1) , iw(n-2) )
     
     ipn = [5,4,3,2]
-    t   = 0._dbl
+    t   = zero
     iw  = 0
     itw = 0
     

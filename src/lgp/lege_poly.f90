@@ -25,9 +25,10 @@ module lege_poly
     
   end type T_legep
   
-  real(kind=dbl), parameter :: deps = 1.0d-15
-  real(kind=qbl), parameter :: qeps = 1.0d-28
-  real(kind=qbl), parameter :: qpi  = acos(-1._qbl)
+  real(kind=dbl), parameter :: deps  = 1.0d-15
+  real(kind=qbl), parameter :: qeps  = 1.0d-28
+  real(kind=qbl), parameter :: qpi   = acos(-1._qbl)
+  real(kind=qbl), parameter :: qzero = 0._qbl
   
   interface
     module subroutine init_lege_sub(this, jmax, n, wfac)

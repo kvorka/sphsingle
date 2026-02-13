@@ -16,7 +16,7 @@ submodule (lege_poly) r2c
         jm = j*(j+1)/2+1
         
         cjm(jm)%re = cab(1,1+j)
-        cjm(jm)%im = 0._dbl
+        cjm(jm)%im = zero
       end do
     
     do m = 1, this%jmax

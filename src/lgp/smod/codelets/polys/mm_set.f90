@@ -10,8 +10,8 @@ submodule (lege_poly) poly_mm
     do i2 = 1, this%n_dbl, 2
       !$omp simd aligned (pmm:alig)
       do i1 = 1, ndbl
-        pmj1(i1,i2  ) = 0._dbl
-        pmj1(i1,i2+1) = 0._dbl
+        pmj1(i1,i2  ) = zero
+        pmj1(i1,i2+1) = zero
 
         pmj(i1,i2  ) = pmm(i1,i2  )
         pmj(i1,i2+1) = pmm(i1,i2+1)
