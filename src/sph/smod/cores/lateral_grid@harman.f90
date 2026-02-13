@@ -5,13 +5,13 @@ submodule (lateral_grid) harman
     type(c_ptr)                         :: c_rcr
     real(kind=dbl), pointer, contiguous :: rcr(:)
     
-    !! Allocate aligned temporary input array and fill it with zeros
-    call alloc_aligned_sub( 4*this%lgp%nrma, c_rcr, rcr )
+    !! Fourier transform from the physical space. FFT package vectorizes with a simd length of ndbl. 
+    !! Therefore, the total number of independent FFTs is 2*this%lgp%n_dbl. FFT package leverages
+    !! the parity of total number of simd transforms.
+    call this%fft%fft_r2c_sub( 2*this%lgp%n_dbl, grid )
     
-    !! Fourier transform from the physical space. FFT package leverages the fact that lgp%n is multiple of 2*n_dbl. 
-    !! Therefore, the total number of independent FFTs is 2*n_dbl*this%lgp%n_dbl. The default simd length is set to 
-    !! step = 2*n_dbl within the package.
-    call this%fft%fft_r2c_sub( this%lgp%n_dbl, grid )
+    !! Allocate aligned temporary input array for sph coeffs and fill it with zeros.
+    call alloc_aligned_sub( 4*this%lgp%nrma, c_rcr, rcr )
     
     !! Gauss-Legendre quadrature into the associated Legendre polynomials.
     call this%lgp%fwd_legesum_sub( grid, rcr )

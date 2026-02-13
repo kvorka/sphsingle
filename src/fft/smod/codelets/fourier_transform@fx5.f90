@@ -28,7 +28,7 @@ submodule (fourier_transform) fx5
       do i3 = 1, l/5
         do i2 = 1, m
           !$omp simd
-          do i1 = 1, step
+          do i1 = 1, ndbl
             x1re =        t1re * x(i1,i2,1,i3,1,i4) - t1im * x(i1,i2,2,i3,1,i4)
             x1im =        t1re * x(i1,i2,2,i3,1,i4) + t1im * x(i1,i2,1,i3,1,i4)
             x2re =        t2re * x(i1,i2,1,i3,2,i4) - t2im * x(i1,i2,2,i3,2,i4)
@@ -83,7 +83,7 @@ submodule (fourier_transform) fx5
     do i3 = 1, l/5
       do i2 = 1, m
         !$omp simd
-        do i1 = 1, step
+        do i1 = 1, ndbl
           x0re = x(i1,i2,1,i3,1) - x(i1,i2,1,i3,4)
           x0im = x(i1,i2,2,i3,1) - x(i1,i2,2,i3,4)
           x1re = x(i1,i2,1,i3,1) + x(i1,i2,1,i3,4)

@@ -12,7 +12,7 @@ submodule (fourier_transform) fx2
       do i3 = 1, l/2
         do i2 = 1, m
           !$omp simd
-          do i1 = 1, step
+          do i1 = 1, ndbl
             x0re = x(i1,i2,1,i3,0,i4) - t1re * x(i1,i2,1,i3,1,i4)
             x0im = x(i1,i2,2,i3,0,i4) - t1im * x(i1,i2,1,i3,1,i4)
             
@@ -33,7 +33,7 @@ submodule (fourier_transform) fx2
     do i3 = 1, l/2
       do i2 = 1, m
         !$omp simd
-        do i1 = 1, step
+        do i1 = 1, ndbl
           x(i1,i2,1,i3,1) =     x(i1,i2,1,i3,0) - x(i1,i2,1,i3,1)
           x(i1,i2,2,i3,1) =     x(i1,i2,2,i3,0) - x(i1,i2,2,i3,1)
           x(i1,i2,1,i3,0) = 2 * x(i1,i2,1,i3,0) - x(i1,i2,1,i3,1)

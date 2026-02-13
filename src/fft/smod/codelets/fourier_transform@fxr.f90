@@ -10,7 +10,7 @@ submodule (fourier_transform) fxr
     
     do i2 = 1, m
       !$omp simd
-      do i1 = 1, step
+      do i1 = 1, ndbl
         addre = x11(i1,i2) + x21(i1,i2)
         subre = x11(i1,i2) - x21(i1,i2)
         addim = x22(i1,i2) + x12(i1,i2)

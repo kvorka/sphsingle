@@ -6,8 +6,8 @@ submodule (lateral_grid) harmsy
     type(c_ptr)                         :: c_rcc
     real(kind=dbl), pointer, contiguous :: rcc(:)
     
-    !! Size of the whole grid and size of the space used by the  backword Legendre transform. High frequencies are used
-    !! to dealias fft transform and will be set to zero.
+    !! Size of the whole grid and size of the space used by the backword Legendre transform. High 
+    !! frequencies are used to dealias fft transform and will be set to zero.
     nGrid = 2 * this%lgp%n * this%fft%n
     nLege = 4 * this%lgp%n * ( this%lgp%jmax+1 )
     
@@ -21,10 +21,10 @@ submodule (lateral_grid) harmsy
     !! Zero the high frequencies, which were used as work arrays during the previous operations.
     call zero_rarray_sub( nGrid-nLege, grid(nLege+1) )
     
-    !! Fourier transform into the physical space. FFT package leverages the fact that lgp%n is multiple of 2*n_dbl. 
-    !! Therefore, the total number of independent FFTs is 2*n_dbl*this%lgp%n_dbl. The default simd length is set to 
-    !! step = 2*n_dbl within the package.
-    call this%fft%fft_c2r_sub( this%lgp%n_dbl, grid )
+    !! Fourier transform into the physical space. FFT package vectorizes with a simd length of ndbl. 
+    !! Therefore, the total number of independent FFTs is 2*this%lgp%n_dbl. FFT package leverages
+    !! the parity of total number of simd transforms.
+    call this%fft%fft_c2r_sub( 2*this%lgp%n_dbl, grid )
     
     !! Cleaning
     call free( c_rcc )
