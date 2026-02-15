@@ -118,12 +118,12 @@ module lege_poly
       complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
     
-    module subroutine fwd_sum_sub(this, pmj, swork, cr, acc)
+    module subroutine fwd_sum_sub(this, pmj, swork, cr, acc, acc2)
       class(T_legep), intent(in)    :: this
       real(kind=dbl), intent(in)    :: pmj(ndbl,this%n_dbl)
       real(kind=dbl), intent(in)    :: swork(ndbl,this%n_dbl,4)
       real(kind=dbl), intent(inout) :: cr(4)
-      real(kind=dbl), intent(out)   :: acc(ndbl,4)
+      real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4)
     end subroutine fwd_sum_sub
     
     module subroutine fwd_shuffle_sub(this, grid, swork)

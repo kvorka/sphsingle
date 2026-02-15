@@ -3,12 +3,13 @@ submodule (lege_poly) fwd
 
   module procedure fwd_legesum_sub
     integer                             :: im, ima, ima1
-    real(kind=dbl), pointer, contiguous :: swork(:), pmj1(:), pmj(:), pmj2(:), acc(:)
+    real(kind=dbl), pointer, contiguous :: swork(:), pmj1(:), pmj(:), pmj2(:), acc(:), acc2(:)
     
-    pmj1  => work(          1 :   this%n         )
-    pmj   => work(   this%n+1 : 2*this%n         )
-    swork => work( 2*this%n+1 : 6*this%n         )
-    acc   => work( 6*this%n+1 : 6*this%n + 4*ndbl)
+    pmj1  => work(                   1 :   this%n         )
+    pmj   => work(   this%n         +1 : 2*this%n         )
+    swork => work( 2*this%n         +1 : 6*this%n         )
+    acc   => work( 6*this%n         +1 : 6*this%n + 4*ndbl)
+    acc2  => work( 6*this%n + 4*ndbl+1 : 6*this%n + 8*ndbl)
     
     do im = 0, this%jmax
       ima1 = this%mamj(im)
@@ -17,7 +18,7 @@ submodule (lege_poly) fwd
       
       !ima = ima1
         call this%mm_set_sub( im, pmj1, pmj )
-        call this%fwd_sum_sub( pmj, swork, cr(1,ima1), acc )
+        call this%fwd_sum_sub( pmj, swork, cr(1,ima1), acc, acc2 )
       
       do ima = ima1+1, this%mamj(im+1)-1
         pmj2 => pmj1
@@ -25,7 +26,7 @@ submodule (lege_poly) fwd
         pmj  => pmj2
         
         call this%mj_rec_sub( ima, pmj1, pmj )
-        call this%fwd_sum_sub( pmj, swork, cr(1,ima), acc )
+        call this%fwd_sum_sub( pmj, swork, cr(1,ima), acc, acc2 )
       end do
     end do
     
