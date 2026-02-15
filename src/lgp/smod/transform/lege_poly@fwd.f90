@@ -2,7 +2,7 @@ submodule (lege_poly) fwd
   implicit none; contains
 
   module procedure fwd_legesum_sub
-    integer                             :: im, ima, ima1, ima2
+    integer                             :: im, ima, ima1
     real(kind=dbl), pointer, contiguous :: swork(:), pmj1(:), pmj(:), pmj2(:), acc(:)
     
     pmj1  => work(          1 :   this%n         )
@@ -12,7 +12,6 @@ submodule (lege_poly) fwd
     
     do im = 0, this%jmax
       ima1 = this%mamj(im)
-      ima2 = this%mamj(im+1)-1
       
       call this%fwd_shuffle_sub( grid(1,im), swork )
       
@@ -20,7 +19,7 @@ submodule (lege_poly) fwd
         call this%mm_set_sub( im, pmj1, pmj )
         call this%fwd_sum_sub( pmj, swork, cr(1,ima1), acc )
       
-      do ima = ima1+1, ima2
+      do ima = ima1+1, this%mamj(im+1)-1
         pmj2 => pmj1
         pmj1 => pmj
         pmj  => pmj2

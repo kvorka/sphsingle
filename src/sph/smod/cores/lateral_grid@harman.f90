@@ -7,7 +7,8 @@ submodule (lateral_grid) harman
     
     !! Fourier transform from the physical space. FFT package vectorizes with a simd length of ndbl. 
     !! Therefore, the total number of independent FFTs is 2*this%lgp%n_dbl. FFT package leverages
-    !! the parity of total number of simd transforms.
+    !! the parity of total number of simd transforms as well as additional factor of 2 comming from
+    !! construnction of nLege.
     call this%fft%fft_r2c_sub( 2*this%lgp%n_dbl, grid )
     
     !! Allocate aligned temporary input array for sph coeffs and fill it with zeros.
