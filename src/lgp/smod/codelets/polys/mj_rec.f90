@@ -21,7 +21,7 @@ submodule (lege_poly) poly_mj
       end do
     end do
     
-    if ( this%n_dbl_div_4 ) then
+    if ( mod(this%n_dbl,4) /= 0 ) then
       i2 = this%n_dbl4+1
       
       !$omp simd aligned (cosx2:alig)

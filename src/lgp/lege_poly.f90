@@ -4,7 +4,6 @@ module lege_poly
   
   type, public :: T_legep
     integer                             :: nFreq, jmax, jms, n, n_dbl, n_dbl4, nrma
-    logical                             :: n_dbl_div_4
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
     real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:,:)

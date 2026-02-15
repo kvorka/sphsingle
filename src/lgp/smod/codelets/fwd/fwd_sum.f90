@@ -12,7 +12,23 @@ submodule (lege_poly) fwd_sum
       acc(i1,4) = zero
     end do
     
-    do i2 = 1, this%n_dbl, 2
+    do i2 = 1, this%n_dbl4, 4
+      !$omp simd
+      do i1 = 1, ndbl
+        acc(i1,1) = acc(i1,1) + pmj(i1,i2  ) * swork(i1,i2  ,1) + pmj(i1,i2+1) * swork(i1,i2+1,1) + &
+                              & pmj(i1,i2+2) * swork(i1,i2+2,1) + pmj(i1,i2+3) * swork(i1,i2+3,1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,i2  ) * swork(i1,i2,2  ) + pmj(i1,i2+1) * swork(i1,i2+1,2) + &
+                              & pmj(i1,i2+2) * swork(i1,i2+2,2) + pmj(i1,i2+3) * swork(i1,i2+3,2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,i2  ) * swork(i1,i2,3  ) + pmj(i1,i2+1) * swork(i1,i2+1,3) + &
+                              & pmj(i1,i2+2) * swork(i1,i2+2,3) + pmj(i1,i2+3) * swork(i1,i2+3,3)
+        acc(i1,4) = acc(i1,4) + pmj(i1,i2  ) * swork(i1,i2,4  ) + pmj(i1,i2+1) * swork(i1,i2+1,4) + &
+                              & pmj(i1,i2+2) * swork(i1,i2+2,4) + pmj(i1,i2+3) * swork(i1,i2+3,4)
+      end do
+    end do
+    
+    if ( mod(this%n_dbl,4) /= 0 ) then
+      i2 = this%n_dbl4+1
+      
       !$omp simd
       do i1 = 1, ndbl
         acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,i2,1) + pmj(i1,i2+1) * swork(i1,i2+1,1)
@@ -20,7 +36,7 @@ submodule (lege_poly) fwd_sum
         acc(i1,3) = acc(i1,3) + pmj(i1,i2) * swork(i1,i2,3) + pmj(i1,i2+1) * swork(i1,i2+1,3)
         acc(i1,4) = acc(i1,4) + pmj(i1,i2) * swork(i1,i2,4) + pmj(i1,i2+1) * swork(i1,i2+1,4)
       end do
-    end do
+    end if
     
     !$omp simd
     do i1 = 1, ndbl
