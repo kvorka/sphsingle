@@ -7,7 +7,7 @@ program test
   integer, parameter :: jmcut = jcut*(jcut+1)/2+jcut+1
   
   real(kind=dbl)                 :: start, end
-  complex(kind=dbl), allocatable :: c1(:), c2(:), cout(:)
+  complex(kind=dbl), allocatable :: c1(:), cout(:)
   
   type(T_grid) :: grid
   

@@ -3,7 +3,7 @@ module lege_poly
   implicit none
   
   type, public :: T_legep
-    integer                             :: jmax, jms, n, n_dbl, n_dbl4, nrma
+    integer                             :: nFreq, jmax, jms, n, n_dbl, n_dbl4, nrma
     logical                             :: n_dbl_div_4
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
@@ -100,9 +100,10 @@ module lege_poly
       real(kind=dbl), intent(out) :: grid(ndbl,this%n_dbl,2,2)
     end subroutine bwd_shuffle_sub
     
-    module subroutine bwd_legesum_sub(this, cc, grid)
+    module subroutine bwd_legesum_sub(this, cc, grid, work)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl), target, intent(out) :: grid(4*this%n,0:*)
+      real(kind=dbl),         intent(out) :: grid(4*this%n,0:this%jmax)
+      real(kind=dbl), target, intent(out) :: work(*)
       real(kind=dbl),         intent(in)  :: cc(4,*)
     end subroutine bwd_legesum_sub
     
@@ -132,10 +133,11 @@ module lege_poly
       real(kind=dbl), intent(out) :: swork(ndbl,this%n_dbl,2,2)
     end subroutine fwd_shuffle_sub
     
-    module subroutine fwd_legesum_sub(this, grid, cr)
+    module subroutine fwd_legesum_sub(this, grid, cr, work)
       class(T_legep),         intent(in)    :: this
-      real(kind=dbl), target, intent(inout) :: grid(4*this%n,0:*)
+      real(kind=dbl),         intent(inout) :: grid(4*this%n,0:this%jmax)
       real(kind=dbl),         intent(inout) :: cr(4,*)
+      real(kind=dbl), target, intent(out)   :: work(*)
     end subroutine fwd_legesum_sub
   end interface
   

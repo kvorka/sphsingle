@@ -5,10 +5,10 @@ submodule (lege_poly) fwd
     integer                             :: im, ima, ima1, ima2
     real(kind=dbl), pointer, contiguous :: swork(:), pmj1(:), pmj(:), pmj2(:), acc(:)
     
-    pmj1  => grid( 1:  this%n, this%jmax+1 )
-    pmj   => grid( 1:  this%n, this%jmax+2 )
-    swork => grid( 1:4*this%n, this%jmax+3 )
-    acc   => grid( 1:4*ndbl,   this%jmax+4 )
+    pmj1  => work(          1 :   this%n         )
+    pmj   => work(   this%n+1 : 2*this%n         )
+    swork => work( 2*this%n+1 : 6*this%n         )
+    acc   => work( 6*this%n+1 : 6*this%n + 4*ndbl)
     
     do im = 0, this%jmax
       ima1 = this%mamj(im)

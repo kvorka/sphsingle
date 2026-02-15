@@ -4,6 +4,7 @@ module lateral_grid
   implicit none
   
   type, public :: T_lateralGrid
+    integer,       public :: nGrid
     type(T_legep), public :: lgp
     type(T_fft),   public :: fft
     

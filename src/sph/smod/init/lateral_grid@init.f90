@@ -7,6 +7,8 @@ submodule (lateral_grid) init
     nL = (3*jmax/2+1)/2+step+1-mod((3*jmax/2+1)/2+1,step)
     nF = prime_adjustement_sub(3*jmax+1)
     
+    this%nGrid = 2 * nL * nF
+    
     call this%fft%init_sub( nF )
     call this%lgp%init_sub( jmax, nL, real(nF, kind=dbl) )
     

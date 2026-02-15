@@ -94,9 +94,9 @@ submodule (lege_poly) roots
         end if
       end do
       
-      this%cosx(i)  = root
-      this%cosx2(i) = root**2
-      this%wght(i)  = qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2
+      this%cosx(i)  = real( root, kind=dbl )
+      this%cosx2(i) = real( root**2, kind=dbl )
+      this%wght(i)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl )
     end do
     !$omp end parallel do
     

@@ -13,6 +13,7 @@ fcompile="gfortran-12 -Og \
                       -Wunused-parameter \
                       -fwhole-file \
                       -fcheck=all \
+                      -fopenmp \
                       -std=f2008 \
                       -pedantic \
                       -fbacktrace \
