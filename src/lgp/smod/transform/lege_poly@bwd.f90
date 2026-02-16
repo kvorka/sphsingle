@@ -3,11 +3,12 @@ submodule (lege_poly) bwd
   
   module procedure bwd_legesum_sub
     integer                             :: im, ima, ima1
-    real(kind=dbl), pointer, contiguous :: swork(:), pmj1(:), pmj(:), pmj2(:)
+    real(kind=dbl), pointer, contiguous :: swork(:), pmm(:), pmj(:), pmj1(:), pmj2(:)
     
-    pmj1  => work(          1 :   this%n )
+    pmm   => work(          1 :   this%n )
     pmj   => work(   this%n+1 : 2*this%n )
-    swork => work( 2*this%n+1 : 6*this%n )
+    pmj1  => work( 2*this%n+1 : 3*this%n )
+    swork => work( 3*this%n+1 : 7*this%n )
     
     do im = 0, this%jmax
       ima1 = this%mamj(im)
@@ -15,7 +16,7 @@ submodule (lege_poly) bwd
       call zero_rarray_sub( 4*this%n, swork )
       
       !ima = ima1
-        call this%mm_set_sub( im, pmj1, pmj )
+        call this%mm_rec_sub( ima1, pmj1, pmj, pmm )
         call this%bwd_sum_sub( pmj, cc(1,ima1), swork )
       
       do ima = ima1+1, this%mamj(im+1)-1

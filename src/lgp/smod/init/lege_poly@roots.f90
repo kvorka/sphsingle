@@ -29,6 +29,7 @@ submodule (lege_poly) roots
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
     call alloc_aligned_sub( this%n, this%c_cosx,  this%cosx  )
+    call alloc_aligned_sub( this%n, this%c_sinx,  this%sinx  )
     call alloc_aligned_sub( this%n, this%c_cosx2, this%cosx2 )
     call alloc_aligned_sub( this%n, this%c_wght,  this%wght  )
     
@@ -96,6 +97,7 @@ submodule (lege_poly) roots
       
       this%cosx(i)  = real( root, kind=dbl )
       this%cosx2(i) = real( root**2, kind=dbl )
+      this%sinx(i)  = real( sqrt(1-root**2), kind=dbl )
       this%wght(i)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl )
     end do
     !$omp end parallel do

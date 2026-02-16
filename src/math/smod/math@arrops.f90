@@ -1,4 +1,4 @@
-submodule (math) arrzero
+submodule (math) arrops
   implicit none; contains
   
   module procedure zero_rarray_sub
@@ -26,4 +26,4 @@ submodule (math) arrzero
     
   end procedure zero_rarray_sub
   
-end submodule arrzero
+end submodule arrops

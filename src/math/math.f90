@@ -13,7 +13,7 @@ module math
       real(kind=dbl), pointer, intent(out) :: f_arr(:)
     end subroutine alloc_aligned_sub
     
-    module pure subroutine zero_rarray_sub(n, arr)
+    module subroutine zero_rarray_sub(n, arr)
       integer,        intent(in)  :: n
       real(kind=dbl), intent(out) :: arr(n)
     end subroutine zero_rarray_sub

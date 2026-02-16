@@ -6,16 +6,16 @@ submodule (lege_poly) init
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     
-    this%n      = n
-    this%n_dbl  = n / ndbl
-    this%n_dbl4 = ( this%n_dbl / 4 ) * 4
+    this%n       = n
+    this%n_dbl   = n / ndbl
+    this%n_dbl_2 = this%n_dbl / 2
+    this%n_dbl4  = this%n_dbl / 4 * 4
     
     this%nFreq = 4 * this%n * ( this%jmax+1 )
     
     call this%get_nma_sub()
     call this%roots_sub()
     call this%coeffs_sub()
-    call this%pmm_sub()
     
     this%wght = this%wght / wfac
     
@@ -24,12 +24,12 @@ submodule (lege_poly) init
   module procedure deallocate_lege_sub
     
     call free( this%c_cosx  )
-    call free( this%c_pmm   )
+    call free( this%c_sinx  )
     call free( this%c_cosx2 )
     call free( this%c_wght  )
     
     this%cosx  => null()
-    this%pmm   => null()
+    this%sinx  => null()
     this%cosx2 => null()
     this%wght  => null()
     

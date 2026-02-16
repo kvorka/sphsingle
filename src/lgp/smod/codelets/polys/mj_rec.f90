@@ -13,7 +13,7 @@ submodule (lege_poly) poly_mj
     
     do i2 = 1, this%n_dbl4, 4
       !$omp simd aligned (cosx2:alig)
-      do i1 = 1, ndbl  
+      do i1 = 1, ndbl
         pmj(i1,i2  ) = ( cff1 * cosx2(i1,i2  ) - cff2 ) * pmj1(i1,i2  ) - pmj(i1,i2  )
         pmj(i1,i2+1) = ( cff1 * cosx2(i1,i2+1) - cff2 ) * pmj1(i1,i2+1) - pmj(i1,i2+1)
         pmj(i1,i2+2) = ( cff1 * cosx2(i1,i2+2) - cff2 ) * pmj1(i1,i2+2) - pmj(i1,i2+2)
