@@ -4,7 +4,6 @@
 ###########################################################################################
 fcompile="gfortran-12 -Ofast \
                       -march=native \
-                      -mfma \
                       -mno-vzeroupper \
                       -mprefer-vector-width=512 \
                       -fno-bounds-check \

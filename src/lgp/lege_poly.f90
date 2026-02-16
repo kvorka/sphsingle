@@ -95,8 +95,8 @@ module lege_poly
     
     module subroutine bwd_shuffle_sub(this, swork, grid)
       class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: swork(ndbl,this%n_dbl,2,2)
-      real(kind=dbl), intent(out) :: grid(ndbl,this%n_dbl,2,2)
+      real(kind=dbl), intent(in)  :: swork(ndbl,2,this%n_dbl_2,2,2)
+      real(kind=dbl), intent(out) :: grid(ndbl,2,this%n_dbl_2,2,2)
     end subroutine bwd_shuffle_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid, work)
@@ -128,8 +128,8 @@ module lege_poly
     
     module subroutine fwd_shuffle_sub(this, grid, swork)
       class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: grid(ndbl,this%n_dbl,2,2)
-      real(kind=dbl), intent(out) :: swork(ndbl,this%n_dbl,2,2)
+      real(kind=dbl), intent(in)  :: grid(ndbl,2,this%n_dbl_2,2,2)
+      real(kind=dbl), intent(out) :: swork(ndbl,2,this%n_dbl_2,2,2)
     end subroutine fwd_shuffle_sub
     
     module subroutine fwd_legesum_sub(this, grid, cr, work)
