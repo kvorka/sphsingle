@@ -24,15 +24,15 @@ submodule (lege_poly) fwd_sum
         p1 = pmj(i1,1,i2)
         p2 = pmj(i1,2,i2)
         
-        acc(i1,1) = acc(i1,1) + p1 * swork(i1,1,i2,1)
-        acc(i1,2) = acc(i1,2) + p1 * swork(i1,1,i2,2)
-        acc(i1,3) = acc(i1,3) + p1 * swork(i1,1,i2,3)
-        acc(i1,4) = acc(i1,4) + p1 * swork(i1,1,i2,4)
+        acc(i1,1) = acc(i1,1) + p1 * swork(i1,1,i2)
+        acc(i1,2) = acc(i1,2) + p1 * swork(i1,2,i2)
+        acc(i1,3) = acc(i1,3) + p1 * swork(i1,3,i2)
+        acc(i1,4) = acc(i1,4) + p1 * swork(i1,4,i2)
         
-        acc2(i1,1) = acc2(i1,1) + p2 * swork(i1,2,i2,1)
-        acc2(i1,2) = acc2(i1,2) + p2 * swork(i1,2,i2,2)
-        acc2(i1,3) = acc2(i1,3) + p2 * swork(i1,2,i2,3)
-        acc2(i1,4) = acc2(i1,4) + p2 * swork(i1,2,i2,4)
+        acc2(i1,1) = acc2(i1,1) + p2 * swork(i1,5,i2)
+        acc2(i1,2) = acc2(i1,2) + p2 * swork(i1,6,i2)
+        acc2(i1,3) = acc2(i1,3) + p2 * swork(i1,7,i2)
+        acc2(i1,4) = acc2(i1,4) + p2 * swork(i1,8,i2)
       end do
     end do
     

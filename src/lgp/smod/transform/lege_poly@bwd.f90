@@ -24,8 +24,7 @@ submodule (lege_poly) bwd
         pmj1 => pmj
         pmj  => pmj2
         
-        call this%mj_rec_sub( ima, pmj1, pmj )
-        call this%bwd_sum_sub( pmj, cc(1,ima), swork )
+        call this%bwd_sum2_sub( ima, pmj1, pmj, cc(1,ima), swork )
       end do
       
       call this%bwd_shuffle_sub( swork, grid(1,im) )

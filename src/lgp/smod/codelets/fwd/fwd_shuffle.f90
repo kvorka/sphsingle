@@ -17,23 +17,23 @@ submodule (lege_poly) fwd_shuffle
         cx1 = cosx(i1,1,i2)
         cx2 = cosx(i1,2,i2)
         
-        g11 = grid(i1,1,i2,1,1)
-        g21 = grid(i1,1,i2,2,1)
-        g31 = grid(i1,1,i2,1,2)
-        g41 = grid(i1,1,i2,2,2)
-        g12 = grid(i1,2,i2,1,1)
-        g22 = grid(i1,2,i2,2,1)
-        g32 = grid(i1,2,i2,1,2)
-        g42 = grid(i1,2,i2,2,2)
+        g11 = grid(i1,1,i2,1)
+        g21 = grid(i1,1,i2,2)
+        g31 = grid(i1,1,i2,3)
+        g41 = grid(i1,1,i2,4)
+        g12 = grid(i1,2,i2,1)
+        g22 = grid(i1,2,i2,2)
+        g32 = grid(i1,2,i2,3)
+        g42 = grid(i1,2,i2,4)
         
-        swork(i1,1,i2,1,1) = ( g11 - g21 ) * w1
-        swork(i1,1,i2,1,2) = ( g11 + g21 ) * w1 * cx1
-        swork(i1,1,i2,2,1) = ( g31 - g41 ) * w1
-        swork(i1,1,i2,2,2) = ( g31 + g41 ) * w1 * cx1
-        swork(i1,2,i2,1,1) = ( g12 - g22 ) * w2
-        swork(i1,2,i2,1,2) = ( g12 + g22 ) * w2 * cx2
-        swork(i1,2,i2,2,1) = ( g32 - g42 ) * w2
-        swork(i1,2,i2,2,2) = ( g32 + g42 ) * w2 * cx2
+        swork(i1,1,i2) = ( g11 - g21 ) * w1
+        swork(i1,3,i2) = ( g11 + g21 ) * w1 * cx1
+        swork(i1,2,i2) = ( g31 - g41 ) * w1
+        swork(i1,4,i2) = ( g31 + g41 ) * w1 * cx1
+        swork(i1,5,i2) = ( g12 - g22 ) * w2
+        swork(i1,7,i2) = ( g12 + g22 ) * w2 * cx2
+        swork(i1,6,i2) = ( g32 - g42 ) * w2
+        swork(i1,8,i2) = ( g32 + g42 ) * w2 * cx2
       end do
     end do
     

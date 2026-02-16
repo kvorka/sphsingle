@@ -26,8 +26,7 @@ submodule (lege_poly) fwd
         pmj1 => pmj
         pmj  => pmj2
         
-        call this%mj_rec_sub( ima, pmj1, pmj )
-        call this%fwd_sum_sub( pmj, swork, cr(1,ima), acc, acc2 )
+        call this%fwd_sum2_sub( ima, pmj1, pmj, swork, cr(1,ima), acc, acc2 )
       end do
     end do
     

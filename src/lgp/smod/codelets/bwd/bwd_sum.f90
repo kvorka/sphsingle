@@ -15,15 +15,15 @@ submodule (lege_poly) bwd_sum
       do i1 = 1, ndbl
         p1 = pmj(i1,1,i2)
         p2 = pmj(i1,2,i2)
-
-        swork(i1,1,i2,1) = swork(i1,1,i2,1) + p1 * c1
-        swork(i1,2,i2,1) = swork(i1,2,i2,1) + p2 * c1
-        swork(i1,1,i2,2) = swork(i1,1,i2,2) + p1 * c2
-        swork(i1,2,i2,2) = swork(i1,2,i2,2) + p2 * c2
-        swork(i1,1,i2,3) = swork(i1,1,i2,3) + p1 * c3
-        swork(i1,2,i2,3) = swork(i1,2,i2,3) + p2 * c3
-        swork(i1,1,i2,4) = swork(i1,1,i2,4) + p1 * c4
-        swork(i1,2,i2,4) = swork(i1,2,i2,4) + p2 * c4
+        
+        swork(i1,1,i2) = swork(i1,1,i2) + p1 * c1
+        swork(i1,5,i2) = swork(i1,5,i2) + p2 * c1
+        swork(i1,2,i2) = swork(i1,2,i2) + p1 * c2
+        swork(i1,6,i2) = swork(i1,6,i2) + p2 * c2
+        swork(i1,3,i2) = swork(i1,3,i2) + p1 * c3
+        swork(i1,7,i2) = swork(i1,7,i2) + p2 * c3
+        swork(i1,4,i2) = swork(i1,4,i2) + p1 * c4
+        swork(i1,8,i2) = swork(i1,8,i2) + p2 * c4
       end do
     end do
     
