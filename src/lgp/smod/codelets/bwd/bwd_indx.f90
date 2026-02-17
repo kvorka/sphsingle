@@ -9,79 +9,79 @@ submodule(lege_poly) bwd_indx
         ma = 1
         mj = 1
         
-        ocab(1,1,ma) = icab(1,mj+1) * this%emj(mj+1)
-        ocab(2,1,ma) = icab(2,mj+1) * this%emj(mj+1)
+        ocab(1,1,ma) = icab(1,mj+1) * emj(mj+1)
+        ocab(2,1,ma) = icab(2,mj+1) * emj(mj+1)
         ocab(1,2,ma) = icab(1,mj)
         ocab(2,2,ma) = icab(2,mj)
       
-      do j = 1, (this%jmax-1)/2
+      do j = 1, (jmax-1)/2
         ma = ma+1
         mj = mj+2
         
-        ocab(1,1,ma) = this%emj(mj) * icab(1,mj-1) + this%emj(mj+1) * icab(1,mj+1)
-        ocab(2,1,ma) = this%emj(mj) * icab(2,mj-1) + this%emj(mj+1) * icab(2,mj+1)
-        ocab(1,2,ma) =                icab(1,mj)
-        ocab(2,2,ma) =                icab(2,mj)
+        ocab(1,1,ma) = emj(mj) * icab(1,mj-1) + emj(mj+1) * icab(1,mj+1)
+        ocab(2,1,ma) = emj(mj) * icab(2,mj-1) + emj(mj+1) * icab(2,mj+1)
+        ocab(1,2,ma) =           icab(1,mj)
+        ocab(2,2,ma) =           icab(2,mj)
       end do
       
       !j == jmax
-      if ( mod(this%jmax,2) == 0 ) then
+      if ( mod(jmax,2) == 0 ) then
         ma = ma+1
         mj = mj+2
         
-        ocab(1,1,ma) = this%emj(mj) * icab(1,mj-1)
-        ocab(2,1,ma) = this%emj(mj) * icab(2,mj-1)
-        ocab(1,2,ma) =                icab(1,mj)
-        ocab(2,2,ma) =                icab(2,mj)
+        ocab(1,1,ma) = emj(mj) * icab(1,mj-1)
+        ocab(2,1,ma) = emj(mj) * icab(2,mj-1)
+        ocab(1,2,ma) =           icab(1,mj)
+        ocab(2,2,ma) =           icab(2,mj)
         
       else
         ma = ma+1
         mj = mj+1
         
-        ocab(1,1,ma) = this%emj(mj+1) * icab(1,mj)
-        ocab(2,1,ma) = this%emj(mj+1) * icab(2,mj)
+        ocab(1,1,ma) = emj(mj+1) * icab(1,mj)
+        ocab(2,1,ma) = emj(mj+1) * icab(2,mj)
       end if
     
-    do m = 1, this%jmax-1
+    do m = 1, jmax-1
       !j == m
         ma = ma+1
         mj = mj+1
         
-        ocab(1,1,ma) = icab(1,mj+1) * this%emj(mj+m+1)
-        ocab(2,1,ma) = icab(2,mj+1) * this%emj(mj+m+1)
+        ocab(1,1,ma) = icab(1,mj+1) * emj(mj+m+1)
+        ocab(2,1,ma) = icab(2,mj+1) * emj(mj+m+1)
         ocab(1,2,ma) = icab(1,mj)
         ocab(2,2,ma) = icab(2,mj)
       
-      do j = 1, (this%jmax-1-m)/2
+      do j = 1, (jmax-1-m)/2
         ma = ma+1
         mj = mj+2
         
-        ocab(1,1,ma) = this%emj(mj+m) * icab(1,mj-1) + this%emj(mj+m+1) * icab(1,mj+1)
-        ocab(2,1,ma) = this%emj(mj+m) * icab(2,mj-1) + this%emj(mj+m+1) * icab(2,mj+1)
-        ocab(1,2,ma) =                  icab(1,mj)
-        ocab(2,2,ma) =                  icab(2,mj)
+        ocab(1,1,ma) = emj(mj+m) * icab(1,mj-1) + emj(mj+m+1) * icab(1,mj+1)
+        ocab(2,1,ma) = emj(mj+m) * icab(2,mj-1) + emj(mj+m+1) * icab(2,mj+1)
+        ocab(1,2,ma) =             icab(1,mj)
+        ocab(2,2,ma) =             icab(2,mj)
       end do
       
       !j == jmax
-      if ( mod((this%jmax-m),2) == 0 ) then
+      if ( mod((jmax-m),2) == 0 ) then
         ma = ma+1
         mj = mj+2
         
-        ocab(1,1,ma) = this%emj(mj+m) * icab(1,mj-1)
-        ocab(2,1,ma) = this%emj(mj+m) * icab(2,mj-1)
-        ocab(1,2,ma) =                  icab(1,mj)
-        ocab(2,2,ma) =                  icab(2,mj)
+        ocab(1,1,ma) = emj(mj+m) * icab(1,mj-1)
+        ocab(2,1,ma) = emj(mj+m) * icab(2,mj-1)
+        ocab(1,2,ma) =             icab(1,mj)
+        ocab(2,2,ma) =             icab(2,mj)
       
       else
         ma = ma+1
         mj = mj+1
         
-        ocab(1,1,ma) = this%emj(mj+m+1) * icab(1,mj)
-        ocab(2,1,ma) = this%emj(mj+m+1) * icab(2,mj)
+        ocab(1,1,ma) = emj(mj+m+1) * icab(1,mj)
+        ocab(2,1,ma) = emj(mj+m+1) * icab(2,mj)
       end if
     end do
     
-    m = this%jmax
+    m = jmax
       !j == m
         ma = ma+1
         mj = mj+1

@@ -7,8 +7,8 @@ submodule (lege_poly) r2c
     
     allocate( cab(2,this%jms) )
     
-    call this%is_rescale_sub( rcab )
-    call this%fwd_indx_sub( rcab, cab )
+    call is_rescale_sub( this%nrma, this%amj, rcab )
+    call fwd_indx_sub( this%jmax, this%emj, rcab, cab )
     
     m = 0
       !$omp simd

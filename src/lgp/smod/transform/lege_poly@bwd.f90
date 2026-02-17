@@ -14,17 +14,17 @@ submodule (lege_poly) bwd
       ima1 = this%mamj(im)
       
       !! ima = ima1
-        call this%bwd_sum1_sub( ima1, pmm, pmj1, pmj, cc(1,ima1), swork )
+        call bwd_sum1_sub( this%n_dbl, ima1, this%fmj(2,ima1), this%sinx, this%cosx, pmm, pmj1, pmj, cc(1,ima1), swork )
       
       do ima = ima1+1, this%mamj(im+1)-1
         pmj2 => pmj1
         pmj1 => pmj
         pmj  => pmj2
         
-        call this%bwd_sum2_sub( ima, pmj1, pmj, cc(1,ima), swork )
+        call bwd_sum2_sub( this%n_dbl, this%fmj(1,ima), this%cosx2, pmj1, pmj, cc(1,ima), swork )
       end do
       
-      call this%bwd_shuffle_sub( swork, grid(1,im) )
+      call bwd_shuffle_sub( this%n_dbl, this%cosx, swork, grid(1,im) )
     end do
     
   end procedure bwd_legesum_sub

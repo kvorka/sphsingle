@@ -19,8 +19,8 @@ submodule (lege_poly) c2r
       end do
     end do
     
-    call this%bwd_indx_sub( cab, rcab )
-    call this%is_rescale_sub( rcab )
+    call bwd_indx_sub( this%jmax, this%emj, cab, rcab )
+    call is_rescale_sub( this%nrma, this%amj, rcab )
     
     deallocate( cab )
     

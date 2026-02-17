@@ -3,7 +3,7 @@ module lege_poly
   implicit none
   
   type, public :: T_legep
-    integer                             :: nFreq, jmax, jms, n, n_dbl, n_dbl_2, nrma
+    integer                             :: nFreq, jmax, jms, n, n_dbl, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
     real(kind=dbl), pointer, contiguous :: cosx(:), sinx(:), cosx2(:), wght(:)
@@ -17,9 +17,8 @@ module lege_poly
     procedure, private, pass :: get_nma_sub    => get_nma_sub
     procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
     
-    procedure, public, pass :: is_rescale_sub
-    procedure, public, pass :: bwd_indx_sub, index_bwd_sub, bwd_legesum_sub, bwd_sum1_sub, bwd_sum2_sub, bwd_shuffle_sub
-    procedure, public, pass :: fwd_indx_sub, index_fwd_sub, fwd_legesum_sub, fwd_sum1_sub, fwd_sum2_sub, fwd_shuffle_sub
+    procedure, public, pass :: index_bwd_sub, bwd_legesum_sub
+    procedure, public, pass :: index_fwd_sub, fwd_legesum_sub
     
   end type T_legep
   
@@ -51,44 +50,11 @@ module lege_poly
       class(T_legep), intent(inout) :: this
     end subroutine get_nma_sub
     
-    module subroutine is_rescale_sub(this, rcab)
-      class(T_legep), intent(in)    :: this
-      real(kind=dbl), intent(inout) :: rcab(4,*)
-    end subroutine is_rescale_sub
-    
-    module subroutine bwd_indx_sub(this, icab, ocab)
-      class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: icab(2,*)
-      real(kind=dbl), intent(out) :: ocab(2,2,*)
-    end subroutine bwd_indx_sub
-    
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
       complex(kind=dbl), intent(in)  :: cjm(*)
       real(kind=dbl),    intent(out) :: rcab(*)
     end subroutine index_bwd_sub
-    
-    module subroutine bwd_sum1_sub(this, ma, pmm, pmj1, pmj, cc, swork)
-      class(T_legep), intent(in)    :: this
-      integer,        intent(in)    :: ma
-      real(kind=dbl), intent(inout) :: pmj(ndbl,2,this%n_dbl_2), pmm(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(in)    :: cc(4)
-      real(kind=dbl), intent(out)   :: swork(ndbl,8,this%n_dbl_2), pmj1(ndbl,2,this%n_dbl_2)
-    end subroutine bwd_sum1_sub
-    
-    module subroutine bwd_sum2_sub(this, ma, pmj1, pmj, cc, swork)
-      class(T_legep), intent(in)     :: this
-      integer,        intent(in)     :: ma
-      real(kind=dbl), intent(inout)  :: pmj(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(in)     :: cc(4), pmj1(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(out)    :: swork(ndbl,8,this%n_dbl_2)
-    end subroutine bwd_sum2_sub
-    
-    module subroutine bwd_shuffle_sub(this, swork, grid)
-      class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: swork(ndbl,8,this%n_dbl_2)
-      real(kind=dbl), intent(out) :: grid(ndbl,2,this%n_dbl_2,4)
-    end subroutine bwd_shuffle_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid, work)
       class(T_legep),         intent(in)  :: this
@@ -97,40 +63,11 @@ module lege_poly
       real(kind=dbl),         intent(in)  :: cc(4,*)
     end subroutine bwd_legesum_sub
     
-    module subroutine fwd_indx_sub(this, ocab, icab)
-      class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: ocab(2,2,*)
-      real(kind=dbl), intent(out) :: icab(2,*)
-    end subroutine fwd_indx_sub
-    
     module subroutine index_fwd_sub(this, rcab, cjm)
       class(T_legep),    intent(in)    :: this
       real(kind=dbl),    intent(inout) :: rcab(*)
       complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
-    
-    module subroutine fwd_sum1_sub(this, ma, pmm, pmj1, pmj, swork, cr, acc, acc2)
-      class(T_legep), intent(in)    :: this
-      integer,        intent(in)    :: ma
-      real(kind=dbl), intent(in)    :: swork(ndbl,8,this%n_dbl_2)
-      real(kind=dbl), intent(inout) :: cr(4), pmj(ndbl,2,this%n_dbl_2), pmm(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4), pmj1(ndbl,2,this%n_dbl_2)
-    end subroutine fwd_sum1_sub
-    
-    module subroutine fwd_sum2_sub(this, ima, pmj1, pmj, swork, cr, acc, acc2)
-      class(T_legep), intent(in)    :: this
-      integer,        intent(in)    :: ima
-      real(kind=dbl), intent(inout) :: pmj(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(in)    :: swork(ndbl,8,this%n_dbl_2), pmj1(ndbl,2,this%n_dbl_2)
-      real(kind=dbl), intent(inout) :: cr(4)
-      real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4)
-    end subroutine fwd_sum2_sub
-    
-    module subroutine fwd_shuffle_sub(this, grid, swork)
-      class(T_legep), intent(in)  :: this
-      real(kind=dbl), intent(in)  :: grid(ndbl,2,this%n_dbl_2,4)
-      real(kind=dbl), intent(out) :: swork(ndbl,8,this%n_dbl_2)
-    end subroutine fwd_shuffle_sub
     
     module subroutine fwd_legesum_sub(this, grid, cr, work)
       class(T_legep),         intent(in)    :: this
@@ -138,6 +75,67 @@ module lege_poly
       real(kind=dbl),         intent(inout) :: cr(4,*)
       real(kind=dbl), target, intent(out)   :: work(*)
     end subroutine fwd_legesum_sub
+  end interface
+  
+  interface
+    module subroutine is_rescale_sub(nrma, amj, rcab)
+      integer,        intent(in)    :: nrma
+      real(kind=dbl), intent(in)    :: amj(nrma)
+      real(kind=dbl), intent(inout) :: rcab(4,nrma)
+    end subroutine is_rescale_sub
+    
+    module subroutine bwd_indx_sub(jmax, emj, icab, ocab)
+      integer,        intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: icab(2,*), emj(*)
+      real(kind=dbl), intent(out) :: ocab(2,2,*)
+    end subroutine bwd_indx_sub
+    
+    module subroutine bwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, cc, swork)
+      integer,        intent(in)    :: n1, ma
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1), pmm(ndbl,n1)
+      real(kind=dbl), intent(in)    :: cc(4), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1), pmj1(ndbl,n1)
+    end subroutine bwd_sum1_sub
+    
+    module subroutine bwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, cc, swork)
+      integer,        intent(in)    :: n1
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
+      real(kind=dbl), intent(in)    :: fmj(2), cosx2(ndbl,n1), cc(4), pmj1(ndbl,n1)
+      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1)
+    end subroutine bwd_sum2_sub
+    
+    module subroutine bwd_shuffle_sub(n1, cosx, swork, grid)
+      integer,        intent(in)  :: n1
+      real(kind=dbl), intent(in)  :: swork(ndbl,4,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(out) :: grid(ndbl,n1,4)
+    end subroutine bwd_shuffle_sub
+    
+    module subroutine fwd_shuffle_sub(n1, cosx, wght, grid, swork)
+      integer,        intent(in)  :: n1
+      real(kind=dbl), intent(in)  :: grid(ndbl,n1,4), cosx(ndbl,n1), wght(ndbl,n1)
+      real(kind=dbl), intent(out) :: swork(ndbl,4,n1)
+    end subroutine fwd_shuffle_sub
+    
+    module subroutine fwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, swork, cr, acc)
+      integer,        intent(in)    :: n1, ma
+      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(inout) :: cr(4), pmj(ndbl,n1), pmm(ndbl,n1)
+      real(kind=dbl), intent(out)   :: acc(ndbl,4), pmj1(ndbl,n1)
+    end subroutine fwd_sum1_sub
+    
+    module subroutine fwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, swork, cr, acc)
+      integer,        intent(in)    :: n1
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
+      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), pmj1(ndbl,n1), fmj(2), cosx2(ndbl,n1)
+      real(kind=dbl), intent(inout) :: cr(4)
+      real(kind=dbl), intent(out)   :: acc(ndbl,4)
+    end subroutine fwd_sum2_sub
+    
+    module subroutine fwd_indx_sub(jmax, emj, ocab, icab)
+      integer,        intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: ocab(2,2,*), emj(*)
+      real(kind=dbl), intent(out) :: icab(2,*)
+    end subroutine fwd_indx_sub
   end interface
   
 end module lege_poly

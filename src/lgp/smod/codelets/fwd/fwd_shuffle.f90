@@ -2,38 +2,24 @@ submodule (lege_poly) fwd_shuffle
   implicit none; contains
   
   module procedure fwd_shuffle_sub
-    integer                             :: i1, i2
-    real(kind=dbl)                      :: w1, w2, cx1, cx2, g11, g21, g31, g41, g12, g22, g32, g42
-    real(kind=dbl), pointer, contiguous :: wght(:,:,:), cosx(:,:,:)
+    integer        :: i1, i2
+    real(kind=dbl) :: w, cx, g1, g2, g3, g4
     
-    cosx(1:ndbl,1:2,1:this%n_dbl_2) => this%cosx
-    wght(1:ndbl,1:2,1:this%n_dbl_2) => this%wght
-    
-    do i2 = 1, this%n_dbl_2
-      !$omp simd aligned (wght,cosx:alig)
+    do i2 = 1, n1
+      !$omp simd
       do i1 = 1, ndbl
-        w1  = wght(i1,1,i2)
-        w2  = wght(i1,2,i2)
-        cx1 = cosx(i1,1,i2)
-        cx2 = cosx(i1,2,i2)
+        w  = wght(i1,i2)
+        cx = cosx(i1,i2)
         
-        g11 = grid(i1,1,i2,1)
-        g21 = grid(i1,1,i2,2)
-        g31 = grid(i1,1,i2,3)
-        g41 = grid(i1,1,i2,4)
-        g12 = grid(i1,2,i2,1)
-        g22 = grid(i1,2,i2,2)
-        g32 = grid(i1,2,i2,3)
-        g42 = grid(i1,2,i2,4)
+        g1 = grid(i1,i2,1)
+        g2 = grid(i1,i2,2)
+        g3 = grid(i1,i2,3)
+        g4 = grid(i1,i2,4)
         
-        swork(i1,1,i2) = ( g11 - g21 ) * w1
-        swork(i1,3,i2) = ( g11 + g21 ) * w1 * cx1
-        swork(i1,2,i2) = ( g31 - g41 ) * w1
-        swork(i1,4,i2) = ( g31 + g41 ) * w1 * cx1
-        swork(i1,5,i2) = ( g12 - g22 ) * w2
-        swork(i1,7,i2) = ( g12 + g22 ) * w2 * cx2
-        swork(i1,6,i2) = ( g32 - g42 ) * w2
-        swork(i1,8,i2) = ( g32 + g42 ) * w2 * cx2
+        swork(i1,1,i2) = ( g1 - g2 ) * w
+        swork(i1,3,i2) = ( g1 + g2 ) * w * cx
+        swork(i1,2,i2) = ( g3 - g4 ) * w
+        swork(i1,4,i2) = ( g3 + g4 ) * w * cx
       end do
     end do
     

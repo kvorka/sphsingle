@@ -3,7 +3,6 @@ module math
   implicit none
   
   real(kind=dbl), parameter :: zero   = 0._dbl          !! double zero
-  integer,        parameter :: step   = 2 * ndbl        !! stepping through latitudinal grid
   integer,        parameter :: size_d = c_sizeof(zero)  !! size of C double
   
   interface

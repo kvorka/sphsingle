@@ -6,9 +6,8 @@ submodule (lege_poly) init
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     
-    this%n       = n
-    this%n_dbl   = n / ndbl
-    this%n_dbl_2 = this%n_dbl / 2
+    this%n     = n
+    this%n_dbl = n / ndbl
     
     this%nFreq = 4 * this%n * ( this%jmax+1 )
     

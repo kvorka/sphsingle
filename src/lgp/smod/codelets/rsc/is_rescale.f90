@@ -5,11 +5,11 @@ submodule (lege_poly) is_rescale
     integer        :: i1, i2
     real(kind=dbl) :: cff1, cff2, cff3, cff4
     
-    do i2 = 1, (this%nrma/4)*4, 4
-      cff1 = this%amj(i2  )
-      cff2 = this%amj(i2+1)
-      cff3 = this%amj(i2+2)
-      cff4 = this%amj(i2+3)
+    do i2 = 1, (nrma/4)*4, 4
+      cff1 = amj(i2  )
+      cff2 = amj(i2+1)
+      cff3 = amj(i2+2)
+      cff4 = amj(i2+3)
       
       !$omp simd
       do i1 = 1, 4
@@ -20,8 +20,8 @@ submodule (lege_poly) is_rescale
       end do
     end do
     
-    do i2 = (this%nrma/4)*4+1, this%nrma
-      cff1 = this%amj(i2)
+    do i2 = (nrma/4)*4+1, nrma
+      cff1 = amj(i2)
       
       !$omp simd
       do i1 = 1, 4
