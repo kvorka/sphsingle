@@ -13,11 +13,8 @@ submodule (lege_poly) bwd
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       
-      call zero_rarray_sub( 4*this%n, swork )
-      
-      !ima = ima1
-        call this%mm_rec_sub( ima1, pmj1, pmj, pmm )
-        call this%bwd_sum_sub( pmj, cc(1,ima1), swork )
+      !! ima = ima1
+        call this%bwd_sum1_sub( ima1, pmm, pmj1, pmj, cc(1,ima1), swork )
       
       do ima = ima1+1, this%mamj(im+1)-1
         pmj2 => pmj1

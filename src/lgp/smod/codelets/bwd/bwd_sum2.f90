@@ -11,8 +11,8 @@ submodule (lege_poly) bwd_sum2
     c3 = cc(3)
     c4 = cc(4)
     
-    cff1 = this%fmj(1,ima)
-    cff2 = this%fmj(2,ima)
+    cff1 = this%fmj(1,ma)
+    cff2 = this%fmj(2,ma)
     
     cosx2(1:ndbl,1:2,1:this%n_dbl_2) => this%cosx2
     

@@ -17,9 +17,8 @@ submodule (lege_poly) fwd
       
       call this%fwd_shuffle_sub( grid(1,im), swork )
       
-      !ima = ima1
-        call this%mm_rec_sub( ima1, pmj1, pmj, pmm )
-        call this%fwd_sum_sub( pmj, swork, cr(1,ima1), acc, acc2 )
+      !! ima = ima1
+        call this%fwd_sum1_sub( ima1, pmm, pmj1, pmj, swork, cr(1,ima1), acc, acc2 )
       
       do ima = ima1+1, this%mamj(im+1)-1
         pmj2 => pmj1
