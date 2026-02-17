@@ -16,12 +16,17 @@ submodule (lege_poly) bwd_sum2
     do i2 = 1, n1
       !$omp simd
       do i1 = 1, ndbl
-        pmj(i1,i2) = ( cff1 * cosx2(i1,i2) - cff2 ) * pmj1(i1,i2) - pmj(i1,i2)
+        pmj(i1,1,i2) = ( cff1 * cosx2(i1,1,i2) - cff2 ) * pmj1(i1,1,i2) - pmj(i1,1,i2)
+        pmj(i1,2,i2) = ( cff1 * cosx2(i1,2,i2) - cff2 ) * pmj1(i1,2,i2) - pmj(i1,2,i2)
         
-        swork(i1,1,i2) = swork(i1,1,i2) + pmj(i1,i2) * c1
-        swork(i1,2,i2) = swork(i1,2,i2) + pmj(i1,i2) * c2
-        swork(i1,3,i2) = swork(i1,3,i2) + pmj(i1,i2) * c3
-        swork(i1,4,i2) = swork(i1,4,i2) + pmj(i1,i2) * c4
+        swork(i1,1,i2) = swork(i1,1,i2) + pmj(i1,1,i2) * c1
+        swork(i1,2,i2) = swork(i1,2,i2) + pmj(i1,1,i2) * c2
+        swork(i1,3,i2) = swork(i1,3,i2) + pmj(i1,1,i2) * c3
+        swork(i1,4,i2) = swork(i1,4,i2) + pmj(i1,1,i2) * c4
+        swork(i1,5,i2) = swork(i1,5,i2) + pmj(i1,2,i2) * c1
+        swork(i1,6,i2) = swork(i1,6,i2) + pmj(i1,2,i2) * c2
+        swork(i1,7,i2) = swork(i1,7,i2) + pmj(i1,2,i2) * c3
+        swork(i1,8,i2) = swork(i1,8,i2) + pmj(i1,2,i2) * c4
       end do
     end do
     
