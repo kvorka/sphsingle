@@ -2,15 +2,11 @@ submodule (lateral_grid) init
   implicit none ; contains
   
   module procedure init_harmonics_sub
-    integer :: nL, nF
     
-    nL = (3*jmax/2+1)/2+ndbl+1-mod((3*jmax/2+1)/2+1,ndbl)
-    nF = prime_adjustement_sub(3*jmax+1)
+    call this%fft%init_sub( 3*jmax+1 )
+    call this%lgp%init_sub( jmax, real(this%fft%n, kind=dbl) )
     
-    this%nGrid = 2 * nL * nF
-    
-    call this%fft%init_sub( nF )
-    call this%lgp%init_sub( jmax, nL, real(nF, kind=dbl) )
+    this%nGrid = 2 * this%lgp%n * this%fft%n
     
   end procedure init_harmonics_sub
   

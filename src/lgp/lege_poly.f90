@@ -28,9 +28,9 @@ module lege_poly
   real(kind=qbl), parameter :: qzero = 0._qbl
   
   interface
-    module subroutine init_lege_sub(this, jmax, n, wfac)
+    module subroutine init_lege_sub(this, jmax, wfac)
       class(T_legep), intent(inout) :: this
-      integer,        intent(in)    :: jmax, n
+      integer,        intent(in)    :: jmax
       real(kind=dbl), intent(in)    :: wfac
     end subroutine init_lege_sub
     
