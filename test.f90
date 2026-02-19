@@ -25,8 +25,8 @@ program test
   call alloc_grid( grid )
   
   start = omp_get_wtime()
-    call harmsy( c1,      grid%tp )
-    call harman( grid%tp, cout    )
+    call harmsy( c1,      grid%grid )
+    call harman( grid%grid, cout      )
   end = omp_get_wtime()
   
   call free_grid( grid )

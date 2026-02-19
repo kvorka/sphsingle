@@ -29,15 +29,15 @@ submodule (lege_poly) fwd_sum2
         pmj(i1,i2  ) = ( cff1 * cosx2(i1,i2  ) - cff2 ) * pmj1(i1,i2  ) - pmj(i1,i2  )
         pmj(i1,i2+1) = ( cff1 * cosx2(i1,i2+1) - cff2 ) * pmj1(i1,i2+1) - pmj(i1,i2+1)
         
-        acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,1,i2)
-        acc(i1,2) = acc(i1,2) + pmj(i1,i2) * swork(i1,2,i2)
-        acc(i1,3) = acc(i1,3) + pmj(i1,i2) * swork(i1,3,i2)
-        acc(i1,4) = acc(i1,4) + pmj(i1,i2) * swork(i1,4,i2)
+        acc(i1,1) = acc(i1,1) + pmj(i1,i2) * s1(i1,i2)
+        acc(i1,2) = acc(i1,2) + pmj(i1,i2) * s2(i1,i2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,i2) * s3(i1,i2)
+        acc(i1,4) = acc(i1,4) + pmj(i1,i2) * s4(i1,i2)
         
-        acc2(i1,1) = acc2(i1,1) + pmj(i1,i2+1) * swork(i1,1,i2+1)
-        acc2(i1,2) = acc2(i1,2) + pmj(i1,i2+1) * swork(i1,2,i2+1)
-        acc2(i1,3) = acc2(i1,3) + pmj(i1,i2+1) * swork(i1,3,i2+1)
-        acc2(i1,4) = acc2(i1,4) + pmj(i1,i2+1) * swork(i1,4,i2+1)
+        acc2(i1,1) = acc2(i1,1) + pmj(i1,i2+1) * s1(i1,i2+1)
+        acc2(i1,2) = acc2(i1,2) + pmj(i1,i2+1) * s2(i1,i2+1)
+        acc2(i1,3) = acc2(i1,3) + pmj(i1,i2+1) * s3(i1,i2+1)
+        acc2(i1,4) = acc2(i1,4) + pmj(i1,i2+1) * s4(i1,i2+1)
       end do
     end do
     
@@ -46,10 +46,10 @@ submodule (lege_poly) fwd_sum2
       do i1 = 1, ndbl
         pmj(i1,n1) = ( cff1 * cosx2(i1,n1) - cff2 ) * pmj1(i1,n1) - pmj(i1,n1)
         
-        acc(i1,1) = acc(i1,1) + pmj(i1,n1) * swork(i1,1,n1)
-        acc(i1,2) = acc(i1,2) + pmj(i1,n1) * swork(i1,2,n1)
-        acc(i1,3) = acc(i1,3) + pmj(i1,n1) * swork(i1,3,n1)
-        acc(i1,4) = acc(i1,4) + pmj(i1,n1) * swork(i1,4,n1)
+        acc(i1,1) = acc(i1,1) + pmj(i1,n1) * s1(i1,n1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,n1) * s2(i1,n1)
+        acc(i1,3) = acc(i1,3) + pmj(i1,n1) * s3(i1,n1)
+        acc(i1,4) = acc(i1,4) + pmj(i1,n1) * s4(i1,n1)
       end do
     end if
     

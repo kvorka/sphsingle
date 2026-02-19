@@ -38,15 +38,15 @@ submodule (lege_poly) bwd_sum1
         pmj(i1,i2  ) = pmm(i1,i2  ) / cosx(i1,i2  )
         pmj(i1,i2+1) = pmm(i1,i2+1) / cosx(i1,i2+1)
         
-        swork(i1,1,i2  ) = pmj(i1,i2  ) * c1
-        swork(i1,2,i2  ) = pmj(i1,i2  ) * c2
-        swork(i1,3,i2  ) = pmj(i1,i2  ) * c3
-        swork(i1,4,i2  ) = pmj(i1,i2  ) * c4
+        s1(i1,i2) = pmj(i1,i2) * c1
+        s2(i1,i2) = pmj(i1,i2) * c2
+        s3(i1,i2) = pmj(i1,i2) * c3
+        s4(i1,i2) = pmj(i1,i2) * c4
         
-        swork(i1,1,i2+1) = pmj(i1,i2+1) * c1
-        swork(i1,2,i2+1) = pmj(i1,i2+1) * c2
-        swork(i1,3,i2+1) = pmj(i1,i2+1) * c3
-        swork(i1,4,i2+1) = pmj(i1,i2+1) * c4
+        s1(i1,i2+1) = pmj(i1,i2+1) * c1
+        s2(i1,i2+1) = pmj(i1,i2+1) * c2
+        s3(i1,i2+1) = pmj(i1,i2+1) * c3
+        s4(i1,i2+1) = pmj(i1,i2+1) * c4
       end do
     end do
     
@@ -55,10 +55,10 @@ submodule (lege_poly) bwd_sum1
       do i1 = 1, ndbl
         pmj(i1,n1) = pmm(i1,n1) / cosx(i1,n1)
         
-        swork(i1,1,n1) = pmj(i1,n1) * c1
-        swork(i1,2,n1) = pmj(i1,n1) * c2
-        swork(i1,3,n1) = pmj(i1,n1) * c3
-        swork(i1,4,n1) = pmj(i1,n1) * c4
+        s1(i1,n1) = pmj(i1,n1) * c1
+        s2(i1,n1) = pmj(i1,n1) * c2
+        s3(i1,n1) = pmj(i1,n1) * c3
+        s4(i1,n1) = pmj(i1,n1) * c4
       end do
     end if
     

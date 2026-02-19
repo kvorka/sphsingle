@@ -58,7 +58,7 @@ module lege_poly
     
     module subroutine bwd_legesum_sub(this, cc, grid, work)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl),         intent(out) :: grid(4*this%n,0:this%jmax)
+      real(kind=dbl),         intent(out) :: grid(this%n,4,0:this%jmax)
       real(kind=dbl), target, intent(out) :: work(*)
       real(kind=dbl),         intent(in)  :: cc(4,*)
     end subroutine bwd_legesum_sub
@@ -71,7 +71,7 @@ module lege_poly
     
     module subroutine fwd_legesum_sub(this, grid, cr, work)
       class(T_legep),         intent(in)    :: this
-      real(kind=dbl),         intent(inout) :: grid(4*this%n,0:this%jmax)
+      real(kind=dbl),         intent(inout) :: grid(this%n,4,0:this%jmax)
       real(kind=dbl),         intent(inout) :: cr(4,*)
       real(kind=dbl), target, intent(out)   :: work(*)
     end subroutine fwd_legesum_sub
@@ -90,43 +90,43 @@ module lege_poly
       real(kind=dbl), intent(out) :: ocab(2,2,*)
     end subroutine bwd_indx_sub
     
-    module subroutine bwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, cc, swork)
-      integer,        intent(in)    :: n1, ma
-      real(kind=dbl), intent(inout) :: pmj(ndbl,n1), pmm(ndbl,n1)
-      real(kind=dbl), intent(in)    :: cc(4), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
-      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1), pmj1(ndbl,n1)
+    module subroutine bwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, cc, s1, s2, s3, s4)
+      integer,         intent(in)    :: n1, ma
+      real(kind=dbl),  intent(inout) :: pmj(ndbl,n1), pmm(ndbl,n1)
+      real(kind=dbl),  intent(in)    :: cc(4), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl),  intent(out)   :: pmj1(ndbl,n1), s1(ndbl,n1), s2(ndbl,n1), s3(ndbl,n1), s4(ndbl,n1)
     end subroutine bwd_sum1_sub
     
-    module subroutine bwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, cc, swork)
+    module subroutine bwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, cc, s1, s2, s3, s4)
       integer,        intent(in)    :: n1
       real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
       real(kind=dbl), intent(in)    :: fmj(2), cosx2(ndbl,n1), cc(4), pmj1(ndbl,n1)
-      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1)
+      real(kind=dbl), intent(out)   :: s1(ndbl,n1), s2(ndbl,n1), s3(ndbl,n1), s4(ndbl,n1)
     end subroutine bwd_sum2_sub
     
-    module subroutine bwd_shuffle_sub(n1, cosx, swork, grid)
-      integer,        intent(in)  :: n1
-      real(kind=dbl), intent(in)  :: swork(ndbl,4,n1), cosx(ndbl,n1)
-      real(kind=dbl), intent(out) :: grid(ndbl,n1,4)
+    module subroutine bwd_shuffle_sub(n1, cosx, g1, g2, g3, g4)
+      integer,        intent(in)    :: n1
+      real(kind=dbl), intent(in)    :: cosx(ndbl,n1)
+      real(kind=dbl), intent(inout) :: g1(ndbl,n1), g2(ndbl,n1), g3(ndbl,n1), g4(ndbl,n1)
     end subroutine bwd_shuffle_sub
     
-    module subroutine fwd_shuffle_sub(n1, cosx, wght, grid, swork)
-      integer,        intent(in)  :: n1
-      real(kind=dbl), intent(in)  :: grid(ndbl,n1,4), cosx(ndbl,n1), wght(ndbl,n1)
-      real(kind=dbl), intent(out) :: swork(ndbl,4,n1)
+    module subroutine fwd_shuffle_sub(n1, cosx, wght, g1, g2, g3, g4)
+      integer,        intent(in)    :: n1
+      real(kind=dbl), intent(in)    :: cosx(ndbl,n1), wght(ndbl,n1)
+      real(kind=dbl), intent(inout) :: g1(ndbl,n1), g2(ndbl,n1), g3(ndbl,n1), g4(ndbl,n1)
     end subroutine fwd_shuffle_sub
     
-    module subroutine fwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, swork, cr, acc, acc2)
+    module subroutine fwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, s1, s2, s3, s4, cr, acc, acc2)
       integer,        intent(in)    :: n1, ma
-      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(in)    :: s1(ndbl,n1), s2(ndbl,n1), s3(ndbl,n1), s4(ndbl,n1), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
       real(kind=dbl), intent(inout) :: cr(4), pmj(ndbl,n1), pmm(ndbl,n1)
       real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4), pmj1(ndbl,n1)
     end subroutine fwd_sum1_sub
     
-    module subroutine fwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, swork, cr, acc, acc2)
+    module subroutine fwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, s1, s2, s3, s4, cr, acc, acc2)
       integer,        intent(in)    :: n1
       real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
-      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), pmj1(ndbl,n1), fmj(2), cosx2(ndbl,n1)
+      real(kind=dbl), intent(in)    :: s1(ndbl,n1), s2(ndbl,n1), s3(ndbl,n1), s4(ndbl,n1), pmj1(ndbl,n1), fmj(2), cosx2(ndbl,n1)
       real(kind=dbl), intent(inout) :: cr(4)
       real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4)
     end subroutine fwd_sum2_sub
