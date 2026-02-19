@@ -4,7 +4,7 @@ submodule (lateral_grid) init
   module procedure init_harmonics_sub
     
     call this%fft%init_sub( 3*jmax+1 )
-    call this%lgp%init_sub( jmax, real(this%fft%n, kind=dbl) )
+    call this%lgp%init_sub( jmax, this%fft%n )
     
     this%nGrid = 2 * this%lgp%n * this%fft%n
     

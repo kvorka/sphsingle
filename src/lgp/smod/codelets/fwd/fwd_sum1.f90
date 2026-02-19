@@ -2,18 +2,15 @@ submodule (lege_poly) fwd_sum1
   implicit none; contains
   
   module procedure fwd_sum1_sub
-    integer :: i1, i2
+    integer :: i1, i2, n2
     
     select case (ma)
       case (1)
         do i2 = 1, n1
           !$omp simd
           do i1 = 1, ndbl
-            pmm(i1,1,i2) = fmj
-            pmm(i1,2,i2) = fmj
-            
-            pmj1(i1,1,i2) = zero
-            pmj1(i1,2,i2) = zero
+            pmm(i1,i2)  = fmj
+            pmj1(i1,i2) = zero
           end do
         end do
         
@@ -21,11 +18,8 @@ submodule (lege_poly) fwd_sum1
         do i2 = 1, n1
           !$omp simd
           do i1 = 1, ndbl
-            pmm(i1,1,i2)  = fmj * sinx(i1,1,i2) * pmm(i1,1,i2)
-            pmm(i1,2,i2)  = fmj * sinx(i1,2,i2) * pmm(i1,2,i2)
-            
-            pmj1(i1,1,i2) = zero
-            pmj1(i1,2,i2) = zero
+            pmm(i1,i2)  = fmj * sinx(i1,i2) * pmm(i1,i2)
+            pmj1(i1,i2) = zero
           end do
         end do
     end select
@@ -43,23 +37,37 @@ submodule (lege_poly) fwd_sum1
       acc2(i1,4) = zero
     end do
     
-    do i2 = 1, n1
+    n2 = ( n1 / 2 ) * 2
+    
+    do i2 = 1, n2, 2
       !$omp simd
       do i1 = 1, ndbl
-        pmj(i1,1,i2) = pmm(i1,1,i2) / cosx(i1,1,i2)
-        pmj(i1,2,i2) = pmm(i1,2,i2) / cosx(i1,2,i2)
+        pmj(i1,i2  ) = pmm(i1,i2  ) / cosx(i1,i2  )
+        pmj(i1,i2+1) = pmm(i1,i2+1) / cosx(i1,i2+1)
         
-        acc(i1,1) = acc(i1,1) + pmj(i1,1,i2) * swork(i1,1,i2)
-        acc(i1,2) = acc(i1,2) + pmj(i1,1,i2) * swork(i1,2,i2)
-        acc(i1,3) = acc(i1,3) + pmj(i1,1,i2) * swork(i1,3,i2)
-        acc(i1,4) = acc(i1,4) + pmj(i1,1,i2) * swork(i1,4,i2)
+        acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,1,i2)
+        acc(i1,2) = acc(i1,2) + pmj(i1,i2) * swork(i1,2,i2)
+        acc(i1,3) = acc(i1,3) + pmj(i1,i2) * swork(i1,3,i2)
+        acc(i1,4) = acc(i1,4) + pmj(i1,i2) * swork(i1,4,i2)
         
-        acc2(i1,1) = acc2(i1,1) + pmj(i1,2,i2) * swork(i1,5,i2)
-        acc2(i1,2) = acc2(i1,2) + pmj(i1,2,i2) * swork(i1,6,i2)
-        acc2(i1,3) = acc2(i1,3) + pmj(i1,2,i2) * swork(i1,7,i2)
-        acc2(i1,4) = acc2(i1,4) + pmj(i1,2,i2) * swork(i1,8,i2)
+        acc2(i1,1) = acc2(i1,1) + pmj(i1,i2+1) * swork(i1,1,i2+1)
+        acc2(i1,2) = acc2(i1,2) + pmj(i1,i2+1) * swork(i1,2,i2+1)
+        acc2(i1,3) = acc2(i1,3) + pmj(i1,i2+1) * swork(i1,3,i2+1)
+        acc2(i1,4) = acc2(i1,4) + pmj(i1,i2+1) * swork(i1,4,i2+1)
       end do
     end do
+    
+    if ( n2 /= n1 ) then
+      !$omp simd
+      do i1 = 1, ndbl
+        pmj(i1,n1) = pmm(i1,n1) / cosx(i1,n1)
+        
+        acc(i1,1) = acc(i1,1) + pmj(i1,n1) * swork(i1,1,n1)
+        acc(i1,2) = acc(i1,2) + pmj(i1,n1) * swork(i1,2,n1)
+        acc(i1,3) = acc(i1,3) + pmj(i1,n1) * swork(i1,3,n1)
+        acc(i1,4) = acc(i1,4) + pmj(i1,n1) * swork(i1,4,n1)
+      end do
+    end if
     
     !$omp simd
     do i1 = 1, ndbl

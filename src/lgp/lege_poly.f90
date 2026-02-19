@@ -3,7 +3,7 @@ module lege_poly
   implicit none
   
   type, public :: T_legep
-    integer                             :: nFreq, jmax, jms, n, n_dbl, n_dbl_2, nrma
+    integer                             :: nFreq, jmax, jms, n, n_dbl, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
     real(kind=dbl), pointer, contiguous :: cosx(:), sinx(:), cosx2(:), wght(:)
@@ -31,7 +31,7 @@ module lege_poly
     module subroutine init_lege_sub(this, jmax, wfac)
       class(T_legep), intent(inout) :: this
       integer,        intent(in)    :: jmax
-      real(kind=dbl), intent(in)    :: wfac
+      integer,        intent(in)    :: wfac
     end subroutine init_lege_sub
     
     module subroutine deallocate_lege_sub(this)
@@ -92,41 +92,41 @@ module lege_poly
     
     module subroutine bwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, cc, swork)
       integer,        intent(in)    :: n1, ma
-      real(kind=dbl), intent(inout) :: pmj(ndbl,2,n1), pmm(ndbl,2,n1)
-      real(kind=dbl), intent(in)    :: cc(4), fmj, sinx(ndbl,2,n1), cosx(ndbl,2,n1)
-      real(kind=dbl), intent(out)   :: swork(ndbl,8,n1), pmj1(ndbl,2,n1)
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1), pmm(ndbl,n1)
+      real(kind=dbl), intent(in)    :: cc(4), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1), pmj1(ndbl,n1)
     end subroutine bwd_sum1_sub
     
     module subroutine bwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, cc, swork)
       integer,        intent(in)    :: n1
-      real(kind=dbl), intent(inout) :: pmj(ndbl,2,n1)
-      real(kind=dbl), intent(in)    :: fmj(2), cosx2(ndbl,2,n1), cc(4), pmj1(ndbl,2,n1)
-      real(kind=dbl), intent(out)   :: swork(ndbl,8,n1)
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
+      real(kind=dbl), intent(in)    :: fmj(2), cosx2(ndbl,n1), cc(4), pmj1(ndbl,n1)
+      real(kind=dbl), intent(out)   :: swork(ndbl,4,n1)
     end subroutine bwd_sum2_sub
     
     module subroutine bwd_shuffle_sub(n1, cosx, swork, grid)
       integer,        intent(in)  :: n1
-      real(kind=dbl), intent(in)  :: swork(ndbl,8,n1), cosx(ndbl,2,n1)
-      real(kind=dbl), intent(out) :: grid(ndbl,2,n1,4)
+      real(kind=dbl), intent(in)  :: swork(ndbl,4,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(out) :: grid(ndbl,n1,4)
     end subroutine bwd_shuffle_sub
     
     module subroutine fwd_shuffle_sub(n1, cosx, wght, grid, swork)
       integer,        intent(in)  :: n1
-      real(kind=dbl), intent(in)  :: grid(ndbl,2,n1,4), cosx(ndbl,2,n1), wght(ndbl,2,n1)
-      real(kind=dbl), intent(out) :: swork(ndbl,8,n1)
+      real(kind=dbl), intent(in)  :: grid(ndbl,n1,4), cosx(ndbl,n1), wght(ndbl,n1)
+      real(kind=dbl), intent(out) :: swork(ndbl,4,n1)
     end subroutine fwd_shuffle_sub
     
     module subroutine fwd_sum1_sub(n1, ma, fmj, sinx, cosx, pmm, pmj1, pmj, swork, cr, acc, acc2)
       integer,        intent(in)    :: n1, ma
-      real(kind=dbl), intent(in)    :: swork(ndbl,8,n1), fmj, sinx(ndbl,2,n1), cosx(ndbl,2,n1)
-      real(kind=dbl), intent(inout) :: cr(4), pmj(ndbl,2,n1), pmm(ndbl,2,n1)
-      real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4), pmj1(ndbl,2,n1)
+      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), fmj, sinx(ndbl,n1), cosx(ndbl,n1)
+      real(kind=dbl), intent(inout) :: cr(4), pmj(ndbl,n1), pmm(ndbl,n1)
+      real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4), pmj1(ndbl,n1)
     end subroutine fwd_sum1_sub
     
     module subroutine fwd_sum2_sub(n1, fmj, cosx2, pmj1, pmj, swork, cr, acc, acc2)
       integer,        intent(in)    :: n1
-      real(kind=dbl), intent(inout) :: pmj(ndbl,2,n1)
-      real(kind=dbl), intent(in)    :: swork(ndbl,8,n1), pmj1(ndbl,2,n1), fmj(2), cosx2(ndbl,2,n1)
+      real(kind=dbl), intent(inout) :: pmj(ndbl,n1)
+      real(kind=dbl), intent(in)    :: swork(ndbl,4,n1), pmj1(ndbl,n1), fmj(2), cosx2(ndbl,n1)
       real(kind=dbl), intent(inout) :: cr(4)
       real(kind=dbl), intent(out)   :: acc(ndbl,4), acc2(ndbl,4)
     end subroutine fwd_sum2_sub
