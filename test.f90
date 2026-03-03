@@ -3,7 +3,7 @@ program test
   use omp_lib
   implicit none
   
-  integer, parameter :: jcut  = 497
+  integer, parameter :: jcut  = 1023
   integer, parameter :: jmcut = jcut*(jcut+1)/2+jcut+1
   
   real(kind=dbl)                 :: start, end
@@ -25,8 +25,8 @@ program test
   call alloc_grid( grid )
   
   start = omp_get_wtime()
-    call harmsy( c1,      grid%grid )
-    call harman( grid%grid, cout      )
+    call harmsy( c1,      grid%tp )
+    call harman( grid%tp, cout    )
   end = omp_get_wtime()
   
   call free_grid( grid )

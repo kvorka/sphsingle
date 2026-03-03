@@ -22,7 +22,7 @@ submodule (lege_poly) roots
   
   module procedure find_roots_sub
     integer                     :: i, n, ncnt
-    real(kind=qbl)              :: xincr, x1, fx1, x2, fx2, root, froot
+    real(kind=qbl)              :: xincr, x1, fx1, x2, fx2, x3, fx3, root, froot
     real(kind=qbl), allocatable :: xclose(:)
     
     !!**********************************************************************!!
@@ -34,14 +34,14 @@ submodule (lege_poly) roots
     call alloc_aligned_sub( this%n, this%c_wght,  this%wght  )
     
     !!**********************************************************************!!
-    !!* Seek for efficient stepping to use within the bisection method and *!!
-    !!* starting points [xclose,xclose+xincr].                             *!!
+    !!* Bracket the positions of the roots.                                *!!
     !!**********************************************************************!!
     allocate( xclose(this%n) )
     
-    n = this%n**2 / 4
+    n    = this%n**2 / 4
+    ncnt = 0
     
-    do
+    do while ( ncnt < this%n )
       n     = 6 * n / 5
       xincr = 1._qbl / n
       ncnt  = 0
@@ -59,20 +59,12 @@ submodule (lege_poly) roots
         end if
       end do
       !$omp end parallel do
-      
-      if ( ncnt == this%n ) then
-        exit
-      else
-        do i = 1, ncnt
-          xclose(i) = qzero
-        end do
-      end if
     end do
     
     !!**********************************************************************!!
-    !!* Bisection                                                          *!!
+    !!* Riddler                                                            *!!
     !!**********************************************************************!!
-    !$omp parallel do private (x1,fx1,x2,fx2,root,froot)
+    !$omp parallel do private (x1,fx1,x2,fx2,x3,fx3,root,froot)
     do i = 1, this%n
       x1  = xclose(i)
       fx1 = lege_fn(2*this%n, x1)
@@ -81,17 +73,25 @@ submodule (lege_poly) roots
       fx2 = lege_fn(2*this%n, x2)
       
       do
-        root  = ( x1 + x2 ) / 2
+        x3  = ( x1 + x2 ) / 2
+        fx3 = lege_fn(2*this%n, x3)
+        
+        root  = x3 + (x3-x1) * sign(1._qbl,fx1-fx2) * fx3 / sqrt( fx3**2 - fx1*fx2 )
         froot = lege_fn(2*this%n, root)
         
         if ( abs(froot) < qeps ) then
           exit
-        else if ( fx1 * froot < qzero ) then
+        else if ( fx3 * froot < qzero ) then
+          x1  = x3
+          fx1 = fx3
           x2  = root
           fx2 = froot
-        else
+        else if ( fx1 * froot < qzero ) then
           x1  = root
           fx1 = froot
+        else if ( fx2 * froot < qzero ) then
+          x2  = root
+          fx2 = froot
         end if
       end do
       
