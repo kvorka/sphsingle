@@ -9,7 +9,6 @@ fcompile="ifx -fast \
               -xHost \
               -qopt-zmm-usage=high \
               -qopenmp \
-              -qno-openmp-simd \
               -diag-disable=8711 \
               -D$memory \
               -cpp"
