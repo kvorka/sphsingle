@@ -5,6 +5,7 @@ submodule (fourier_transform) fx3b
     integer        :: i1, i2, i3
     real(kind=dbl) :: x0re, x0im, x1re, x1im, x2re, x2im
     
+    !$omp parallel do private (i1,i2,x0re,x0im,x1re,x1im,x2re,x2im)
     do i3 = 1, l/3
       do i2 = 1, m
         !$omp simd
@@ -25,6 +26,7 @@ submodule (fourier_transform) fx3b
         end do
       end do
     end do
+    !$omp end parallel do
     
   end procedure fxzm3b
   

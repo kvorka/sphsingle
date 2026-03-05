@@ -12,7 +12,7 @@ submodule (lateral_grid) harmsy
     !! Sum of associated Legendre polynomials. High grid frequencies are used to dealias FFT 
     !! and not needed anywhere else, therefore used as a work array for summation of associated
     !! Legendre polynomials.
-    call this%lgp%bwd_legesum_sub( rcc, grid(1), grid(this%lgp%nFreq+1) )
+    call this%lgp%bwd_legesum_sub( rcc, grid(1) )
     
     !! Zero the high frequencies, which were used as work arrays during the previous operations.
     call zero_rarray_sub( this%nGrid-this%lgp%nFreq, grid(this%lgp%nFreq+1) )

@@ -17,7 +17,7 @@ submodule (lateral_grid) harman
     !! Gauss-Legendre quadrature into the associated Legendre polynomials. High grid frequencies are 
     !! used to dealias fft transform and not needed afterwards, therefore used as a work array for
     !! integration.
-    call this%lgp%fwd_legesum_sub( grid(1), rcr, grid(this%lgp%nFreq+1) )
+    call this%lgp%fwd_legesum_sub( grid(1), rcr )
     
     !! Reindex into the output array.
     call this%lgp%index_fwd_sub( rcr, cout )

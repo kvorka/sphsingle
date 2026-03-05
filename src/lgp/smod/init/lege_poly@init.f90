@@ -14,6 +14,7 @@ submodule (lege_poly) init
     call this%get_nma_sub()
     call this%roots_sub()
     call this%coeffs_sub()
+    call this%pmm_sub()
     
     this%wght = this%wght / real(wfac, kind=dbl)
     
@@ -22,12 +23,10 @@ submodule (lege_poly) init
   module procedure deallocate_lege_sub
     
     call free( this%c_cosx  )
-    call free( this%c_sinx  )
     call free( this%c_cosx2 )
     call free( this%c_wght  )
     
     this%cosx  => null()
-    this%sinx  => null()
     this%cosx2 => null()
     this%wght  => null()
     

@@ -4,6 +4,7 @@ submodule (fourier_transform) fx2b
   module procedure fxzm2b
     integer :: i1, i2, i3
     
+    !$omp parallel do private (i1,i2)
     do i3 = 1, l/2
       do i2 = 1, m
         !$omp simd
@@ -15,6 +16,7 @@ submodule (fourier_transform) fx2b
         end do
       end do
     end do
+    !$omp end parallel do
     
   end procedure fxzm2b
   

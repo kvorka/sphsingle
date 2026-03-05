@@ -1,13 +1,18 @@
-submodule (lege_poly) fwd_sum_m
+submodule (lege_poly) fwd_sum
   implicit none; contains
   
   module procedure fwd_sum_m_sub
-    integer                             :: n2, i1, i2, ima
+    integer                             :: i1, i2, ima, n2
     real(kind=dbl)                      :: cff1, cff2, g1, g2, g3, g4
     real(kind=dbl), pointer, contiguous :: pmj2(:,:)
     
-    !! After the FFT, we need to shuffle the packing north/south and real/imaginary
-    !! into packing suitable for summation.
+    !! As the cycles are going to be unrolled by hand by a factor of two for higher
+    !! efficiency, we need n1/2 (will be used later to test, wheter n1 is divisible
+    !! by two without a change).
+    n2 = ( n1 / 2 ) * 2
+    
+    !!! After the FFT, we need to shuffle the packing north/south and real/imaginary
+    !!! into packing suitable for summation.
     do i2 = 1, n1
       !$omp simd
       do i1 = 1, ndbl
@@ -26,36 +31,9 @@ submodule (lege_poly) fwd_sum_m
       end do
     end do
     
-    !! As the cycles are going to be unrolled by hand by a factor of two for higher
-    !! efficiency, we need n1/2 (will be used later to test, wheter n1 is divisible
-    !! by two without a change).
-    n2 = ( n1 / 2 ) * 2
-    
     !! Starting from degree j equal to order m, we need to forward the recursion for
     !! pmm, prepare the recursion for pmj by setting pmj1 to zero, and we need to
     !! set the initial value of swork to cc * pmj (first member of the sum).
-    cff2 = fmj(2,ma1)
-    
-    select case (ma1)
-      case (1)
-        do i2 = 1, n1
-          !$omp simd aligned (pmj1:alig)
-          do i1 = 1, ndbl
-            pmm(i1,i2)  = cff2
-            pmj1(i1,i2) = zero
-          end do
-        end do
-        
-      case default
-        do i2 = 1, n1
-          !$omp simd aligned (pmj1:alig)
-          do i1 = 1, ndbl
-            pmm(i1,i2)  = cff2 * sinx(i1,i2) * pmm(i1,i2)
-            pmj1(i1,i2) = zero
-          end do
-        end do
-    end select
-    
     !$omp simd
     do i1 = 1, ndbl
       acc(i1,1) = zero
@@ -70,10 +48,13 @@ submodule (lege_poly) fwd_sum_m
     end do
     
     do i2 = 1, n2, 2
-      !$omp simd aligned (pmj:alig)
+      !$omp simd aligned (pmj1,pmj:alig)
       do i1 = 1, ndbl
-        pmj(i1,i2  ) = pmm(i1,i2  ) / cosx(i1,i2  )
-        pmj(i1,i2+1) = pmm(i1,i2+1) / cosx(i1,i2+1)
+        pmj1(i1,i2  ) = zero
+        pmj1(i1,i2+1) = zero
+        
+        pmj(i1,i2  ) = pmm(i1,i2  ,m)
+        pmj(i1,i2+1) = pmm(i1,i2+1,m)
         
         acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,1,i2)
         acc(i1,2) = acc(i1,2) + pmj(i1,i2) * swork(i1,2,i2)
@@ -88,9 +69,11 @@ submodule (lege_poly) fwd_sum_m
     end do
     
     if ( n2 /= n1 ) then
-      !$omp simd aligned (pmj:alig)
+      !$omp simd aligned (pmj1,pmj:alig)
       do i1 = 1, ndbl
-        pmj(i1,n1) = pmm(i1,n1) / cosx(i1,n1)
+        pmj1(i1,n1) = zero
+        
+        pmj(i1,n1) = pmm(i1,n1,m)
         
         acc(i1,1) = acc(i1,1) + pmj(i1,n1) * swork(i1,1,n1)
         acc(i1,2) = acc(i1,2) + pmj(i1,n1) * swork(i1,2,n1)
@@ -115,10 +98,6 @@ submodule (lege_poly) fwd_sum_m
     !! Following with the recursion for degrees m+1 to jmax. We need to repointer our
     !! polynomials, follow with recursion and add cc * pmj to our swork accumulator.
     do ima = ma1+1, ma2
-      pmj2 => pmj1
-      pmj1 => pmj
-      pmj  => pmj2
-      
       cff1 = fmj(1,ima)
       cff2 = fmj(2,ima)
       
@@ -135,8 +114,12 @@ submodule (lege_poly) fwd_sum_m
         acc2(i1,4) = zero
       end do
       
+      pmj2 => pmj1
+      pmj1 => pmj
+      pmj  => pmj2
+      
       do i2 = 1, n2, 2
-        !$omp simd
+        !$omp simd aligned (pmj1,pmj:alig)
         do i1 = 1, ndbl
           pmj(i1,i2  ) = ( cff1 * cosx2(i1,i2  ) - cff2 ) * pmj1(i1,i2  ) - pmj(i1,i2  )
           pmj(i1,i2+1) = ( cff1 * cosx2(i1,i2+1) - cff2 ) * pmj1(i1,i2+1) - pmj(i1,i2+1)
@@ -154,7 +137,7 @@ submodule (lege_poly) fwd_sum_m
       end do
       
       if ( n2 /= n1 ) then
-        !$omp simd
+        !$omp simd aligned (pmj1,pmj:alig)
         do i1 = 1, ndbl
           pmj(i1,n1) = ( cff1 * cosx2(i1,n1) - cff2 ) * pmj1(i1,n1) - pmj(i1,n1)
           
@@ -181,4 +164,4 @@ submodule (lege_poly) fwd_sum_m
     
   end procedure fwd_sum_m_sub
   
-end submodule fwd_sum_m
+end submodule fwd_sum
