@@ -12,10 +12,6 @@ module lege_poly
     contains
     
     procedure, public,  pass :: init_sub       => init_lege_sub
-    procedure, private, pass :: roots_sub      => find_roots_sub
-    procedure, private, pass :: coeffs_sub     => compute_coeffs_sub
-    procedure, private, pass :: pmm_sub        => compute_pmm_sub
-    procedure, private, pass :: get_nma_sub    => get_nma_sub
     procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
     
     procedure, public, pass :: index_bwd_sub, bwd_legesum_sub
@@ -50,10 +46,6 @@ module lege_poly
     module subroutine compute_pmm_sub(this)
       class(T_legep), intent(inout) :: this
     end subroutine compute_pmm_sub
-    
-    module subroutine get_nma_sub(this)
-      class(T_legep), intent(inout) :: this
-    end subroutine get_nma_sub
     
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this

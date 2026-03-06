@@ -16,6 +16,11 @@ module math
       integer,        intent(in)  :: n
       real(kind=dbl), intent(out) :: arr(n)
     end subroutine zero_rarray_sub
+    
+    module real(kind=qbl) function lege_fn(deg, x)
+      integer,        intent(in) :: deg
+      real(kind=qbl), intent(in) :: x
+    end function lege_fn
   end interface
   
 end module math
