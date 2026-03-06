@@ -6,7 +6,7 @@ module lege_poly
     integer                             :: nFreq, jmax, jms, n, n_dbl, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
-    real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:)
+    real(kind=dbl), pointer, contiguous :: cosx(:,:), cosx2(:,:), wght(:,:), pmm(:,:,:)
     type(c_ptr)                         :: c_cosx, c_cosx2, c_wght, c_pmm
     
     contains
@@ -93,11 +93,12 @@ module lege_poly
       real(kind=dbl), intent(out) :: ocab(2,2,*)
     end subroutine bwd_indx_sub
     
-    module subroutine bwd_sum_m_sub(m, n1, ma1, ma2, fmj, cosx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
-      integer,                             intent(in)    :: m, n1, ma1, ma2
-      real(kind=dbl),                      intent(in)    :: fmj(2,ma1:ma2), cosx(ndbl,n1), cosx2(ndbl,n1), pmm(ndbl,n1,0:*)
+    module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
+      integer,                             intent(in)    :: n1, ma1, ma2
+      real(kind=dbl),                      intent(in)    :: fmj(2,ma1:ma2), cosx(ndbl,n1), cosx2(ndbl,n1)
       real(kind=dbl),                      intent(in)    :: cc(4,ma1:ma2)
       real(kind=dbl),                      intent(out)   :: swork(ndbl,4,n1), grid(ndbl,n1,4)
+      real(kind=dbl), pointer, contiguous, intent(in)    :: pmm(:,:)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:,:), pmj1(:,:)
     end subroutine bwd_sum_m_sub
     
@@ -107,12 +108,13 @@ module lege_poly
       real(kind=dbl), intent(out) :: icab(2,*)
     end subroutine fwd_indx_sub
     
-    module subroutine fwd_sum_m_sub(m, n1, ma1, ma2, fmj, cosx, cosx2, wght, pmm, pmj1, pmj, swork, cr, acc, acc2, grid)
-      integer,        intent(in)                         :: m, n1, ma1, ma2
-      real(kind=dbl), intent(in)                         :: fmj(2,ma1:ma2), cosx(ndbl,n1), cosx2(ndbl,n1), pmm(ndbl,n1,0:*), &
+    module subroutine fwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, wght, pmm, pmj1, pmj, swork, cr, acc, acc2, grid)
+      integer,        intent(in)                         :: n1, ma1, ma2
+      real(kind=dbl), intent(in)                         :: fmj(2,ma1:ma2), cosx(ndbl,n1), cosx2(ndbl,n1), &
                                                           & wght(ndbl,n1), grid(ndbl,n1,4)
       real(kind=dbl), intent(inout)                      :: cr(4,ma1:ma2)
       real(kind=dbl), intent(out)                        :: acc(ndbl,4), acc2(ndbl,4), swork(ndbl,4,n1)
+      real(kind=dbl), pointer, contiguous, intent(in)    :: pmm(:,:)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:,:), pmj1(:,:)
     end subroutine fwd_sum_m_sub
   end interface

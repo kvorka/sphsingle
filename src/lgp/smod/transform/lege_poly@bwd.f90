@@ -17,19 +17,18 @@ submodule (lege_poly) bwd
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       
-      call bwd_sum_m_sub( im,                &
-                        & this%n_dbl,        &
-                        & ima1,              &
-                        & this%mamj(im+1)-1, &
-                        & this%fmj(1,ima1),  &
-                        & this%cosx,         &
-                        & this%cosx2,        &
-                        & this%pmm,          &
-                        & pmj1,              &
-                        & pmj,               &
-                        & cc(1,ima1),        &
-                        & acc,               &
-                        & grid(1,im)         )
+      call bwd_sum_m_sub( this%n_dbl,         &
+                        & ima1,               &
+                        & this%mamj(im+1)-1,  &
+                        & this%fmj(1,ima1),   &
+                        & this%cosx,          &
+                        & this%cosx2,         &
+                        & this%pmm(:,:,im+1), &
+                        & pmj1,               &
+                        & pmj,                &
+                        & cc(1,ima1),         &
+                        & acc,                &
+                        & grid(1,im)          )
     end do
     !$omp end do
     

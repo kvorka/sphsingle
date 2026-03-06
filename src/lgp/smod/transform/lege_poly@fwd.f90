@@ -20,22 +20,21 @@ submodule (lege_poly) fwd
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       
-      call fwd_sum_m_sub( im,                &
-                        & this%n_dbl,        &
-                        & ima1,              &
-                        & this%mamj(im+1)-1, &
-                        & this%fmj(1,ima1),  &
-                        & this%cosx,         &
-                        & this%cosx2,        &
-                        & this%wght,         &
-                        & this%pmm,          &
-                        & pmj1,              &
-                        & pmj,               &
-                        & acc,               &
-                        & cr(1,ima1),        &
-                        & acc1,              &
-                        & acc2,              &               
-                        & grid(1,im)         )
+      call fwd_sum_m_sub( this%n_dbl,        &
+                        & ima1,               &
+                        & this%mamj(im+1)-1,  &
+                        & this%fmj(1,ima1),   &
+                        & this%cosx,          &
+                        & this%cosx2,         &
+                        & this%wght,          &
+                        & this%pmm(:,:,im+1), &
+                        & pmj1,               &
+                        & pmj,                &
+                        & acc,                &
+                        & cr(1,ima1),         &
+                        & acc1,               &
+                        & acc2,               &               
+                        & grid(1,im)          )
 
     end do
     !$omp end do

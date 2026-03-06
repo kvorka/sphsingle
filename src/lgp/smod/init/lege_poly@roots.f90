@@ -21,21 +21,27 @@ submodule (lege_poly) roots
   end function lege_fn
   
   module procedure find_roots_sub
-    integer                     :: i, n, ncnt
-    real(kind=qbl)              :: xincr, x1, fx1, x2, fx2, x3, fx3, root, froot
-    real(kind=qbl), allocatable :: xclose(:)
+    integer                             :: i, i1, i2, n, ncnt
+    real(kind=qbl)                      :: xincr, x1, fx1, x2, fx2, x3, fx3, root, froot
+    real(kind=qbl), target, allocatable :: xclose(:)
+    real(kind=qbl), pointer, contiguous :: p2xclose(:,:)
     
     !!**********************************************************************!!
     !!* Close to roots array holder and holder arrays.                     *!!
     !!**********************************************************************!!
-    call alloc_aligned_sub( this%n, this%c_cosx,  this%cosx  )
-    call alloc_aligned_sub( this%n, this%c_cosx2, this%cosx2 )
-    call alloc_aligned_sub( this%n, this%c_wght,  this%wght  )
+    this%c_cosx = malloc( alig, this%n * size_d )
+    call c_f_pointer( this%c_cosx, this%cosx, [ndbl,this%n_dbl] )
+    
+    this%c_cosx2 = malloc( alig, this%n * size_d )
+    call c_f_pointer( this%c_cosx2, this%cosx2, [ndbl,this%n_dbl] )
+    
+    this%c_wght = malloc( alig, this%n * size_d )
+    call c_f_pointer( this%c_wght, this%wght, [ndbl,this%n_dbl] )
     
     !!**********************************************************************!!
     !!* Bracket the positions of the roots.                                *!!
     !!**********************************************************************!!
-    allocate( xclose(this%n) )
+    allocate( xclose(this%n) ); p2xclose(1:ndbl,1:this%n_dbl) => xclose
     
     n    = this%n**2 / 4
     ncnt = 0
@@ -64,46 +70,48 @@ submodule (lege_poly) roots
     !!* Riddler                                                            *!!
     !!**********************************************************************!!
     !$omp parallel do private (x1,fx1,x2,fx2,x3,fx3,root,froot)
-    do i = 1, this%n
-      x1  = xclose(i)
-      fx1 = lege_fn(2*this%n, x1)
-      
-      x2  = x1+xincr
-      fx2 = lege_fn(2*this%n, x2)
-      
-      do
-        x3  = ( x1 + x2 ) / 2
-        fx3 = lege_fn(2*this%n, x3)
+    do i2 = 1, this%n_dbl
+      do i1 = 1, ndbl
+        x1  = p2xclose(i1,i2)
+        fx1 = lege_fn(2*this%n, x1)
         
-        root  = x3 + (x3-x1) * sign(1._qbl,fx1-fx2) * fx3 / sqrt( fx3**2 - fx1*fx2 )
-        froot = lege_fn(2*this%n, root)
+        x2  = x1+xincr
+        fx2 = lege_fn(2*this%n, x2)
         
-        if ( abs(froot) < qeps ) then
-          exit
-        else if ( fx3 * froot < qzero ) then
-          x1  = x3
-          fx1 = fx3
-          x2  = root
-          fx2 = froot
-        else if ( fx1 * froot < qzero ) then
-          x1  = root
-          fx1 = froot
-        else if ( fx2 * froot < qzero ) then
-          x2  = root
-          fx2 = froot
-        end if
+        do
+          x3  = ( x1 + x2 ) / 2
+          fx3 = lege_fn(2*this%n, x3)
+          
+          root  = x3 + (x3-x1) * sign(1._qbl,fx1-fx2) * fx3 / sqrt( fx3**2 - fx1*fx2 )
+          froot = lege_fn(2*this%n, root)
+          
+          if ( abs(froot) < qeps ) then
+            exit
+          else if ( fx3 * froot < qzero ) then
+            x1  = x3
+            fx1 = fx3
+            x2  = root
+            fx2 = froot
+          else if ( fx1 * froot < qzero ) then
+            x1  = root
+            fx1 = froot
+          else if ( fx2 * froot < qzero ) then
+            x2  = root
+            fx2 = froot
+          end if
+        end do
+        
+        this%cosx(i1,i2)  = real( root, kind=dbl )
+        this%cosx2(i1,i2) = real( root**2, kind=dbl )
+        this%wght(i1,i2)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl )
       end do
-      
-      this%cosx(i)  = real( root, kind=dbl )
-      this%cosx2(i) = real( root**2, kind=dbl )
-      this%wght(i)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl )
     end do
     !$omp end parallel do
     
     !!**********************************************************************!!
     !!* Cleaning.                                                          *!!
     !!**********************************************************************!!
-    deallocate( xclose )
+    p2xclose => null(); deallocate( xclose )
     
   end procedure find_roots_sub
   

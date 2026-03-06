@@ -20,13 +20,13 @@ submodule (lege_poly) bwd_sum
     c4 = cc(4,ma1)
     
     do i2 = 1, n2, 2
-      !$omp simd
+      !$omp simd aligned (pmj1,pmj,pmm:alig)
       do i1 = 1, ndbl
         pmj1(i1,i2  ) = zero
         pmj1(i1,i2+1) = zero
         
-        pmj(i1,i2  ) = pmm(i1,i2  ,m)
-        pmj(i1,i2+1) = pmm(i1,i2+1,m)
+        pmj(i1,i2  ) = pmm(i1,i2  )
+        pmj(i1,i2+1) = pmm(i1,i2+1)
         
         swork(i1,1,i2) = pmj(i1,i2) * c1
         swork(i1,2,i2) = pmj(i1,i2) * c2
@@ -41,11 +41,11 @@ submodule (lege_poly) bwd_sum
     end do
     
     if ( n2 /= n1 ) then
-      !$omp simd
+      !$omp simd aligned (pmj1,pmj,pmm:alig)
       do i1 = 1, ndbl
         pmj1(i1,i2) = zero
         
-        pmj(i1,n1) = pmm(i1,n1,m)
+        pmj(i1,n1) = pmm(i1,n1)
         
         swork(i1,1,n1) = pmj(i1,n1) * c1
         swork(i1,2,n1) = pmj(i1,n1) * c2

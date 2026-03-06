@@ -48,13 +48,13 @@ submodule (lege_poly) fwd_sum
     end do
     
     do i2 = 1, n2, 2
-      !$omp simd aligned (pmj1,pmj:alig)
+      !$omp simd aligned (pmj1,pmj,pmm:alig)
       do i1 = 1, ndbl
         pmj1(i1,i2  ) = zero
         pmj1(i1,i2+1) = zero
         
-        pmj(i1,i2  ) = pmm(i1,i2  ,m)
-        pmj(i1,i2+1) = pmm(i1,i2+1,m)
+        pmj(i1,i2  ) = pmm(i1,i2  )
+        pmj(i1,i2+1) = pmm(i1,i2+1)
         
         acc(i1,1) = acc(i1,1) + pmj(i1,i2) * swork(i1,1,i2)
         acc(i1,2) = acc(i1,2) + pmj(i1,i2) * swork(i1,2,i2)
@@ -69,11 +69,11 @@ submodule (lege_poly) fwd_sum
     end do
     
     if ( n2 /= n1 ) then
-      !$omp simd aligned (pmj1,pmj:alig)
+      !$omp simd aligned (pmj1,pmj,pmm:alig)
       do i1 = 1, ndbl
         pmj1(i1,n1) = zero
         
-        pmj(i1,n1) = pmm(i1,n1,m)
+        pmj(i1,n1) = pmm(i1,n1)
         
         acc(i1,1) = acc(i1,1) + pmj(i1,n1) * swork(i1,1,n1)
         acc(i1,2) = acc(i1,2) + pmj(i1,n1) * swork(i1,2,n1)
