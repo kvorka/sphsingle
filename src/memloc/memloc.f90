@@ -1,6 +1,6 @@
 module memloc
-  use iso_fortran_env, only: qbl => real128
-  use iso_c_binding,   only: c_ptr, c_sizeof, c_f_pointer, dbl => c_double
+  use iso_fortran_env, only: qbl => real128, dbl => real64
+  use iso_c_binding,   only: c_ptr, c_sizeof, c_f_pointer
   implicit none; public
   
 #if defined ( mem64 )

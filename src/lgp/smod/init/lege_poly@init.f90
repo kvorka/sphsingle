@@ -59,7 +59,8 @@ submodule (lege_poly) init
     !! This seeks for roots of the Legendre polynomials. Then computes everything neeeded,
     !! notably the root (cosx), root squared (cosx2) and associated weight (wght). First,
     !! instances of this class are alocated. Second, the roots are found by Riddlers method
-    !! with initial bracketing proposed by Stjeltjes and Markoff.
+    !! with initial bracketing proposed by Stjeltjes and Markoff. The weights are additionaly
+    !! rescaled by some factor comming from the FFT.
     call alloc_aligned_sub( this%n, this%c_cosx,  this%cosx  )
     call alloc_aligned_sub( this%n, this%c_cosx2, this%cosx2 )
     call alloc_aligned_sub( this%n, this%c_wght,  this%wght  )
@@ -100,56 +101,52 @@ submodule (lege_poly) init
       qroots(i2)     = root
       this%cosx(i2)  = real( root, kind=dbl )
       this%cosx2(i2) = real( root**2, kind=dbl )
-      this%wght(i2)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl )
+      this%wght(i2)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl ) / real( wfac, kind=dbl )
     end do
     !$omp end parallel do
     
     !! Computing coefficients needed for rearranging even/odd degrees before/after transforms. 
     !! The math is done in quadruple precision in order to keep everything as precise as possible, 
     !! while the results are stored in double precision to save space and increase speed.
-    allocate( this%emj((this%jmax+3)*(this%jmax+2)/2), qemj((this%jmax+3)*(this%jmax+2)/2) )
+    allocate( qemj((this%jmax+3)*(this%jmax+2)/2) )
       
     do m = 0, this%jmax+1
       do j = m, this%jmax+1
-        qemj(m*(this%jmax+2)-m*(m+1)/2+j+1)     = sqrt((j**2-m**2)/(4*j**2-1._qbl))
-        this%emj(m*(this%jmax+2)-m*(m+1)/2+j+1) = real( sqrt((j**2-m**2)/(4*j**2-1._qbl)), kind=dbl )
+        qemj(m*(this%jmax+2)-m*(m+1)/2+j+1) = sqrt( ( j**2 - m**2 ) / ( 4*j**2 - 1._qbl ) )
       end do
     end do
     
     !! Computing coefficients needed for rescaling even/odd degrees before/after transforms. 
     !! The math is done in quadruple precision in order to keep everything as precise as possible, 
     !! while the results are stored in double precision to save space and increase speed.
-    allocate( this%amj(this%nrma), qamj(this%nrma) ); ma = 0
+    allocate( qamj(this%nrma) ); ma = 0
     
     do m = 0, this%jmax
       !j = m
         mj = m*(this%jmax+2)-(m-2)*(m+1)/2
         ma = ma+1
         
-        qamj(ma)     = 1._qbl
-        this%amj(ma) = real( qamj(ma), kind=dbl )
+        qamj(ma) = 1._qbl
       
       do j = 1, (this%jmax-m)/2
         mj = mj+2
         ma = ma+1
         
-        qamj(ma)     = 1._qbl / ( qemj(mj) * qemj(mj-1) ) / qamj(ma-1)
-        this%amj(ma) = real( qamj(ma), kind=dbl )
+        qamj(ma) = 1._qbl / ( qemj(mj) * qemj(mj-1) ) / qamj(ma-1)
       end do
       
       if ( mod((this%jmax-m),2) /= 0 ) then
         mj = mj+2
         ma = ma+1
         
-        qamj(ma)     = 1._qbl / ( qemj(mj) * qemj(mj-1) ) / qamj(ma-1)
-        this%amj(ma) = real( qamj(ma), kind=dbl )
+        qamj(ma) = 1._qbl / ( qemj(mj) * qemj(mj-1) ) / qamj(ma-1)
       end if
     end do
     
     !! Computing coefficients needed for on-the-fly recursion during transforms. The math is done 
     !! in quadruple precision in order to keep everything as precise as possible, while the results 
     !! are stored in double precision to save space and increase speed.
-    allocate( this%fmj(2,this%nrma), qfmj(2,this%nrma) ) ; ma = 0
+    allocate( qfmj(2,this%nrma) ) ; ma = 0
     
     do m = 0, this%jmax
       !j = m
@@ -163,9 +160,6 @@ submodule (lege_poly) init
           qfmj(1,ma) = 1._qbl
           qfmj(2,ma) = -sqrt( (2*m+1._qbl) / (2*m) )
         end if
-        
-        this%fmj(1,ma) = real( qfmj(1,ma), kind=dbl )
-        this%fmj(2,ma) = real( qfmj(2,ma), kind=dbl )
       
       do j = 1, (this%jmax-m)/2
         mj = mj+2
@@ -173,9 +167,6 @@ submodule (lege_poly) init
         
         qfmj(1,ma) =                                     qamj(ma-1)**2
         qfmj(2,ma) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
-        
-        this%fmj(1,ma) = real( qfmj(1,ma), kind=dbl )
-        this%fmj(2,ma) = real( qfmj(2,ma), kind=dbl )
       end do
       
       if ( mod((this%jmax-m),2) /= 0 ) then
@@ -184,13 +175,8 @@ submodule (lege_poly) init
         
         qfmj(1,ma) =                                     qamj(ma-1)**2
         qfmj(2,ma) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
-        
-        this%fmj(1,ma) = real( qfmj(1,ma), kind=dbl )
-        this%fmj(2,ma) = real( qfmj(2,ma), kind=dbl )
       end if
     end do
-    
-    deallocate( qemj, qamj )
     
     !! Precomputing the starting points of recursion for each order m. This helps parallelization
     !! and costs only (jmax+1)*n space. Also increases precision, as it is possible again to use
@@ -226,18 +212,21 @@ submodule (lege_poly) init
       end do
     end do
     
-    deallocate( qfmj, qroots )
+    !! Prepare the array holders from this class and save the results into the double
+    !! precision to save space and also the operation counts.
+    allocate( this%emj((this%jmax+3)*(this%jmax+2)/2), this%amj(this%nrma), this%fmj(2,this%nrma) )
+    
+    this%emj = real( qemj, kind=dbl )
+    this%amj = real( qamj, kind=dbl )
+    this%fmj = real( qfmj, kind=dbl )
     
     this%c_pmm = malloc( alig, this%n * (this%jmax+1) * size_d )
     call c_f_pointer( this%c_pmm, this%pmm, [ndbl,this%n_dbl,this%jmax+1] )
     
     this%pmm = real( qpmm, kind=dbl )
     
-    deallocate( qpmm )
-    
-    !! The last bit of operation is rescaling the weights with 
-    !! whatever factor does the FFT include (or does not include).
-    this%wght = this%wght / real(wfac, kind=dbl)
+    !! Cleaning.
+    deallocate( qpmm, qemj, qamj, qfmj, qroots )
     
   end procedure init_lege_sub
   
