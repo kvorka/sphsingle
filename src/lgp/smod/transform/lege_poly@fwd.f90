@@ -13,14 +13,14 @@ submodule (lege_poly) fwd
     pmj1(1:ndbl,1:this%n_dbl) => work(   this%n+1 : 2*this%n )
     acc                       => work( 2*this%n+1 : 6*this%n )
     
-    acc1                      => work( 6*this%n+       1 : 6*this%n + 4*ndbl )
-    acc2                      => work( 6*this%n+4*ndbl+1 : 6*this%n + 8*ndbl )
+    acc1 => work( 6*this%n+       1 : 6*this%n + 4*ndbl )
+    acc2 => work( 6*this%n+4*ndbl+1 : 6*this%n + 8*ndbl )
     
     !$omp do schedule (dynamic)
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       
-      call fwd_sum_m_sub( this%n_dbl,        &
+      call fwd_sum_m_sub( this%n_dbl,         &
                         & ima1,               &
                         & this%mamj(im+1)-1,  &
                         & this%fmj(1,ima1),   &

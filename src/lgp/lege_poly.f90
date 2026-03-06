@@ -58,7 +58,7 @@ module lege_poly
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
       complex(kind=dbl), intent(in)  :: cjm(*)
-      real(kind=dbl),    intent(out) :: rcab(*)
+      real(kind=dbl),    intent(out) :: rcab(2,2,*)
     end subroutine index_bwd_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid)
@@ -69,7 +69,7 @@ module lege_poly
     
     module subroutine index_fwd_sub(this, rcab, cjm)
       class(T_legep),    intent(in)    :: this
-      real(kind=dbl),    intent(inout) :: rcab(*)
+      real(kind=dbl),    intent(inout) :: rcab(2,2,*)
       complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
     
@@ -87,12 +87,6 @@ module lege_poly
       real(kind=dbl), intent(inout) :: rcab(4,nrma)
     end subroutine is_rescale_sub
     
-    module subroutine bwd_indx_sub(jmax, emj, icab, ocab)
-      integer,        intent(in)  :: jmax
-      real(kind=dbl), intent(in)  :: icab(2,*), emj(*)
-      real(kind=dbl), intent(out) :: ocab(2,2,*)
-    end subroutine bwd_indx_sub
-    
     module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
       integer,                             intent(in)    :: n1, ma1, ma2
       real(kind=dbl),                      intent(in)    :: fmj(2,ma1:ma2), cosx(ndbl,n1), cosx2(ndbl,n1)
@@ -101,12 +95,6 @@ module lege_poly
       real(kind=dbl), pointer, contiguous, intent(in)    :: pmm(:,:)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:,:), pmj1(:,:)
     end subroutine bwd_sum_m_sub
-    
-    module subroutine fwd_indx_sub(jmax, emj, ocab, icab)
-      integer,        intent(in)  :: jmax
-      real(kind=dbl), intent(in)  :: ocab(2,2,*), emj(*)
-      real(kind=dbl), intent(out) :: icab(2,*)
-    end subroutine fwd_indx_sub
     
     module subroutine fwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, wght, pmm, pmj1, pmj, swork, cr, acc, acc2, grid)
       integer,        intent(in)                         :: n1, ma1, ma2
