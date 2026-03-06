@@ -6,7 +6,7 @@ module lege_poly
     integer                             :: nFreq, jmax, jms, n, n_dbl, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
-    real(kind=dbl), pointer, contiguous :: cosx(:,:), cosx2(:,:), wght(:,:), pmm(:,:,:)
+    real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:,:,:)
     type(c_ptr)                         :: c_cosx, c_cosx2, c_wght, c_pmm
     
     contains
@@ -19,7 +19,6 @@ module lege_poly
     
   end type T_legep
   
-  real(kind=dbl), parameter :: deps  = 1.0d-15
   real(kind=qbl), parameter :: qeps  = 1.0d-28
   real(kind=qbl), parameter :: qpi   = acos(-1._qbl)
   real(kind=qbl), parameter :: qzero = 0._qbl
