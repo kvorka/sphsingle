@@ -9,6 +9,8 @@ submodule (lege_poly) c2r
     !! from order-fast jm to degree-fast mj indexing.
     allocate( cab(2,this%jms) )
     
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
     do m = 0, this%jmax
       mj = m*(this%jmax+1)-m*(m+1)/2+1
       

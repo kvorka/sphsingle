@@ -4,11 +4,12 @@ submodule (fourier_transform) fxsc
   module procedure fxrsc
     integer :: i1, i2
     
-    do i2 = 1, m, 2
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
+    do i2 = 1, m
       !$omp simd
       do i1 = 1, ndbl
-        arr(i1,i2  ) = fac * arr(i1,i2  )
-        arr(i1,i2+1) = fac * arr(i1,i2+1)
+        arr(i1,i2) = fac * arr(i1,i2)
       end do
     end do
     

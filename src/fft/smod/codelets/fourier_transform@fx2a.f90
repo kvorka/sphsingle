@@ -11,6 +11,8 @@ submodule (fourier_transform) fx2a
       t1im = t(2,i4)
       
       do i3 = 1, l/2
+        !GCC$ unroll 4
+        !DIR$ unroll (4)
         do i2 = 1, m
           !$omp simd
           do i1 = 1, ndbl

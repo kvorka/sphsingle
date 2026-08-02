@@ -2,14 +2,9 @@ submodule (lege_poly) bwd_sum
   implicit none; contains
   
   module procedure bwd_sum_m_sub
-    integer                             :: i1, i2, ima, n2
+    integer                             :: i1, i2, ima
     real(kind=dbl)                      :: c1, c2, c3, c4, cff1, cff2
     real(kind=dbl), pointer, contiguous :: pmj2(:,:)
-    
-    !! As the cycles are going to be unrolled by hand by a factor of two for higher
-    !! efficiency, we need n1/2 (will be used later to test, wheter n1 is divisible
-    !! by two without a change).
-    n2 = ( n1 / 2 ) * 2
     
     !! Starting from degree j equal to order m, we need to forward the recursion for
     !! pmm, prepare the recursion for pmj by setting pmj1 to zero, and we need to
@@ -19,40 +14,20 @@ submodule (lege_poly) bwd_sum
     c3 = cc(3,ma1)
     c4 = cc(4,ma1)
     
-    do i2 = 1, n2, 2
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
+    do i2 = 1, n1
       !$omp simd aligned (pmj1,pmj,pmm:alig)
       do i1 = 1, ndbl
-        pmj1(i1,i2  ) = zero
-        pmj1(i1,i2+1) = zero
-        
-        pmj(i1,i2  ) = pmm(i1,i2  )
-        pmj(i1,i2+1) = pmm(i1,i2+1)
+        pmj1(i1,i2) = zero
+        pmj(i1,i2)  = pmm(i1,i2)
         
         swork(i1,1,i2) = pmj(i1,i2) * c1
         swork(i1,2,i2) = pmj(i1,i2) * c2
         swork(i1,3,i2) = pmj(i1,i2) * c3
         swork(i1,4,i2) = pmj(i1,i2) * c4
-        
-        swork(i1,1,i2+1) = pmj(i1,i2+1) * c1
-        swork(i1,2,i2+1) = pmj(i1,i2+1) * c2
-        swork(i1,3,i2+1) = pmj(i1,i2+1) * c3
-        swork(i1,4,i2+1) = pmj(i1,i2+1) * c4
       end do
     end do
-    
-    if ( n2 /= n1 ) then
-      !$omp simd aligned (pmj1,pmj,pmm:alig)
-      do i1 = 1, ndbl
-        pmj1(i1,i2) = zero
-        
-        pmj(i1,n1) = pmm(i1,n1)
-        
-        swork(i1,1,n1) = pmj(i1,n1) * c1
-        swork(i1,2,n1) = pmj(i1,n1) * c2
-        swork(i1,3,n1) = pmj(i1,n1) * c3
-        swork(i1,4,n1) = pmj(i1,n1) * c4
-      end do
-    end if
     
     !! Following with the recursion for degrees m+1 to jmax. We need to repointer our
     !! polynomials, follow with recursion and add cc * pmj to our swork accumulator.
@@ -69,39 +44,25 @@ submodule (lege_poly) bwd_sum
       pmj1 => pmj
       pmj  => pmj2
       
-      do i2 = 1, n2, 2
+      !GCC$ unroll 4
+      !DIR$ unroll (4)
+      do i2 = 1, n1
         !$omp simd aligned (pmj,pmj1:alig)
         do i1 = 1, ndbl
-          pmj(i1,i2  ) = ( cff1 * cosx2(i1,i2  ) - cff2 ) * pmj1(i1,i2  ) - pmj(i1,i2  )
-          pmj(i1,i2+1) = ( cff1 * cosx2(i1,i2+1) - cff2 ) * pmj1(i1,i2+1) - pmj(i1,i2+1)
+          pmj(i1,i2) = ( cff1 * cosx2(i1,i2) - cff2 ) * pmj1(i1,i2) - pmj(i1,i2)
           
           swork(i1,1,i2) = swork(i1,1,i2) + pmj(i1,i2) * c1
           swork(i1,2,i2) = swork(i1,2,i2) + pmj(i1,i2) * c2
           swork(i1,3,i2) = swork(i1,3,i2) + pmj(i1,i2) * c3
           swork(i1,4,i2) = swork(i1,4,i2) + pmj(i1,i2) * c4
-          
-          swork(i1,1,i2+1) = swork(i1,1,i2+1) + pmj(i1,i2+1) * c1
-          swork(i1,2,i2+1) = swork(i1,2,i2+1) + pmj(i1,i2+1) * c2
-          swork(i1,3,i2+1) = swork(i1,3,i2+1) + pmj(i1,i2+1) * c3
-          swork(i1,4,i2+1) = swork(i1,4,i2+1) + pmj(i1,i2+1) * c4
         end do
       end do
-      
-      if ( n2 /= n1 ) then
-        !$omp simd aligned (pmj,pmj1:alig)
-        do i1 = 1, ndbl
-          pmj(i1,n1) = ( cff1 * cosx2(i1,n1) - cff2 ) * pmj1(i1,n1) - pmj(i1,n1)
-          
-          swork(i1,1,n1) = swork(i1,1,n1) + pmj(i1,n1) * c1
-          swork(i1,2,n1) = swork(i1,2,n1) + pmj(i1,n1) * c2
-          swork(i1,3,n1) = swork(i1,3,n1) + pmj(i1,n1) * c3
-          swork(i1,4,n1) = swork(i1,4,n1) + pmj(i1,n1) * c4
-        end do
-      end if
     end do
     
     !! As we are done with computing the summation, we need to reshufle the data from
     !! packed sum to south/north and real/imaginary parts for upcomming FFT.
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
     do i2 = 1, n1
       !$omp simd
       do i1 = 1, ndbl

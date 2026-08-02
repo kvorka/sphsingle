@@ -109,6 +109,8 @@ submodule (lege_poly) r2c
         cjm(jm)%im = zero
       end do
     
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
     do m = 1, this%jmax
       mj = m*(this%jmax+1)-m*(m+1)/2+1
       

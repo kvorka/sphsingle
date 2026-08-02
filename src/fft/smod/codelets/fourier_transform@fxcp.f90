@@ -4,13 +4,12 @@ submodule (fourier_transform) fxcp
   module procedure fxcpy
     integer :: i1, i2
     
-    do i2 = 1, m, 4
+    !GCC$ unroll 8
+    !DIR$ unroll (8)
+    do i2 = 1, m
       !$omp simd
       do i1 = 1, ndbl
-        arr_to(i1,i2  ) = arr_from(i1,i2  )
-        arr_to(i1,i2+1) = arr_from(i1,i2+1)
-        arr_to(i1,i2+2) = arr_from(i1,i2+2)
-        arr_to(i1,i2+3) = arr_from(i1,i2+3)
+        arr_to(i1,i2) = arr_from(i1,i2)
       end do
     end do
     

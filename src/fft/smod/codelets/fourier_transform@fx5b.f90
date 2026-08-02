@@ -7,6 +7,8 @@ submodule (fourier_transform) fx5b
     
     !$omp parallel do private (i1,i2,x0re,x0im,x1re,x1im,x2re,x2im,x3re,x3im,x4re,x4im)
     do i3 = 1, l/5
+      !GCC$ unroll 4
+      !DIR$ unroll (4)
       do i2 = 1, m
         !$omp simd
         do i1 = 1, ndbl

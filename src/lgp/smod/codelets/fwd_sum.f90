@@ -13,6 +13,8 @@ submodule (lege_poly) fwd_sum
     
     !!! After the FFT, we need to shuffle the packing north/south and real/imaginary
     !!! into packing suitable for summation.
+    !GCC$ unroll 4
+    !DIR$ unroll (4)
     do i2 = 1, n1
       !$omp simd
       do i1 = 1, ndbl
@@ -36,15 +38,12 @@ submodule (lege_poly) fwd_sum
     !! set the initial value of swork to cc * pmj (first member of the sum).
     !$omp simd
     do i1 = 1, ndbl
-      acc(i1,1) = zero
-      acc(i1,2) = zero
-      acc(i1,3) = zero
-      acc(i1,4) = zero
-      
-      acc2(i1,1) = zero
-      acc2(i1,2) = zero
-      acc2(i1,3) = zero
-      acc2(i1,4) = zero
+      !GCC$ unroll 4
+      !DIR$ unroll (4)
+      do i2 = 1, 4
+        acc(i1,i2)  = zero
+        acc2(i1,i2) = zero
+      end do
     end do
     
     do i2 = 1, n2, 2
@@ -84,15 +83,10 @@ submodule (lege_poly) fwd_sum
     
     !$omp simd
     do i1 = 1, ndbl
-      acc(i1,1) = acc(i1,1) + acc2(i1,1)
-      acc(i1,2) = acc(i1,2) + acc2(i1,2)
-      acc(i1,3) = acc(i1,3) + acc2(i1,3)
-      acc(i1,4) = acc(i1,4) + acc2(i1,4)
-      
-      cr(1,ma1) = cr(1,ma1) + acc(i1,1)
-      cr(2,ma1) = cr(2,ma1) + acc(i1,2)
-      cr(3,ma1) = cr(3,ma1) + acc(i1,3)
-      cr(4,ma1) = cr(4,ma1) + acc(i1,4)
+      cr(1,ma1) = cr(1,ma1) + acc(i1,1) + acc2(i1,1)
+      cr(2,ma1) = cr(2,ma1) + acc(i1,2) + acc2(i1,2)
+      cr(3,ma1) = cr(3,ma1) + acc(i1,3) + acc2(i1,3)
+      cr(4,ma1) = cr(4,ma1) + acc(i1,4) + acc2(i1,4)
     end do
     
     !! Following with the recursion for degrees m+1 to jmax. We need to repointer our
@@ -103,15 +97,12 @@ submodule (lege_poly) fwd_sum
       
       !$omp simd
       do i1 = 1, ndbl
-        acc(i1,1) = zero
-        acc(i1,2) = zero
-        acc(i1,3) = zero
-        acc(i1,4) = zero
-        
-        acc2(i1,1) = zero
-        acc2(i1,2) = zero
-        acc2(i1,3) = zero
-        acc2(i1,4) = zero
+        !GCC$ unroll 4
+        !DIR$ unroll (4)
+        do i2 = 1, 4
+          acc(i1,i2)  = zero
+          acc2(i1,i2) = zero
+        end do
       end do
       
       pmj2 => pmj1
@@ -150,15 +141,10 @@ submodule (lege_poly) fwd_sum
       
       !$omp simd
       do i1 = 1, ndbl
-        acc(i1,1) = acc(i1,1) + acc2(i1,1)
-        acc(i1,2) = acc(i1,2) + acc2(i1,2)
-        acc(i1,3) = acc(i1,3) + acc2(i1,3)
-        acc(i1,4) = acc(i1,4) + acc2(i1,4)
-        
-        cr(1,ima) = cr(1,ima) + acc(i1,1)
-        cr(2,ima) = cr(2,ima) + acc(i1,2)
-        cr(3,ima) = cr(3,ima) + acc(i1,3)
-        cr(4,ima) = cr(4,ima) + acc(i1,4)
+        cr(1,ima) = cr(1,ima) + acc(i1,1) + acc2(i1,1)
+        cr(2,ima) = cr(2,ima) + acc(i1,2) + acc2(i1,2)
+        cr(3,ima) = cr(3,ima) + acc(i1,3) + acc2(i1,3)
+        cr(4,ima) = cr(4,ima) + acc(i1,4) + acc2(i1,4)
       end do
     end do
     
