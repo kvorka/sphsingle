@@ -3,17 +3,19 @@ submodule (lege_poly) dealloc
   
   module procedure deallocate_lege_sub
     
+    call free( this%c_pmm   )
     call free( this%c_cosx  )
     call free( this%c_cosx2 )
     call free( this%c_wght  )
     
+    this%pmm   => null()
     this%cosx  => null()
     this%cosx2 => null()
     this%wght  => null()
     
-    deallocate( this%amj )
-    deallocate( this%emj )
-    deallocate( this%fmj )
+    deallocate( this%amj  )
+    deallocate( this%emj  )
+    deallocate( this%fmj  )
     deallocate( this%mamj )
     
   end procedure deallocate_lege_sub

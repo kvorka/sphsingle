@@ -15,8 +15,7 @@ submodule (lege_poly) init
     this%jms  = jmax*(jmax+1)/2+jmax+1
     
     this%n       = (3*jmax/2+1)/2+1+2*ndbl-mod((3*jmax/2+1)/2+1,2*ndbl)
-    this%n_dbl   = this%n / ndbl
-    this%n_dbl_2 = this%n_dbl / 2
+    this%n_dbl_2 = this%n / ndbl / 2
     
     this%nFreq = 4 * this%n * ( this%jmax+1 )
     

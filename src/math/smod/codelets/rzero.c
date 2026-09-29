@@ -7,7 +7,7 @@ void zero_rarray_c( const int length,
 {
     
     // Main loop
-    #pragma omp unroll partial (vlen4) simd
+    #pragma omp unroll partial (vlen4) simd aligned (arr:alignement)
     for ( int i = 0; i < length; i++ ) { arr[i] = 0.; }
     
 }

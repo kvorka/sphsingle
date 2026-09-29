@@ -161,9 +161,6 @@ void fwd_rec_c( const int n,
     reg3 = _mm256_permute2f128_pd( reg0, reg2, 0x20 );
     
     reg0 = _mm256_add_pd( reg1, reg3 );
-    reg2 = _mm256_loadu_pd( cr );
-    
-    reg0 = _mm256_add_pd( reg0, reg2 );
     
     _mm256_storeu_pd( cr, reg0 );
     

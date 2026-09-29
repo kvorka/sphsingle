@@ -3,15 +3,15 @@ submodule (lege_poly) fwd
 
   module procedure fwd_legesum_sub
     integer                             :: im, ima1, ima2
-    type(c_ptr)                         :: c_work
-    real(kind=dbl), pointer, contiguous :: work(:), pmj1(:), pmj(:), swork(:)
+    real(kind=dbl), pointer, contiguous :: pmj1(:), pmj(:), swork(:)
     
-    call alloc_aligned_sub( 6*this%n, c_work, work )
+    !! Memory preparation, the grid frequencies required only for the FFT are now used
+    !! as temporal storage for polynomials and partial sums
+    pmj   => grid( ( this%jmax + 1 ) * this%n * 4 : ( this%jmax + 1 ) * this%n *  5 - 1 )
+    pmj1  => grid( ( this%jmax + 1 ) * this%n * 5 : ( this%jmax + 1 ) * this%n *  6 - 1 )
+    swork => grid( ( this%jmax + 1 ) * this%n * 6 : ( this%jmax + 1 ) * this%n * 10 - 1 )
     
-    pmj   => work(          1 :   this%n )
-    pmj1  => work(   this%n+1 : 2*this%n )
-    swork => work( 2*this%n+1 : 6*this%n )
-    
+    !! Cycle over the harmonic orders
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       ima2 = this%mamj(im+1)-1
@@ -27,12 +27,10 @@ submodule (lege_poly) fwd
                         & pmj1,             &
                         & pmj,              &
                         & swork,            &
-                        & cr(1,ima1),       &              
-                        & grid(1,im)        )
+                        & cr(1,ima1),       &
+                        & grid(4*this%n*im) )
       
     end do
-    
-    call free(c_work)
     
   end procedure fwd_legesum_sub
   

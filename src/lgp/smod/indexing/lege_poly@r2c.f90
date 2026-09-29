@@ -103,21 +103,18 @@ submodule (lege_poly) r2c
     m = 0
       !$omp simd
       do j = 0, this%jmax
-        jm = j*(j+1)/2+1
-        
-        cjm(jm)%re = cab(1,1+j)
-        cjm(jm)%im = 0._dbl
+        cjm(1+j*(j+1)/2)%re = cab(1,1+j)
+        cjm(1+j*(j+1)/2)%im = 0._dbl
       end do
     
     do m = 1, this%jmax
       mj = m*(this%jmax+1)-m*(m+1)/2+1
+      jm = m+1
       
       !$omp simd
       do j = m, this%jmax
-        jm = j*(j+1)/2+m+1
-        
-        cjm(jm)%re = cab(1,mj+j)
-        cjm(jm)%im = cab(2,mj+j)
+        cjm(jm+j*(j+1)/2)%re = cab(1,mj+j)
+        cjm(jm+j*(j+1)/2)%im = cab(2,mj+j)
       end do
     end do
     

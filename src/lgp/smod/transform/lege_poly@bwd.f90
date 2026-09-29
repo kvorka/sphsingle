@@ -3,15 +3,15 @@ submodule (lege_poly) bwd
   
   module procedure bwd_legesum_sub
     integer                             :: im, ima1, ima2
-    type(c_ptr)                         :: c_work
-    real(kind=dbl), pointer, contiguous :: work(:), swork(:), pmj(:), pmj1(:)
+    real(kind=dbl), pointer, contiguous :: swork(:), pmj(:), pmj1(:)
     
-    call alloc_aligned_sub( 6*this%n, c_work, work )
+    !! Memory preparation, the grid frequencies required only for the FFT are now used
+    !! as temporal storage for polynomials and partial sums
+    pmj   => grid( ( this%jmax + 1 ) * this%n * 4 : ( this%jmax + 1 ) * this%n *  5 - 1 )
+    pmj1  => grid( ( this%jmax + 1 ) * this%n * 5 : ( this%jmax + 1 ) * this%n *  6 - 1 )
+    swork => grid( ( this%jmax + 1 ) * this%n * 6 : ( this%jmax + 1 ) * this%n * 10 - 1 )
     
-    pmj   => work(          1 :   this%n )
-    pmj1  => work(   this%n+1 : 2*this%n )
-    swork => work( 2*this%n+1 : 6*this%n )
-    
+    !! Cycle over the harmonic orders
     do im = 0, this%jmax
       ima1 = this%mamj(im)
       ima2 = this%mamj(im+1)-1
@@ -27,10 +27,8 @@ submodule (lege_poly) bwd
                         & pmj,              &
                         & cc(1,ima1),       &
                         & swork,            &
-                        & grid(1,im)        )
+                        & grid(4*this%n*im) )
     end do
-    
-    call free(c_work)
     
   end procedure bwd_legesum_sub
   
