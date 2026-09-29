@@ -2,11 +2,12 @@ submodule (lateral_grid) harmsy
   implicit none; contains
   
   module procedure harmsy_sub
-    type(c_ptr)                         :: c_rcc
-    real(kind=dbl), pointer, contiguous :: rcc(:)
+    real(kind=dbl), allocatable :: rcc(:)
     
-    !! Reindex the array into suitable form and store the input into an aligned array.
-    call alloc_aligned_sub( 4*this%lgp%nrma, c_rcc, rcc )
+    !! Allocate temporal storage for shuffled coeffs.
+    allocate( rcc(4*this%lgp%nrma) )
+    
+    !! Reindex the array into suitable form.
     call this%lgp%index_bwd_sub( cin, rcc )
     
     !! Sum of associated Legendre polynomials. High grid frequencies are used to dealias FFT 
@@ -21,10 +22,10 @@ submodule (lateral_grid) harmsy
     !! Therefore, the total number of independent FFTs is 2*this%lgp%n_dbl. FFT package leverages
     !! the parity of total number of simd transforms as well as additional factor of 2 comming from
     !! construnction of nLege.
-    call this%fft%fft_c2r_sub( 2*this%lgp%n_dbl, grid )
+    call this%fft%fft_c2r_sub( this%lgp%n_dbl_2, grid )
     
     !! Cleaning
-    call free( c_rcc )
+    deallocate( rcc )
     
   end procedure harmsy_sub
   

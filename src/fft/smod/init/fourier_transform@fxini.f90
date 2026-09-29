@@ -8,7 +8,7 @@ submodule (fourier_transform) fxi
     allocate( ipn(4), itc(2:5), itw(0:n-1) , iw(n-2) )
     
     ipn = [5,4,3,2]
-    t   = zero
+    t   = 0._dbl
     iw  = 0
     itw = 0
     
@@ -112,7 +112,7 @@ submodule (fourier_transform) fxi
           
             do
               if ( isj == j ) then
-                it(ic) = it(ic) + imm
+                it(ic) = it(ic) - 20000
                 exit
               end if
               

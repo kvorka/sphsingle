@@ -3,7 +3,7 @@ submodule (math) alloc
   
   module procedure alloc_aligned_sub
     
-    c_arr = malloc( alig, n * size_d )
+    c_arr = malloc( alig, 8 * n )
     call c_f_pointer( c_arr, f_arr, [n] )
     
     call zero_rarray_sub( n, f_arr )

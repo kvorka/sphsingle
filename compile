@@ -1,19 +1,58 @@
 #!/bin/bash
 ###########################################################################################
-####                                MEMORY ALIGNEMENT                                  ####
-####                               mem16, mem32, mem64                                 ####
-####                                                                                   ####
 ####                                    COMPILER                                       ####
-####                               gfortran, ifort, ifx                                ####
+####                              gfortran-## + gcc-##                                 ####
+####                                  ifx     + icx                                    ####
 ###########################################################################################
-memory="mem32"
-compiler="gfortran"
-omp="disabled"
+fc="gfortran-12"
+cc="gcc-12"
 
 ###########################################################################################
-####                               PREPARING THE SCRIPTS                               ####
+####                               INSTRUCTIONS CHECK                                  ####
 ###########################################################################################
-source ./shell/compiler.sh
+macros=$($cc -march=native -dM -E -x c /dev/null)
+
+echo "$macros" | grep -q "__FMA__"     && instructions="$instructions -D__FMA__"
+echo "$macros" | grep -q "__AVX512F__" && instructions="$instructions -D__AVX512F__"
+
+###########################################################################################
+####                                 COMPILER SET UP                                   ####
+###########################################################################################
+case $fc in
+    ifx)
+        flags="-fast -ffast-math -fomit-frame-pointer -fno-stack-protector -xHost \
+               -qopt-zmm-usage-high -diag-disable=8711 $instructions"
+        
+        fcompile="$fc $flags -cpp"
+        ccompile="$cc $flags"
+    ;;
+    
+    gfortran*)
+        flags="-Ofast -march=native -mprefer-vector-width=512 -mno-vzeroupper -fstrict-aliasing \
+               -fno-tree-loop-distribute-patterns -fcx-limited-range -fno-bounds-check -fopenmp \
+               -fomit-frame-pointer -fno-stack-protector -fargument-noalias-global -flto=auto \
+               -fwhole-program $instructions -cpp"
+        
+        fcompile="$fc $flags"
+        ccompile="$cc $flags -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-memmove"
+    ;;
+esac
+
+###########################################################################################
+####                                  COMPILER FUNCTION                                ####
+###########################################################################################
+function libfcompile() {
+    $fcompile -c $1/$2
+    $fcompile -c $(find $1/smod/. -name "*.f90") || true
+    $ccompile -c $(find $1/smod/. -name "*.c")   || true
+}
+
+###########################################################################################
+####                                  CLEANING FUNCTION                                ####
+###########################################################################################
+function libfclean() {
+    rm *.smod *.mod *.o || true
+}
 
 ###########################################################################################
 ####                             COMPILING MEMORY ALLOCATOR                            ####

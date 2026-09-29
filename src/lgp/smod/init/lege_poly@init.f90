@@ -4,7 +4,7 @@ submodule (lege_poly) init
   module procedure init_lege_sub
     integer                     :: j, m, mj, ma, i, i1, i2
     real(kind=qbl)              :: x1, fx1, x2, fx2, x3, fx3, root, froot
-    real(kind=qbl), allocatable :: qamj(:), qemj(:), qfmj(:,:), qroots(:), qpmm(:,:,:)
+    real(kind=qbl), allocatable :: qamj(:), qemj(:), qfmj(:,:), qroots(:), qpmm(:,:)
     
     !! Set the constants needed within this class. This includes maximum degree,
     !! maximum compound degree, number of roots needed for G.-L. quadrature (keep
@@ -14,8 +14,9 @@ submodule (lege_poly) init
     this%jmax = jmax
     this%jms  = jmax*(jmax+1)/2+jmax+1
     
-    this%n     = (3*jmax/2+1)/2+1+4*ndbl-mod((3*jmax/2+1)/2+1,4*ndbl)
-    this%n_dbl = this%n / ndbl
+    this%n       = (3*jmax/2+1)/2+1+2*ndbl-mod((3*jmax/2+1)/2+1,2*ndbl)
+    this%n_dbl   = this%n / ndbl
+    this%n_dbl_2 = this%n_dbl / 2
     
     this%nFreq = 4 * this%n * ( this%jmax+1 )
     
@@ -67,7 +68,6 @@ submodule (lege_poly) init
     
     allocate( qroots(this%n) )
     
-    !$omp parallel do private (x1,fx1,x2,fx2,x3,fx3,root,froot)
     do i2 = 1, this%n
       x1  = cos( (i2-0.5_qbl) * qpi / (2*this%n) )
       fx1 = lege_fn(2*this%n, x1)
@@ -103,7 +103,6 @@ submodule (lege_poly) init
       this%cosx2(i2) = real( root**2, kind=dbl )
       this%wght(i2)  = real( qpi * (1-root**2) / ( this%n * lege_fn(2*this%n-1, root) )**2, kind=dbl ) / real( wfac, kind=dbl )
     end do
-    !$omp end parallel do
     
     !! Computing coefficients needed for rearranging even/odd degrees before/after transforms. 
     !! The math is done in quadruple precision in order to keep everything as precise as possible, 
@@ -181,34 +180,28 @@ submodule (lege_poly) init
     !! Precomputing the starting points of recursion for each order m. This helps parallelization
     !! and costs only (jmax+1)*n space. Also increases precision, as it is possible again to use
     !! quadruple precision for math, but save the results in doubles.
-    allocate( qpmm(ndbl,this%n_dbl,this%jmax+1) )
+    allocate( qpmm(this%n,this%jmax+1) )
     
     do m = 0, this%jmax
       ma = this%mamj(m)
       
       select case (ma)
         case (1)
-          do i2 = 1, this%n_dbl
-            do i1 = 1, ndbl
-              qpmm(i1,i2,m+1) = qfmj(2,ma)
-            end do
+          do i2 = 1, this%n
+            qpmm(i2,m+1) = qfmj(2,ma)
           end do
       
       case default
-        do i2 = 1, this%n_dbl
-          do i1 = 1, ndbl
-            qpmm(i1,i2,m+1) = qfmj(2,ma) * sqrt( 1-qroots(i1+(i2-1)*ndbl)**2 ) * qpmm(i1,i2,m)
-          end do
+        do i2 = 1, this%n
+          qpmm(i2,m+1) = qfmj(2,ma) * sqrt( 1-qroots(i2)**2 ) * qpmm(i2,m)
         end do
         
       end select
     end do
     
     do m = 0, this%jmax
-      do i2 = 1, this%n_dbl
-        do i1 = 1, ndbl
-          qpmm(i1,i2,m+1) = qpmm(i1,i2,m+1) / qroots(i1+(i2-1)*ndbl)
-        end do
+      do i2 = 1, this%n
+        qpmm(i2,m+1) = qpmm(i2,m+1) / qroots(i2)
       end do
     end do
     
@@ -220,8 +213,8 @@ submodule (lege_poly) init
     this%amj = real( qamj, kind=dbl )
     this%fmj = real( qfmj, kind=dbl )
     
-    this%c_pmm = malloc( alig, this%n * (this%jmax+1) * size_d )
-    call c_f_pointer( this%c_pmm, this%pmm, [ndbl,this%n_dbl,this%jmax+1] )
+    this%c_pmm = malloc( alig, this%n * (this%jmax+1) * 8 )
+    call c_f_pointer( this%c_pmm, this%pmm, [this%n,this%jmax+1] )
     
     this%pmm = real( qpmm, kind=dbl )
     

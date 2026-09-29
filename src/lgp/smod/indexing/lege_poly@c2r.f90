@@ -61,8 +61,8 @@ submodule (lege_poly) c2r
         
         rcab(1,ma) = this%emj(mj+1) * cab(1,mj)
         rcab(2,ma) = this%emj(mj+1) * cab(2,mj)
-        rcab(3,ma) = zero
-        rcab(4,ma) = zero
+        rcab(3,ma) = 0._dbl
+        rcab(4,ma) = 0._dbl
       end if
     
     do m = 1, this%jmax-1
@@ -102,8 +102,8 @@ submodule (lege_poly) c2r
         
         rcab(1,ma) = this%emj(mj+m+1) * cab(1,mj)
         rcab(2,ma) = this%emj(mj+m+1) * cab(2,mj)
-        rcab(3,ma) = zero
-        rcab(4,ma) = zero
+        rcab(3,ma) = 0._dbl
+        rcab(4,ma) = 0._dbl
       end if
     end do
     
@@ -112,8 +112,8 @@ submodule (lege_poly) c2r
         ma = ma+1
         mj = mj+1
         
-        rcab(1,ma) = zero
-        rcab(2,ma) = zero
+        rcab(1,ma) = 0._dbl
+        rcab(2,ma) = 0._dbl
         rcab(3,ma) = cab(1,mj)
         rcab(4,ma) = cab(2,mj)
     
