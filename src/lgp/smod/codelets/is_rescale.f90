@@ -4,8 +4,6 @@ submodule (lege_poly) is_rescale
   module procedure is_rescale_sub
     integer :: i1, i2
     
-    !GCC$ unroll 8
-    !DIR$ unroll (8)
     do i2 = 1, nrma
       !$omp simd
       do i1 = 1, 4

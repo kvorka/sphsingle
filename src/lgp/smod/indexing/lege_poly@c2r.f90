@@ -9,8 +9,6 @@ submodule (lege_poly) c2r
     !! from order-fast jm to degree-fast mj indexing.
     allocate( cab(2,this%jms) )
     
-    !GCC$ unroll 4
-    !DIR$ unroll (4)
     do m = 0, this%jmax
       mj = m*(this%jmax+1)-m*(m+1)/2+1
       
@@ -31,20 +29,20 @@ submodule (lege_poly) c2r
         ma = 1
         mj = 1
         
-        rcab(1,1,ma) = cab(1,mj+1) * this%emj(mj+1)
-        rcab(2,1,ma) = cab(2,mj+1) * this%emj(mj+1)
-        rcab(1,2,ma) = cab(1,mj)
-        rcab(2,2,ma) = cab(2,mj)
+        rcab(1,ma) = cab(1,mj+1) * this%emj(mj+1)
+        rcab(2,ma) = cab(2,mj+1) * this%emj(mj+1)
+        rcab(3,ma) = cab(1,mj)
+        rcab(4,ma) = cab(2,mj)
       
       !$omp simd
       do j = 1, (this%jmax-1)/2
         ma = ma+1
         mj = mj+2
         
-        rcab(1,1,ma) = this%emj(mj) * cab(1,mj-1) + this%emj(mj+1) * cab(1,mj+1)
-        rcab(2,1,ma) = this%emj(mj) * cab(2,mj-1) + this%emj(mj+1) * cab(2,mj+1)
-        rcab(1,2,ma) =                cab(1,mj)
-        rcab(2,2,ma) =                cab(2,mj)
+        rcab(1,ma) = this%emj(mj) * cab(1,mj-1) + this%emj(mj+1) * cab(1,mj+1)
+        rcab(2,ma) = this%emj(mj) * cab(2,mj-1) + this%emj(mj+1) * cab(2,mj+1)
+        rcab(3,ma) =                cab(1,mj)
+        rcab(4,ma) =                cab(2,mj)
       end do
       
       !j == jmax
@@ -52,17 +50,19 @@ submodule (lege_poly) c2r
         ma = ma+1
         mj = mj+2
         
-        rcab(1,1,ma) = this%emj(mj) * cab(1,mj-1)
-        rcab(2,1,ma) = this%emj(mj) * cab(2,mj-1)
-        rcab(1,2,ma) =                cab(1,mj)
-        rcab(2,2,ma) =                cab(2,mj)
+        rcab(1,ma) = this%emj(mj) * cab(1,mj-1)
+        rcab(2,ma) = this%emj(mj) * cab(2,mj-1)
+        rcab(3,ma) =                cab(1,mj)
+        rcab(4,ma) =                cab(2,mj)
         
       else
         ma = ma+1
         mj = mj+1
         
-        rcab(1,1,ma) = this%emj(mj+1) * cab(1,mj)
-        rcab(2,1,ma) = this%emj(mj+1) * cab(2,mj)
+        rcab(1,ma) = this%emj(mj+1) * cab(1,mj)
+        rcab(2,ma) = this%emj(mj+1) * cab(2,mj)
+        rcab(3,ma) = zero
+        rcab(4,ma) = zero
       end if
     
     do m = 1, this%jmax-1
@@ -70,20 +70,20 @@ submodule (lege_poly) c2r
         ma = ma+1
         mj = mj+1
         
-        rcab(1,1,ma) = cab(1,mj+1) * this%emj(mj+m+1)
-        rcab(2,1,ma) = cab(2,mj+1) * this%emj(mj+m+1)
-        rcab(1,2,ma) = cab(1,mj)
-        rcab(2,2,ma) = cab(2,mj)
+        rcab(1,ma) = cab(1,mj+1) * this%emj(mj+m+1)
+        rcab(2,ma) = cab(2,mj+1) * this%emj(mj+m+1)
+        rcab(3,ma) = cab(1,mj)
+        rcab(4,ma) = cab(2,mj)
       
       !$omp simd
       do j = 1, (this%jmax-1-m)/2
         ma = ma+1
         mj = mj+2
         
-        rcab(1,1,ma) = this%emj(mj+m) * cab(1,mj-1) + this%emj(mj+m+1) * cab(1,mj+1)
-        rcab(2,1,ma) = this%emj(mj+m) * cab(2,mj-1) + this%emj(mj+m+1) * cab(2,mj+1)
-        rcab(1,2,ma) =                  cab(1,mj)
-        rcab(2,2,ma) =                  cab(2,mj)
+        rcab(1,ma) = this%emj(mj+m) * cab(1,mj-1) + this%emj(mj+m+1) * cab(1,mj+1)
+        rcab(2,ma) = this%emj(mj+m) * cab(2,mj-1) + this%emj(mj+m+1) * cab(2,mj+1)
+        rcab(3,ma) =                  cab(1,mj)
+        rcab(4,ma) =                  cab(2,mj)
       end do
       
       !j == jmax
@@ -91,17 +91,19 @@ submodule (lege_poly) c2r
         ma = ma+1
         mj = mj+2
         
-        rcab(1,1,ma) = this%emj(mj+m) * cab(1,mj-1)
-        rcab(2,1,ma) = this%emj(mj+m) * cab(2,mj-1)
-        rcab(1,2,ma) =                  cab(1,mj)
-        rcab(2,2,ma) =                  cab(2,mj)
+        rcab(1,ma) = this%emj(mj+m) * cab(1,mj-1)
+        rcab(2,ma) = this%emj(mj+m) * cab(2,mj-1)
+        rcab(3,ma) =                  cab(1,mj)
+        rcab(4,ma) =                  cab(2,mj)
       
       else
         ma = ma+1
         mj = mj+1
         
-        rcab(1,1,ma) = this%emj(mj+m+1) * cab(1,mj)
-        rcab(2,1,ma) = this%emj(mj+m+1) * cab(2,mj)
+        rcab(1,ma) = this%emj(mj+m+1) * cab(1,mj)
+        rcab(2,ma) = this%emj(mj+m+1) * cab(2,mj)
+        rcab(3,ma) = zero
+        rcab(4,ma) = zero
       end if
     end do
     
@@ -110,8 +112,10 @@ submodule (lege_poly) c2r
         ma = ma+1
         mj = mj+1
         
-        rcab(1,2,ma) = cab(1,mj)
-        rcab(2,2,ma) = cab(2,mj)
+        rcab(1,ma) = zero
+        rcab(2,ma) = zero
+        rcab(3,ma) = cab(1,mj)
+        rcab(4,ma) = cab(2,mj)
     
     deallocate( cab )
     

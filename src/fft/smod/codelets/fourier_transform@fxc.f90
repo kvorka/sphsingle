@@ -8,8 +8,6 @@ submodule (fourier_transform) fxc
     t1 = t(1)
     t2 = t(2)
     
-    !GCC$ unroll 4
-    !DIR$ unroll (4)
     do i2 = 1, m
       !$omp simd
       do i1 = 1, ndbl

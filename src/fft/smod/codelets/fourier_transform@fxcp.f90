@@ -4,8 +4,6 @@ submodule (fourier_transform) fxcp
   module procedure fxcpy
     integer :: i1, i2
     
-    !GCC$ unroll 8
-    !DIR$ unroll (8)
     do i2 = 1, m
       !$omp simd
       do i1 = 1, ndbl

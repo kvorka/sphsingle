@@ -10,7 +10,6 @@ if [[ "$omp" == "enabled" ]];
                   -fno-stack-protector \
                   -xHost \
                   -qopt-zmm-usage=high \
-                  -qopenmp \
                   -qno-openmp-simd \
                   -diag-disable=8711 \
                   -D$memory \
@@ -22,7 +21,6 @@ if [[ "$omp" == "enabled" ]];
                   -fno-stack-protector \
                   -xHost \
                   -qopt-zmm-usage=high \
-                  -qopenmp-simd \
                   -diag-disable=8711 \
                   -D$memory \
                   -cpp"

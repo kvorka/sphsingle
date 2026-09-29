@@ -20,18 +20,18 @@ submodule (lege_poly) r2c
         ma = 1
         mj = 1
         
-        cab(1,mj) = rcab(1,2,ma)
-        cab(2,mj) = rcab(2,2,ma)
+        cab(1,mj) = rcab(3,ma)
+        cab(2,mj) = rcab(4,ma)
       
       !$omp simd
       do j = 1, (this%jmax-1)/2
         ma = ma+1
         mj = mj+2
         
-        cab(1,mj-1) = this%emj(mj-1) * rcab(1,1,ma-1) + this%emj(mj) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj-1) * rcab(2,1,ma-1) + this%emj(mj) * rcab(2,1,ma)
-        cab(1,mj  ) =                  rcab(1,2,ma  )
-        cab(2,mj  ) =                  rcab(2,2,ma  )
+        cab(1,mj-1) = this%emj(mj-1) * rcab(1,ma-1) + this%emj(mj) * rcab(1,ma)
+        cab(2,mj-1) = this%emj(mj-1) * rcab(2,ma-1) + this%emj(mj) * rcab(2,ma)
+        cab(1,mj  ) =                  rcab(3,ma  )
+        cab(2,mj  ) =                  rcab(4,ma  )
       end do
       
       !j == jmax
@@ -39,17 +39,17 @@ submodule (lege_poly) r2c
         ma = ma+1
         mj = mj+2
         
-        cab(1,mj-1) = this%emj(mj-1) * rcab(1,1,ma-1) + this%emj(mj) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj-1) * rcab(2,1,ma-1) + this%emj(mj) * rcab(2,1,ma)
-        cab(1,mj  ) =                  rcab(1,2,ma  )
-        cab(2,mj  ) =                  rcab(2,2,ma  )
+        cab(1,mj-1) = this%emj(mj-1) * rcab(1,ma-1) + this%emj(mj) * rcab(1,ma)
+        cab(2,mj-1) = this%emj(mj-1) * rcab(2,ma-1) + this%emj(mj) * rcab(2,ma)
+        cab(1,mj  ) =                  rcab(3,ma  )
+        cab(2,mj  ) =                  rcab(4,ma  )
       
       else
         ma = ma+1
         mj = mj+1
         
-        cab(1,mj) = this%emj(mj) * rcab(1,1,ma-1) + this%emj(mj+1) * rcab(1,1,ma)
-        cab(2,mj) = this%emj(mj) * rcab(2,1,ma-1) + this%emj(mj+1) * rcab(2,1,ma)
+        cab(1,mj) = this%emj(mj) * rcab(1,ma-1) + this%emj(mj+1) * rcab(1,ma)
+        cab(2,mj) = this%emj(mj) * rcab(2,ma-1) + this%emj(mj+1) * rcab(2,ma)
       end if
     
     do m = 1, this%jmax-1
@@ -57,18 +57,18 @@ submodule (lege_poly) r2c
         ma = ma+1
         mj = mj+1
         
-        cab(1,mj) = rcab(1,2,ma)
-        cab(2,mj) = rcab(2,2,ma)
+        cab(1,mj) = rcab(3,ma)
+        cab(2,mj) = rcab(4,ma)
       
       !$omp simd
       do j = 1, (this%jmax-m-1)/2
         ma = ma+1
         mj = mj+2
         
-        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,1,ma-1) + this%emj(mj+m) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,1,ma-1) + this%emj(mj+m) * rcab(2,1,ma)
-        cab(1,mj  ) =                    rcab(1,2,ma  )
-        cab(2,mj  ) =                    rcab(2,2,ma  )
+        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,ma-1) + this%emj(mj+m) * rcab(1,ma)
+        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,ma-1) + this%emj(mj+m) * rcab(2,ma)
+        cab(1,mj  ) =                    rcab(3,ma  )
+        cab(2,mj  ) =                    rcab(4,ma  )
       end do
       
       !j == jmax
@@ -76,17 +76,17 @@ submodule (lege_poly) r2c
         ma = ma+1
         mj = mj+2
         
-        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,1,ma-1) + this%emj(mj+m) * rcab(1,1,ma)
-        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,1,ma-1) + this%emj(mj+m) * rcab(2,1,ma)
-        cab(1,mj  ) =                    rcab(1,2,ma  )
-        cab(2,mj  ) =                    rcab(2,2,ma  )
+        cab(1,mj-1) = this%emj(mj+m-1) * rcab(1,ma-1) + this%emj(mj+m) * rcab(1,ma)
+        cab(2,mj-1) = this%emj(mj+m-1) * rcab(2,ma-1) + this%emj(mj+m) * rcab(2,ma)
+        cab(1,mj  ) =                    rcab(3,ma  )
+        cab(2,mj  ) =                    rcab(4,ma  )
         
       else
         ma = ma+1
         mj = mj+1
         
-        cab(1,mj) = this%emj(mj+m) * rcab(1,1,ma-1) + this%emj(mj+m+1) * rcab(1,1,ma)
-        cab(2,mj) = this%emj(mj+m) * rcab(2,1,ma-1) + this%emj(mj+m+1) * rcab(2,1,ma)
+        cab(1,mj) = this%emj(mj+m) * rcab(1,ma-1) + this%emj(mj+m+1) * rcab(1,ma)
+        cab(2,mj) = this%emj(mj+m) * rcab(2,ma-1) + this%emj(mj+m+1) * rcab(2,ma)
       end if
     end do
     
@@ -95,8 +95,8 @@ submodule (lege_poly) r2c
       ma = ma+1
       mj = mj+1
       
-      cab(1,mj) = rcab(1,2,ma)
-      cab(2,mj) = rcab(2,2,ma)
+      cab(1,mj) = rcab(3,ma)
+      cab(2,mj) = rcab(4,ma)
     
     !! Reindexing from order-fast jm to degree-fast mj indexing
     !! and synthethysing the real/imaginary parts into cmplx.
@@ -109,8 +109,6 @@ submodule (lege_poly) r2c
         cjm(jm)%im = zero
       end do
     
-    !GCC$ unroll 4
-    !DIR$ unroll (4)
     do m = 1, this%jmax
       mj = m*(this%jmax+1)-m*(m+1)/2+1
       

@@ -4,8 +4,6 @@ submodule (fourier_transform) fxsc
   module procedure fxrsc
     integer :: i1, i2
     
-    !GCC$ unroll 4
-    !DIR$ unroll (4)
     do i2 = 1, m
       !$omp simd
       do i1 = 1, ndbl
