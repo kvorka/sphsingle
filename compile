@@ -4,8 +4,8 @@
 ####                              gfortran-## + gcc-##                                 ####
 ####                                  ifx     + icx                                    ####
 ###########################################################################################
-fc="gfortran-12"
-cc="gcc-12"
+fc="ifx"
+cc="icx"
 
 ###########################################################################################
 ####                               INSTRUCTIONS CHECK                                  ####
@@ -20,16 +20,16 @@ echo "$macros" | grep -q "__AVX512F__" && instructions="$instructions -D__AVX512
 ###########################################################################################
 case $fc in
     ifx)
-        flags="-fast -ffast-math -fomit-frame-pointer -fno-stack-protector -xHost \
-               -qopt-zmm-usage-high -diag-disable=8711 $instructions"
+        flags="-O3 -ipo -xHost -fp-model=fast -fomit-frame-pointer -qopt-zmm-usage=high \
+               -fno-stack-protector -qopenmp-simd -fno-alias $instructions"
         
         fcompile="$fc $flags -cpp"
-        ccompile="$cc $flags"
+        ccompile="$cc $flags -fno-builtin-memcpy -fno-builtin-memmove -fno-builtin-memset"
     ;;
     
     gfortran*)
         flags="-Ofast -march=native -mprefer-vector-width=512 -mno-vzeroupper -fstrict-aliasing \
-               -fno-tree-loop-distribute-patterns -fcx-limited-range -fno-bounds-check -fopenmp \
+               -fno-tree-loop-distribute-patterns -fcx-limited-range -fno-bounds-check -fopenmp-simd \
                -fomit-frame-pointer -fno-stack-protector -fargument-noalias-global -flto=auto \
                -fwhole-program $instructions -cpp"
         
@@ -39,39 +39,50 @@ case $fc in
 esac
 
 ###########################################################################################
-####                                  COMPILER FUNCTION                                ####
+####                                PATHS TO LIBRARIES                                 ####
 ###########################################################################################
-function libfcompile() {
-    $fcompile -c $1/$2
-    $fcompile -c $(find $1/smod/. -name "*.f90") || true
-    $ccompile -c $(find $1/smod/. -name "*.c")   || true
-}
+mathpath=src/math
+fftpath=src/fft
+legepath=src/lgp
+gridpath=src/grid
+sphpath=src/sph
+srcpath=src
 
 ###########################################################################################
-####                                  CLEANING FUNCTION                                ####
+####                                  DIRS STRUCTURE                                   ####
 ###########################################################################################
-function libfclean() {
-    rm *.smod *.mod *.o || true
-}
+lvlC=( "${mathpath}/smod/codelets" 
+       "${legepath}/smod/codelets" 
+       "${fftpath}/smod/codelets" )
+
+lvlF=( "${mathpath}/smod" 
+       "${fftpath}/smod/init" 
+       "${fftpath}/smod/transform" 
+       "${legepath}/smod/init" 
+       "${legepath}/smod/indexing" 
+       "${legepath}/smod/cores" 
+       "${legepath}/smod/transform" 
+       "${sphpath}/smod/init" 
+       "${sphpath}/smod/cores" 
+       "${gridpath}/smod/" )
 
 ###########################################################################################
-####                             COMPILING MEMORY ALLOCATOR                            ####
+####                               1. COMPILING INTERFACES                             ####
 ###########################################################################################
-$fcompile -c src/memloc/memloc.f90
+$fcompile -c "${mathpath}/math.f90"
+$fcompile -c "${fftpath}/fourier_transform.f90"
+$fcompile -c "${legepath}/lege_poly.f90"
+$fcompile -c "${gridpath}/physical_grid.f90"
+$fcompile -c "${sphpath}/lateral_grid.f90"
+$fcompile -c "${srcpath}/sphsingle.f90"
 
 ###########################################################################################
-####                                 COMPILING KERNELS                                 ####
+####                           2. COMPILING IMPLEMENTATIONS                            ####
 ###########################################################################################
-libfcompile src/math math.f90
-libfcompile src/fft fourier_transform.f90
-libfcompile src/lgp lege_poly.f90
-libfcompile src/grid physical_grid.f90
-libfcompile src/sph lateral_grid.f90
+find "${lvlC[@]}" -maxdepth 1 -name "*.c"   -print0 | xargs -0 -r -P 0 -n 1 $ccompile -c &
+find "${lvlF[@]}" -maxdepth 1 -name "*.f90" -print0 | xargs -0 -r -P 0 -n 1 $fcompile -c &
 
-###########################################################################################
-####                                 COMPILING INTERFACE                               ####
-###########################################################################################
-$fcompile -c src/sphpack.f90
+wait
 
 ###########################################################################################
 ####                              LINKING TO MAIN CODE                                 ####
@@ -81,4 +92,4 @@ $fcompile -fopenmp test.f90 *.o -o sph_test
 ###########################################################################################
 ####                                      CLEANING                                     ####
 ###########################################################################################
-libfclean
+rm *.smod *.mod *.o || true

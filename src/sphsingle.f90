@@ -1,4 +1,4 @@
-module sphpack
+module sphsingle
   use lateral_grid
   use physical_grid
   implicit none; public
@@ -54,4 +54,4 @@ module sphpack
     
   end subroutine clean_sphpack
   
-end module sphpack
+end module sphsingle

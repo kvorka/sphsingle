@@ -1,4 +1,4 @@
-#include "../cvec.h"
+#include "../../cvec.h"
 
 extern inline __attribute__((always_inline))
 void zero_rarray_c( const int length,

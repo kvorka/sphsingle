@@ -1,4 +1,4 @@
-#include "../../../../math/cvec.h"
+#include "../../../math/cvec.h"
 
 extern inline __attribute__((always_inline))
 void bwd_set_c( const int n,

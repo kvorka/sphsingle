@@ -1,5 +1,5 @@
 program test
-  use sphpack
+  use sphsingle
   use omp_lib
   implicit none
   
