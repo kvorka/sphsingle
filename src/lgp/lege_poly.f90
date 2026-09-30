@@ -49,19 +49,43 @@ module lege_poly
     module subroutine index_bwd_sub(this, cjm, rcab)
       class(T_legep),    intent(in)  :: this
       complex(kind=dbl), intent(in)  :: cjm(*)
-      real(kind=dbl),    intent(out) :: rcab(4,*)
+      real(kind=dbl),    intent(out) :: rcab(*)
     end subroutine index_bwd_sub
+    
+    module subroutine bwd_c2r_sub(jmax, cjm, cab) bind(C, name="bwd_c2r_c")
+      integer, value,    intent(in)  :: jmax
+      complex(kind=dbl), intent(in)  :: cjm(*)
+      real(kind=dbl),    intent(out) :: cab(*)
+    end subroutine bwd_c2r_sub
+    
+    module subroutine bwd_rxd_sub(jmax, emj, icab, ocab) bind(C, name="bwd_rxd_c")
+      integer, value, intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), icab(*)
+      real(kind=dbl), intent(out) :: ocab(*)
+    end subroutine bwd_rxd_sub
     
     module subroutine index_fwd_sub(this, rcab, cjm)
       class(T_legep),    intent(in)    :: this
-      real(kind=dbl),    intent(inout) :: rcab(4,*)
+      real(kind=dbl),    intent(inout) :: rcab(*)
       complex(kind=dbl), intent(out)   :: cjm(*)
     end subroutine index_fwd_sub
     
-    module subroutine is_rescale_sub(nrma, amj, rcab)
-      integer,        intent(in)    :: nrma
-      real(kind=dbl), intent(in)    :: amj(nrma)
-      real(kind=dbl), intent(inout) :: rcab(4,nrma)
+    module subroutine fwd_rxd_sub(jmax, emj, icab, ocab) bind(C, name="fwd_rxd_c")
+      integer, value, intent(in)  :: jmax
+      real(kind=dbl), intent(in)  :: emj(*), icab(*)
+      real(kind=dbl), intent(out) :: ocab(*)
+    end subroutine fwd_rxd_sub
+    
+    module subroutine fwd_r2c_sub(jmax, cab, cjm) bind(C, name="fwd_r2c_c")
+      integer, value,    intent(in)  :: jmax
+      real(kind=dbl),    intent(in)  :: cab(*)
+      complex(kind=dbl), intent(out) :: cjm(*)
+    end subroutine fwd_r2c_sub
+    
+    module subroutine is_rescale_sub(n, amj, rcab) bind(C, name="is_rescale_c")
+      integer, value, intent(in)    :: n
+      real(kind=dbl), intent(in)    :: amj(*)
+      real(kind=dbl), intent(inout) :: rcab(*)
     end subroutine is_rescale_sub
     
     module subroutine bwd_legesum_sub(this, cc, grid)
