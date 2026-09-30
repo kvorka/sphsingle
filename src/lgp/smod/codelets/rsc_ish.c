@@ -7,19 +7,61 @@ void is_rescale_c( const int n,
 
 {
     
+    // Memory references
+    const double *restrict pamj = amj;
+          double *restrict pcab = rcab;
+    
     // Registers to be used
-    __td rc, ra;
+    __m256d rc0, rc1, rc2, rc3,
+            ra0, ra1, ra2, ra3;
+    
+    // Iterator
+    int i = 0;
     
     // Main cycle
-    #pragma omp unroll partial (6)
-    for ( int i = 0; i < n; i++ ) {
+    for ( ; i <= n-4; i += 4 ) {
         
-        ra = _t_set1_pd( *( amj + i ) );
-        rc = _t_loadu_pd( rcab + 4*i );
+        ra0 = _mm256_set1_pd( *( pamj + 0 ) );
+        ra1 = _mm256_set1_pd( *( pamj + 1 ) );
         
-        rc = _t_mul_pd( ra, rc );
+        rc0 = _mm256_loadu_pd( pcab + 0 );
+        rc1 = _mm256_loadu_pd( pcab + 4 );
         
-        _t_storeu_pd( rcab + 4*i, rc );
+        ra2 = _mm256_set1_pd( *( pamj + 2 ) );
+        ra3 = _mm256_set1_pd( *( pamj + 3 ) );
+        
+        rc0 = _mm256_mul_pd( ra0, rc0 );
+        rc1 = _mm256_mul_pd( ra1, rc1 );
+        
+        rc2 = _mm256_loadu_pd( pcab +  8 );
+        rc3 = _mm256_loadu_pd( pcab + 12 );
+        
+        _mm256_storeu_pd( pcab + 0, rc0 );
+        _mm256_storeu_pd( pcab + 4, rc1 );
+        
+        rc2 = _mm256_mul_pd( ra2, rc2 );
+        rc3 = _mm256_mul_pd( ra3, rc3 );
+        
+        _mm256_storeu_pd( pcab +  8, rc2 );
+        _mm256_storeu_pd( pcab + 12, rc3 );
+        
+        pamj +=  4;
+        pcab += 16;
+        
+    }
+    
+    // Remainder cycle
+    for ( ; i < n; i++ ) {
+        
+        ra0 = _mm256_set1_pd( *pamj );
+        rc0 = _mm256_loadu_pd( pcab );
+        
+        rc0 = _mm256_mul_pd( ra0, rc0 );
+        
+        _mm256_storeu_pd( pcab, rc0 );
+        
+        pamj += 1;
+        pcab += 4;
         
     }
     
