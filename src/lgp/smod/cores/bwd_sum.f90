@@ -8,7 +8,7 @@ submodule (lege_poly) bwd_sum
     !! Starting from degree j equal to order m, we need to forward the recursion for
     !! pmm, prepare the recursion for pmj by setting pmj1 to zero, and we need to
     !! set the initial value of swork to cc * pmj (first member of the sum).
-    call bwd_set_sub( n1, cc(1,ma1), pmm, pmj1, pmj, swork )
+    call bwd_set_sub( ma1, n1, fmj(2,ma1), cosx, sinx, cc(1,ma1), pmm, pmj1, pmj, swork )
     
     !! Following with the recursion for degrees m+1 to jmax. We need to repointer our
     !! polynomials, follow with recursion and add cc * pmj to our swork accumulator.

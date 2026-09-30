@@ -3,13 +3,14 @@ submodule (lege_poly) fwd
 
   module procedure fwd_legesum_sub
     integer                             :: im, ima1, ima2
-    real(kind=dbl), pointer, contiguous :: pmj1(:), pmj(:), swork(:)
+    real(kind=dbl), pointer, contiguous :: swork(:), pmm(:), pmj(:), pmj1(:)
     
-    !! Memory preparation, the grid frequencies required only for the FFT are now used
-    !! as temporal storage for polynomials and partial sums
-    pmj   => grid( ( this%jmax + 1 ) * this%n * 4 : ( this%jmax + 1 ) * this%n *  5 - 1 )
-    pmj1  => grid( ( this%jmax + 1 ) * this%n * 5 : ( this%jmax + 1 ) * this%n *  6 - 1 )
-    swork => grid( ( this%jmax + 1 ) * this%n * 6 : ( this%jmax + 1 ) * this%n * 10 - 1 )
+    !! Memory preparation, the grid frequencies above nFreq required only for 
+    !! the FFT are now used as temporal storage for polynomials and partial sums
+    pmm   => grid( this%nFreq + 0 * this%n : this%nFreq + 1 * this%n - 1 )
+    pmj   => grid( this%nFreq + 1 * this%n : this%nFreq + 2 * this%n - 1 )
+    pmj1  => grid( this%nFreq + 2 * this%n : this%nFreq + 3 * this%n - 1 )
+    swork => grid( this%nFreq + 3 * this%n : this%nFreq + 7 * this%n - 1 )
     
     !! Cycle over the harmonic orders
     do im = 0, this%jmax
@@ -21,9 +22,10 @@ submodule (lege_poly) fwd
                         & ima2,             &
                         & this%fmj(1,ima1), &
                         & this%cosx,        &
+                        & this%sinx,        &
                         & this%cosx2,       &
                         & this%wght,        &
-                        & this%pmm(:,im+1), &
+                        & pmm,              &
                         & pmj1,             &
                         & pmj,              &
                         & swork,            &

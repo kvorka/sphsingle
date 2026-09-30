@@ -6,8 +6,8 @@ module lege_poly
     integer                             :: nFreq, jmax, jms, n, n_dbl_2, nrma
     integer,        allocatable         :: mamj(:)
     real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
-    real(kind=dbl), pointer, contiguous :: cosx(:), cosx2(:), wght(:), pmm(:,:)
-    type(c_ptr)                         :: c_cosx, c_cosx2, c_wght, c_pmm
+    real(kind=dbl), pointer, contiguous :: cosx(:), sinx(:), cosx2(:), wght(:)
+    type(c_ptr)                         :: c_cosx, c_sinx, c_cosx2, c_wght
     
     contains
     
@@ -70,18 +70,20 @@ module lege_poly
       real(kind=dbl),         intent(in)  :: cc(4,*)
     end subroutine bwd_legesum_sub
     
-    module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
+    module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
       integer,                             intent(in)    :: n1, ma1, ma2
-      real(kind=dbl),                      intent(in)    :: fmj(2,ma1:*), cosx(*), cosx2(*), pmm(*)
+      real(kind=dbl),                      intent(in)    :: fmj(2,ma1:*), cosx(*), sinx(*), cosx2(*)
       real(kind=dbl),                      intent(in)    :: cc(4,ma1:*)
+      real(kind=dbl),                      intent(inout) :: pmm(*)
       real(kind=dbl),                      intent(out)   :: swork(*), grid(*)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
     end subroutine bwd_sum_m_sub
     
-    module subroutine bwd_set_sub(n, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
-      integer, value, intent(in)  :: n
-      real(kind=dbl), intent(in)  :: cc(*), pmm(*)
-      real(kind=dbl), intent(out) :: pmj1(*), pmj(*), swork(*)
+    module subroutine bwd_set_sub(ma, n, fmj, cosx, sinx, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
+      integer, value, intent(in)    :: n, ma
+      real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cc(*)
+      real(kind=dbl), intent(inout) :: pmm(*)
+      real(kind=dbl), intent(out)   :: pmj1(*), pmj(*), swork(*)
     end subroutine bwd_set_sub
     
     module subroutine bwd_rec_sub(n, cc, fmj, cosx2, pmj1, pmj, swork) bind(C, name="bwd_rec_c")
@@ -102,10 +104,10 @@ module lege_poly
       real(kind=dbl),         intent(out)   :: cr(4,*)
     end subroutine fwd_legesum_sub
     
-    module subroutine fwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
+    module subroutine fwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
       integer,        intent(in)                         :: n1, ma1, ma2
-      real(kind=dbl), intent(in)                         :: fmj(2,ma1:*), cosx(*), cosx2(*), wght(*), grid(*), pmm(*)
-      real(kind=dbl), intent(inout)                      :: cr(4,ma1:*)
+      real(kind=dbl), intent(in)                         :: fmj(2,ma1:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
+      real(kind=dbl), intent(inout)                      :: cr(4,ma1:*), pmm(*)
       real(kind=dbl), intent(out)                        :: swork(*)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
     end subroutine fwd_sum_m_sub
@@ -116,11 +118,11 @@ module lege_poly
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine fwd_shf_sub
     
-    module subroutine fwd_set_sub(n, swork, pmm, pmj1, pmj, cr) bind(C, name="fwd_set_c")
-      integer, value, intent(in)    :: n
-      real(kind=dbl), intent(in)    :: swork(*), pmm(*)
+    module subroutine fwd_set_sub(ma, n, fmj, cosx, sinx, swork, pmm, pmj1, pmj, cr) bind(C, name="fwd_set_c")
+      integer, value, intent(in)    :: n, ma
+      real(kind=dbl), intent(in)    :: swork(*), fmj(*), cosx(*), sinx(*)
       real(kind=dbl), intent(out)   :: pmj1(*), pmj(*)
-      real(kind=dbl), intent(inout) :: cr(*)
+      real(kind=dbl), intent(inout) :: cr(*), pmm(*)
     end subroutine fwd_set_sub
     
     module subroutine fwd_rec_sub(n, swork, fmj, cosx2, pmj1, pmj, cr) bind(C, name="fwd_rec_c")
