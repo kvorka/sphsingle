@@ -3,6 +3,11 @@ module sphsingle
   use physical_grid
   implicit none; public
   
+  !! Only numbers that can be expressed as 2^a.3^b.5^c-3 with a > 0 are supported due to FFT constraints.
+  integer, parameter :: addmissible_jmax(48) = [   5,   7,   9,  13,  15,  21,  27,  29,  33,  37,  45,  47,  51,  57,  61,   69, & 
+                                               &  77,  87,  93,  97, 105, 117, 125, 141, 147, 157, 159, 177, 189, 197, 213,  237, &
+                                               & 247, 253, 267, 285, 297, 317, 321, 357, 381, 397, 429, 447, 477, 497, 997, 1021  ]
+  
   type(T_lateralGrid), private   :: sph
   integer,             protected :: nth, nph
   
@@ -10,6 +15,11 @@ module sphsingle
   
   subroutine init_sphpack(jcut)
     integer, intent(in) :: jcut
+    
+    if ( .not. ( any( addmissible_jmax == jcut ) ) ) then
+      write(*,*) 'Due to FFT, this value of jmax is prohibited. Check sphsingle.f90 for supported values.'
+      stop
+    end if
     
     call sph%init_sub( jcut )
     
