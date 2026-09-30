@@ -90,8 +90,8 @@ module lege_poly
     
     module subroutine bwd_legesum_sub(this, cc, grid)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl), target, intent(out) :: grid(0:*)
       real(kind=dbl),         intent(in)  :: cc(4,*)
+      real(kind=dbl), target, intent(out) :: grid(0:*)
     end subroutine bwd_legesum_sub
     
     module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
