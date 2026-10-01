@@ -11,11 +11,10 @@ module lege_poly
     
     contains
     
-    procedure, public,  pass :: init_sub       => init_lege_sub
-    procedure, public,  pass :: deallocate_sub => deallocate_lege_sub
-    
-    procedure, public, pass :: index_bwd_sub, bwd_legesum_sub
-    procedure, public, pass :: index_fwd_sub, fwd_legesum_sub
+    procedure, public, pass :: init_sub => init_lege_sub
+    procedure, public, pass :: bwd_legesum_sub
+    procedure, public, pass :: fwd_legesum_sub
+    procedure, public, pass :: deallocate_sub => deallocate_lege_sub
     
   end type T_legep
   
@@ -31,37 +30,32 @@ module lege_poly
       integer,        intent(in)    :: wfac
     end subroutine init_lege_sub
     
-    module subroutine deallocate_lege_sub(this)
-      class(T_legep), intent(inout) :: this
-    end subroutine deallocate_lege_sub
-    
-    module subroutine index_bwd_sub(this, cjm, rcab)
-      class(T_legep),    intent(in)  :: this
-      complex(kind=dbl), intent(in)  :: cjm(*)
-      real(kind=dbl),    intent(out) :: rcab(*)
-    end subroutine index_bwd_sub
-    
-    module subroutine bwd_legesum_sub(this, cc, grid)
+    module subroutine bwd_legesum_sub(this, cjm, grid)
       class(T_legep),         intent(in)  :: this
-      real(kind=dbl),         intent(in)  :: cc(4,*)
+      complex(kind=dbl),      intent(in)  :: cjm(*)
       real(kind=dbl), target, intent(out) :: grid(0:*)
     end subroutine bwd_legesum_sub
     
-    module subroutine index_fwd_sub(this, rcab, cjm)
-      class(T_legep),    intent(in)    :: this
-      real(kind=dbl),    intent(inout) :: rcab(*)
-      complex(kind=dbl), intent(out)   :: cjm(*)
-    end subroutine index_fwd_sub
-    
-    module subroutine fwd_legesum_sub(this, grid, cr)
+    module subroutine fwd_legesum_sub(this, grid, cjm)
       class(T_legep),         intent(in)    :: this
       real(kind=dbl), target, intent(inout) :: grid(0:*)
-      real(kind=dbl),         intent(out)   :: cr(4,*)
+      complex(kind=dbl),      intent(out)   :: cjm(*)
     end subroutine fwd_legesum_sub
+    
+    module subroutine deallocate_lege_sub(this)
+      class(T_legep), intent(inout) :: this
+    end subroutine deallocate_lege_sub
   end interface
   
   !! Cores
   interface
+    module subroutine bwd_rxd_sub(jmax, cjm, emj, amj, ocab) bind(C, name="bwd_rxd_c")
+      integer, value,    intent(in)  :: jmax
+      real(kind=dbl),    intent(in)  :: emj(*), amj(*)
+      complex(kind=dbl), intent(in)  :: cjm(*)
+      real(kind=dbl),    intent(out) :: ocab(*)
+    end subroutine bwd_rxd_sub
+    
     module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
       integer,                             intent(in)    :: n1, ma1, ma2
       real(kind=dbl),                      intent(in)    :: fmj(2,ma1:*), cosx(*), sinx(*), cosx2(*), cc(4,ma1:*)
@@ -91,34 +85,16 @@ module lege_poly
       real(kind=dbl), intent(inout) :: cr(*), pmm(*), pmj(*), pmj1(*)
       real(kind=dbl), intent(out)   :: swork(*)
     end subroutine fwd_sum_jmax_sub
+    
+    module subroutine fwd_rxd_sub(jmax, emj, amj, icab, cjm) bind(C, name="fwd_rxd_c")
+      integer, value,    intent(in)  :: jmax
+      real(kind=dbl),    intent(in)  :: emj(*), amj(*), icab(*)
+      complex(kind=dbl), intent(out) :: cjm(*)
+    end subroutine fwd_rxd_sub
   end interface
   
   !! Codelets
   interface
-    module subroutine bwd_c2r_sub(jmax, cjm, cab) bind(C, name="bwd_c2r_c")
-      integer, value,    intent(in)  :: jmax
-      complex(kind=dbl), intent(in)  :: cjm(*)
-      real(kind=dbl),    intent(out) :: cab(*)
-    end subroutine bwd_c2r_sub
-    
-    module subroutine bwd_rxd_sub(jmax, emj, amj, icab, ocab) bind(C, name="bwd_rxd_c")
-      integer, value, intent(in)  :: jmax
-      real(kind=dbl), intent(in)  :: emj(*), amj(*), icab(*)
-      real(kind=dbl), intent(out) :: ocab(*)
-    end subroutine bwd_rxd_sub
-    
-    module subroutine fwd_rxd_sub(jmax, emj, amj, icab, ocab) bind(C, name="fwd_rxd_c")
-      integer, value, intent(in)  :: jmax
-      real(kind=dbl), intent(in)  :: emj(*), amj(*), icab(*)
-      real(kind=dbl), intent(out) :: ocab(*)
-    end subroutine fwd_rxd_sub
-    
-    module subroutine fwd_r2c_sub(jmax, cab, cjm) bind(C, name="fwd_r2c_c")
-      integer, value,    intent(in)  :: jmax
-      real(kind=dbl),    intent(in)  :: cab(*)
-      complex(kind=dbl), intent(out) :: cjm(*)
-    end subroutine fwd_r2c_sub
-    
     module subroutine bwd_set_sub(ma, n, fmj, cosx, sinx, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
       integer, value, intent(in)    :: n, ma
       real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cc(*)

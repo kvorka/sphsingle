@@ -3,7 +3,11 @@ submodule (lege_poly) fwd
 
   module procedure fwd_legesum_sub
     integer                             :: im, ima1, ima2
+    real(kind=dbl), allocatable         :: cr(:,:)
     real(kind=dbl), pointer, contiguous :: swork(:), pmm(:), pmj(:), pmj1(:)
+    
+    !! Allocate output array for sph coeffs.
+    allocate( cr(4,this%nrma) )
     
     !! Memory preparation, the grid frequencies above nFreq required only for 
     !! the FFT are now used as temporal storage for polynomials and partial sums
@@ -49,6 +53,15 @@ submodule (lege_poly) fwd
                          & swork,                   &
                          & cr(1,ima2),              &
                          & grid(4*this%n*this%jmax) )
+    
+    !! Reindexing after transform. Quadruplets of coefficients are rescaled and synthethysed. 
+    !! These include real/imaginary, odd degree/even degree components, respectively. Afterwards, 
+    !! reindexing from order-fast mj to degree-fast jm indexing and casting the real/imaginary 
+    !! parts into cmplx is carried out.
+    call fwd_rxd_sub( this%jmax, this%emj, this%amj, cr, cjm )
+    
+    !! Cleaning.
+    deallocate( cr )
     
   end procedure fwd_legesum_sub
   

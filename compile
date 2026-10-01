@@ -52,7 +52,8 @@ srcpath=src
 ####                                  DIRS STRUCTURE                                   ####
 ###########################################################################################
 lvlC=( "${mathpath}/smod/codelets" 
-       "${legepath}/smod/codelets" 
+       "${legepath}/smod/codelets"
+       "${legepath}/smod/cores" 
        "${fftpath}/smod/codelets" )
 
 lvlF=( "${mathpath}/smod" 

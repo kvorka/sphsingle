@@ -1,4 +1,4 @@
-submodule (lege_poly) bwd_sum
+submodule (lege_poly) bwd_sum_m
   implicit none; contains
   
   module procedure bwd_sum_m_sub
@@ -39,4 +39,4 @@ submodule (lege_poly) bwd_sum
     
   end procedure bwd_sum_jmax_sub
   
-end submodule bwd_sum
+end submodule bwd_sum_m

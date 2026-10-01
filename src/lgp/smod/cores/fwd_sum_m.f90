@@ -1,4 +1,4 @@
-submodule (lege_poly) fwd_sum
+submodule (lege_poly) fwd_sum_m
   implicit none; contains
   
   module procedure fwd_sum_m_sub
@@ -39,4 +39,4 @@ submodule (lege_poly) fwd_sum
     
   end procedure fwd_sum_jmax_sub
   
-end submodule fwd_sum
+end submodule fwd_sum_m

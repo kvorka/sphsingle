@@ -3,7 +3,14 @@ submodule (lege_poly) bwd
   
   module procedure bwd_legesum_sub
     integer                             :: im, ima1, ima2
+    real(kind=dbl), allocatable         :: cc(:,:)
     real(kind=dbl), pointer, contiguous :: swork(:), pmm(:), pmj(:), pmj1(:)
+    
+    !! Reindexing of real/imaginary parts of the original sequence from order-fast jm 
+    !! to degree-fast mj indexing. Afterwards, reindexing and rescaling for transform.
+    !! Quadruplets of the rescaled coefficietns order real/imaginary, odd/even degrees
+    !! components, respectively, for cache friendly behaviour.
+    allocate( cc(4,this%nrma) ); call bwd_rxd_sub( this%jmax, cjm, this%emj, this%amj, cc )
     
     !! Memory preparation, the grid frequencies above nFreq required only for 
     !! the FFT are now used as temporal storage for polynomials and partial sums
@@ -46,6 +53,9 @@ submodule (lege_poly) bwd
                          & cc(1,ima2),              &
                          & swork,                   &
                          & grid(4*this%n*this%jmax) )
+    
+    !! Cleaning
+    deallocate( cc )
     
   end procedure bwd_legesum_sub
   

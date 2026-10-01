@@ -28,16 +28,16 @@ module lateral_grid
       class(T_lateralGrid), intent(inout) :: this
     end subroutine deallocate_harmonics_sub
     
-    module subroutine harmsy_sub(this, cin, grid)
+    module subroutine harmsy_sub(this, cjm, grid)
       class(T_lateralGrid), intent(in)  :: this
-      complex(kind=dbl),    intent(in)  :: cin(*)
+      complex(kind=dbl),    intent(in)  :: cjm(*)
       real(kind=dbl),       intent(out) :: grid(*)
     end subroutine harmsy_sub
     
-    module subroutine harman_sub(this, grid, cout)
+    module subroutine harman_sub(this, grid, cjm)
       class(T_lateralGrid), intent(in)    :: this
       real(kind=dbl),       intent(inout) :: grid(*)
-      complex(kind=dbl),    intent(out)   :: cout(*)
+      complex(kind=dbl),    intent(out)   :: cjm(*)
     end subroutine harman_sub
   end interface
   
