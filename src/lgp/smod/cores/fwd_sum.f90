@@ -26,4 +26,17 @@ submodule (lege_poly) fwd_sum
     
   end procedure fwd_sum_m_sub
   
+  module procedure fwd_sum_jmax_sub
+    
+    !!! After the FFT, we need to shuffle the packing north/south and real/imaginary
+    !!! into packing suitable for summation.
+    call fwd_shf_sub( n1, wght, cosx, grid, swork )
+    
+    !! Starting from degree j equal to order m, we need to forward the recursion for
+    !! pmm, prepare the recursion for pmj by setting pmj1 to zero, and we need to
+    !! set the initial value of swork to cc * pmj (first member of the sum).
+    call fwd_set_sub( 2, n1, fmj, cosx, sinx, swork, pmm, pmj1, pmj, cr )
+    
+  end procedure fwd_sum_jmax_sub
+  
 end submodule fwd_sum

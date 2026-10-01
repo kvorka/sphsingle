@@ -12,14 +12,17 @@ submodule (lege_poly) fwd
     pmj1  => grid( this%nFreq + 2 * this%n : this%nFreq + 3 * this%n - 1 )
     swork => grid( this%nFreq + 3 * this%n : this%nFreq + 7 * this%n - 1 )
     
+    !! Initialization of this weird iterator
+    ima2 = 1
+    
     !! Cycle over the harmonic orders
-    do im = 0, this%jmax
-      ima1 = this%mamj(im)
-      ima2 = this%mamj(im+1)-1
+    do im = 0, this%jmax-1
+      ima1 = ima2
+      ima2 = this%mamj(im+1)
       
       call fwd_sum_m_sub( this%n_dbl_2,     &
                         & ima1,             &
-                        & ima2,             &
+                        & ima2-1,           &
                         & this%fmj(1,ima1), &
                         & this%cosx,        &
                         & this%sinx,        &
@@ -33,6 +36,19 @@ submodule (lege_poly) fwd
                         & grid(4*this%n*im) )
       
     end do
+    
+    !! im == this%jmax
+    call fwd_sum_jmax_sub( this%n_dbl_2,            &
+                         & this%fmj(2,ima2),        &
+                         & this%cosx,               &
+                         & this%sinx,               &
+                         & this%wght,               &
+                         & pmm,                     &
+                         & pmj1,                    &
+                         & pmj,                     &
+                         & swork,                   &
+                         & cr(1,ima2),              &
+                         & grid(4*this%n*this%jmax) )
     
   end procedure fwd_legesum_sub
   

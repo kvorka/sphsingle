@@ -24,37 +24,35 @@ submodule (lege_poly) init
     !! Roughly, it corresponds to number of quadruplets (odd j, even j, real, imag)
     !! encountered during evaluation of summation over degrees.
     this%nrma = 0
-      do m = 0, this%jmax
-        this%nrma = this%nrma+1
-        
-        if ( m < this%jmax) then
-          do j = 1, (this%jmax-1-m)/2
-            this%nrma = this%nrma+1
-          end do
-          
-          this%nrma = this%nrma+1
-        end if
-      end do
     
-    allocate( this%mamj(0:this%jmax+1) )
-    
-    ma = 0
-        
     do m = 0, this%jmax
-      !j = m
-        ma = ma+1
-        this%mamj(m) = ma
+      this%nrma = this%nrma+1
       
-      do j = 1, (this%jmax-m)/2
-        ma = ma+1
-      end do
-      
-      if ( mod((this%jmax-m),2) /= 0 ) then
-        ma = ma+1
+      if ( m < this%jmax) then
+        do j = 1, (this%jmax-1-m)/2
+          this%nrma = this%nrma+1
+        end do
+        
+        this%nrma = this%nrma+1
       end if
     end do
     
-    this%mamj(this%jmax+1) = ma+1
+    allocate( this%mamj(this%jmax) )
+    
+    do m = 0, this%jmax
+      if ( m == 0 ) then
+        ma = 1
+      else
+        ma = ma + 1
+        this%mamj(m) = ma
+      end if
+      
+      do j = 1, ( this%jmax-m ) / 2
+        ma = ma+1
+      end do
+      
+      if ( mod( ( this%jmax-m ), 2 ) /= 0 ) ma = ma+1
+    end do
     
     !! This seeks for roots of the Legendre polynomials. Then computes everything neeeded,
     !! notably the root (cosx), root squared (cosx2) and associated weight (wght). First,

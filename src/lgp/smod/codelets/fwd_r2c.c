@@ -3,6 +3,7 @@
 extern inline __attribute__((always_inline))
 void fwd_rxd_c( const int jmax,
                 const double *restrict emj,
+                const double *restrict amj,
                 const double *restrict icab,
                       double *restrict ocab )
 
@@ -10,11 +11,12 @@ void fwd_rxd_c( const int jmax,
     
     // Memory references
     const double *pemj = emj  - 2;
+    const double *pamj = amj  - 1;
     const double *pci  = icab - 4;
           double *pco  = ocab - 2;
     
     // Registers to be used
-    __m128d se1, se2, sc1, sc2, sc3;
+    __m128d se1, se2, sa1, sc1, sc2, sc3;
     
     // Cycle over orders
     for ( int m = 0; m <= jmax - 1; m++ ) {
@@ -23,9 +25,15 @@ void fwd_rxd_c( const int jmax,
         pci  += 4;
         pco  += 2;
         pemj += 2;
+        pamj += 1;
+        
+        sa1 = _mm_set1_pd( *( pamj ) );
         
         sc1 = _mm_loadu_pd( pci + 0 );
         sc2 = _mm_loadu_pd( pci + 2 );
+        
+        sc1 = _mm_mul_pd( sa1, sc1 );
+        sc2 = _mm_mul_pd( sa1, sc2 );
         
         _mm_storeu_pd( pco, sc2 );
         
@@ -36,15 +44,20 @@ void fwd_rxd_c( const int jmax,
             pci  += 4;
             pco  += 4;
             pemj += 2;
+            pamj += 1;
             
             se1 = _mm_set1_pd( *( pemj - 1 ) );
             se2 = _mm_set1_pd( *( pemj + 0 ) );
+            sa1 = _mm_set1_pd( *( pamj     ) );
+            
+            sc2 = _mm_loadu_pd( pci + 0 );
+            sc3 = _mm_loadu_pd( pci + 2 );
             
             sc1 = _mm_mul_pd( se1, sc1 );
-            sc2 = _mm_loadu_pd( pci ); 
+            sc2 = _mm_mul_pd( sa1, sc2 );
             
+            sc3 = _mm_mul_pd( sa1, sc3 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
-            sc3 = _mm_loadu_pd( pci + 2 );
             
             _mm_storeu_pd( pco - 2, sc1 );
             _mm_storeu_pd( pco + 0, sc3 );
@@ -59,15 +72,20 @@ void fwd_rxd_c( const int jmax,
             pci  += 4;
             pco  += 4;
             pemj += 2;
+            pamj += 1;
             
             se1 = _mm_set1_pd( *( pemj - 1 ) );
             se2 = _mm_set1_pd( *( pemj + 0 ) );
+            sa1 = _mm_set1_pd( *( pamj     ) );
+            
+            sc2 = _mm_loadu_pd( pci + 0 );
+            sc3 = _mm_loadu_pd( pci + 2 );
             
             sc1 = _mm_mul_pd( se1, sc1 );
-            sc2 = _mm_loadu_pd( pci );
+            sc2 = _mm_mul_pd( sa1, sc2 );
             
+            sc3 = _mm_mul_pd( sa1, sc3 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
-            sc3 = _mm_loadu_pd( pci + 2 );
             
             _mm_storeu_pd( pco - 2, sc1 );
             _mm_storeu_pd( pco + 0, sc3 );
@@ -77,13 +95,16 @@ void fwd_rxd_c( const int jmax,
             pci  += 4;
             pco  += 2;
             pemj += 1;
+            pamj += 1;
             
             se1 = _mm_set1_pd( *( pemj + 0 ) );
             se2 = _mm_set1_pd( *( pemj + 1 ) );
+            sa1 = _mm_set1_pd( *( pamj     ) );
             
-            sc1 = _mm_mul_pd( se1, sc1 );
             sc2 = _mm_loadu_pd( pci );
+            sc1 = _mm_mul_pd( se1, sc1 );
             
+            sc2 = _mm_mul_pd( sa1, sc2 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
             
             _mm_storeu_pd( pco, sc1 );
@@ -93,7 +114,10 @@ void fwd_rxd_c( const int jmax,
     }
     
     // m == jmax
-    _mm_storeu_pd( pco + 2, _mm_loadu_pd( pci + 6 ) );
+    sa1 = _mm_set1_pd( *( pamj + 1 ) );
+    sc1 = _mm_loadu_pd( pci + 6 );
+    
+    _mm_storeu_pd( pco + 2, _mm_mul_pd( sa1, sc1 ) );
     
 }
 
