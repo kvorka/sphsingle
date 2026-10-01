@@ -178,15 +178,14 @@ void bwd_rxd_c( const int jmax,
             pemj += 1;
             pamj += 1;
             
-            se1 = _mm_set1_pd( *( pemj + 1 ) );
             sa1 = _mm_set1_pd( *( pamj     ) );
+            se1 = _mm_set1_pd( *( pemj + 1 ) );
             
-            se1 = _mm_mul_pd( sa1, se1 );
-            sc2 = _mm_loadu_pd( pci + 0 );
+            sc1 = _mm_mul_pd( sa1, sc1 );
             
-            sc2 = _mm_mul_pd( se1, sc2 );
+            sc1 = _mm_mul_pd( se1, sc1 );
             
-            _mm_storeu_pd( pco + 0, sc2 );
+            _mm_storeu_pd( pco + 0, sc1 );
             _mm_storeu_pd( pco + 2, s00 );
             
         }
@@ -194,12 +193,16 @@ void bwd_rxd_c( const int jmax,
     }
     
     // m == jmax
-    sa1 = _mm_set1_pd( *( pamj+1 ) );
-    sc1 = _mm_loadu_pd( pci + 2 );
+    pco  += 4;
+    pci  += 2;
+    pamj += 1;
+
+    sa1 = _mm_set1_pd( *( pamj ) );
+    sc1 = _mm_loadu_pd( pci );
     
     sc1 = _mm_mul_pd( sa1, sc1 );
     
-    _mm_storeu_pd( pco + 4, s00 );
-    _mm_storeu_pd( pco + 6, sc1 );
+    _mm_storeu_pd( pco + 0, s00 );
+    _mm_storeu_pd( pco + 2, sc1 );
     
 }
