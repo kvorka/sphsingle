@@ -1,7 +1,7 @@
-submodule (fourier_transform) c2r
+submodule (fourier_transform) bwd
   implicit none ; contains
   
-  module procedure fft_c2r_sub
+  module procedure fft_bwd_sub
     integer :: i
     
     call fxrc0( m, x(1,1,0), x(1,2,0) )
@@ -20,6 +20,6 @@ submodule (fourier_transform) c2r
     
     call fxztal( this%n, this%it, this%t, m, x )
     
-  end procedure fft_c2r_sub
+  end procedure fft_bwd_sub
   
-end submodule c2r
+end submodule bwd

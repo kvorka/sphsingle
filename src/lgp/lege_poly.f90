@@ -49,87 +49,52 @@ module lege_poly
   
   !! Cores
   interface
-    module subroutine bwd_rxd_sub(jmax, cjm, emj, amj, ocab) bind(C, name="bwd_rxd_c")
+    module subroutine bwd_rxd_sub(jmax, cjm, emj, amj, ocab) &
+    & bind(C, name="bwd_rxd_c")
       integer, value,    intent(in)  :: jmax
       real(kind=dbl),    intent(in)  :: emj(*), amj(*)
       complex(kind=dbl), intent(in)  :: cjm(*)
       real(kind=dbl),    intent(out) :: ocab(*)
     end subroutine bwd_rxd_sub
     
-    module subroutine bwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
-      integer,        intent(in)    :: n1, m, nma
-      real(kind=dbl), intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), cc(0:*)
+    module subroutine bwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid) &
+    & bind(C, name="bwd_sum_m_c")
+      integer, value, intent(in)    :: n1, m, nma
+      real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cosx2(*), cc(*)
       real(kind=dbl), intent(inout) :: pmm(*)
       real(kind=dbl), intent(out)   :: swork(*), grid(*), pmj(*), pmj1(*)
     end subroutine bwd_sum_m_sub
     
-    module subroutine bwd_sum_jmax_sub( n1, fmj, cosx, sinx, pmm, pmj1, pmj, cc, swork, grid )
-      integer,        intent(in)    :: n1
+    module subroutine bwd_sum_jmax_sub(n1, fmj, cosx, sinx, pmm, pmj1, pmj, cc, swork, grid) &
+    & bind(C, name="bwd_sum_jmax_c")
+      integer, value, intent(in)    :: n1
       real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cc(*)
       real(kind=dbl), intent(inout) :: pmm(*), pmj(*), pmj1(*)
       real(kind=dbl), intent(out)   :: swork(*), grid(*)
     end subroutine bwd_sum_jmax_sub
     
-    module subroutine fwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
-      integer,        intent(in)    :: n1, m, nma
-      real(kind=dbl), intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
-      real(kind=dbl), intent(inout) :: cr(0:*), pmm(*)
+    module subroutine fwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid) &
+    & bind(C, name="fwd_sum_m_c")
+      integer, value, intent(in)    :: n1, m, nma
+      real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
+      real(kind=dbl), intent(inout) :: cr(*), pmm(*)
       real(kind=dbl), intent(out)   :: swork(*), pmj(*), pmj1(*)
     end subroutine fwd_sum_m_sub
     
-    module subroutine fwd_sum_jmax_sub(n1, fmj, cosx, sinx, wght, pmm, pmj1, pmj, swork, cr, grid)
-      integer,        intent(in)    :: n1
+    module subroutine fwd_sum_jmax_sub(n1, fmj, cosx, sinx, wght, pmm, pmj1, pmj, swork, cr, grid) &
+    & bind(C, name="fwd_sum_jmax_c")
+      integer, value, intent(in)    :: n1
       real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), wght(*), grid(*)
       real(kind=dbl), intent(inout) :: cr(*), pmm(*), pmj(*), pmj1(*)
       real(kind=dbl), intent(out)   :: swork(*)
     end subroutine fwd_sum_jmax_sub
     
-    module subroutine fwd_rxd_sub(jmax, emj, amj, icab, cjm) bind(C, name="fwd_rxd_c")
+    module subroutine fwd_rxd_sub(jmax, emj, amj, icab, cjm) &
+    & bind(C, name="fwd_rxd_c")
       integer, value,    intent(in)  :: jmax
       real(kind=dbl),    intent(in)  :: emj(*), amj(*), icab(*)
       complex(kind=dbl), intent(out) :: cjm(*)
     end subroutine fwd_rxd_sub
-  end interface
-  
-  !! Codelets
-  interface
-    module subroutine bwd_set_sub(m, n, fmj, cosx, sinx, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
-      integer, value, intent(in)    :: n, m
-      real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cc(*)
-      real(kind=dbl), intent(inout) :: pmm(*)
-      real(kind=dbl), intent(out)   :: pmj1(*), pmj(*), swork(*)
-    end subroutine bwd_set_sub
-    
-    module subroutine bwd_rec_sub(n, cc, fmj, cosx2, pmj1, pmj, swork) bind(C, name="bwd_rec_c")
-      integer, value, intent(in)    :: n
-      real(kind=dbl), intent(in)    :: cc(*), fmj(*), cosx2(*), pmj1(*)
-      real(kind=dbl), intent(inout) :: pmj(*), swork(*)
-    end subroutine bwd_rec_sub
-    
-    module subroutine bwd_shf_sub(n, cosx, swork, grid) bind(C, name="bwd_shf_c")
-      integer, value, intent(in)  :: n
-      real(kind=dbl), intent(in)  :: cosx(*), swork(*)
-      real(kind=dbl), intent(out) :: grid(*)
-    end subroutine bwd_shf_sub
-    
-    module subroutine fwd_shf_sub(n, wght, cosx, grid, swork) bind(C, name="fwd_shf_c")
-      integer, value, intent(in)  :: n
-      real(kind=dbl), intent(in)  :: wght(*), cosx(*), grid(*)
-      real(kind=dbl), intent(out) :: swork(*)
-    end subroutine fwd_shf_sub
-    
-    module subroutine fwd_set_sub(m, n, fmj, cosx, sinx, swork, pmm, pmj1, pmj, cr) bind(C, name="fwd_set_c")
-      integer, value, intent(in)    :: n, m
-      real(kind=dbl), intent(in)    :: swork(*), fmj(*), cosx(*), sinx(*)
-      real(kind=dbl), intent(out)   :: pmj1(*), pmj(*)
-      real(kind=dbl), intent(inout) :: cr(*), pmm(*)
-    end subroutine fwd_set_sub
-    
-    module subroutine fwd_rec_sub(n, swork, fmj, cosx2, pmj1, pmj, cr) bind(C, name="fwd_rec_c")
-      integer, value, intent(in)    :: n
-      real(kind=dbl), intent(in)    :: swork(*), fmj(*), cosx2(*), pmj1(*)
-      real(kind=dbl), intent(inout) :: pmj(*), cr(*)
-    end subroutine fwd_rec_sub
   end interface
   
 end module lege_poly

@@ -52,7 +52,6 @@ srcpath=src
 ####                                  DIRS STRUCTURE                                   ####
 ###########################################################################################
 lvlC=( "${mathpath}/smod/cores" 
-       "${legepath}/smod/codelets" 
        "${legepath}/smod/cores" 
        "${fftpath}/smod/cores" )
 

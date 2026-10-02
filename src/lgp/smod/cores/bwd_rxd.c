@@ -1,10 +1,11 @@
 #include "../../../math/cvec.h"
 
-extern inline void bwd_rxd_c( const int jmax,
-                             const double complex *restrict cjm,
-                             const double *restrict emj,
-                             const double *restrict amj,
-                                   double *restrict ocab )
+extern inline __attribute__((always_inline))
+void bwd_rxd_c( const int jmax,
+                const double complex *restrict cjm,
+                const double *restrict emj,
+                const double *restrict amj,
+                      double *restrict ocab )
 
 {
     

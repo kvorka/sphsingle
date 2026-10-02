@@ -1,10 +1,11 @@
 #include "../../../math/cvec.h"
 
-extern inline void fwd_rxd_c( const int jmax,
-                              const double *restrict emj,
-                              const double *restrict amj,
-                              const double *restrict icab,
-                                    double complex *restrict cjm )
+extern inline __attribute__((always_inline)) 
+void fwd_rxd_c( const int jmax,
+                const double *restrict emj,
+                const double *restrict amj,
+                const double *restrict icab,
+                      double complex *restrict cjm )
 {
     // Pointer to double representation of complex array
     double *restrict prjm = ( double * ) cjm;

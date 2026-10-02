@@ -15,7 +15,7 @@ submodule (lateral_grid) harmsy
     !! Therefore, the total number of independent FFTs is 2*this%lgp%n/ndbl. FFT package leverages
     !! the parity of total number of simd transforms as well as additional factor of 2 comming from
     !! construnction of nLege.
-    call this%fft%fft_c2r_sub( this%lgp%n_dbl_2, grid )
+    call this%fft%fft_bwd_sub( this%lgp%n_dbl_2, grid )
     
   end procedure harmsy_sub
   

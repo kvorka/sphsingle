@@ -1,7 +1,7 @@
-submodule (fourier_transform) r2c
+submodule (fourier_transform) fwd
   implicit none; contains
   
-  module procedure fft_r2c_sub
+  module procedure fft_fwd_sub
     integer :: i
     
     call fxztal( this%n, this%it, this%t, m, x )
@@ -17,6 +17,6 @@ submodule (fourier_transform) r2c
     
     if ( mod(this%n,4) == 0 ) call fxrsc( m, -1._dbl, x(1,2,this%n/4) )
     
-  end procedure fft_r2c_sub
+  end procedure fft_fwd_sub
   
-end submodule r2c
+end submodule fwd

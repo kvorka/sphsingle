@@ -1,6 +1,7 @@
+#pragma once
 #include "../../../math/cvec.h"
 
-extern inline __attribute__((always_inline))
+static inline __attribute__((always_inline))
 void fwd_set_c( const int m,
                 const int n,
                 const double *restrict fmj,
