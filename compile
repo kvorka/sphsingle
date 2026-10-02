@@ -51,10 +51,10 @@ srcpath=src
 ###########################################################################################
 ####                                  DIRS STRUCTURE                                   ####
 ###########################################################################################
-lvlC=( "${mathpath}/smod/codelets" 
-       "${legepath}/smod/codelets"
+lvlC=( "${mathpath}/smod/cores" 
+       "${legepath}/smod/codelets" 
        "${legepath}/smod/cores" 
-       "${fftpath}/smod/codelets" )
+       "${fftpath}/smod/cores" )
 
 lvlF=( "${mathpath}/smod" 
        "${fftpath}/smod/init" 

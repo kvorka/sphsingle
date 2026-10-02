@@ -57,11 +57,10 @@ module lege_poly
     end subroutine bwd_rxd_sub
     
     module subroutine bwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
-      integer,                             intent(in)    :: n1, m, nma
-      real(kind=dbl),                      intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), cc(0:*)
-      real(kind=dbl),                      intent(inout) :: pmm(*)
-      real(kind=dbl),                      intent(out)   :: swork(*), grid(*)
-      real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
+      integer,        intent(in)    :: n1, m, nma
+      real(kind=dbl), intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), cc(0:*)
+      real(kind=dbl), intent(inout) :: pmm(*)
+      real(kind=dbl), intent(out)   :: swork(*), grid(*), pmj(*), pmj1(*)
     end subroutine bwd_sum_m_sub
     
     module subroutine bwd_sum_jmax_sub( n1, fmj, cosx, sinx, pmm, pmj1, pmj, cc, swork, grid )
@@ -72,11 +71,10 @@ module lege_poly
     end subroutine bwd_sum_jmax_sub
     
     module subroutine fwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
-      integer,        intent(in)                         :: n1, m, nma
-      real(kind=dbl), intent(in)                         :: fmj(0:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
-      real(kind=dbl), intent(inout)                      :: cr(0:*), pmm(*)
-      real(kind=dbl), intent(out)                        :: swork(*)
-      real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
+      integer,        intent(in)    :: n1, m, nma
+      real(kind=dbl), intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
+      real(kind=dbl), intent(inout) :: cr(0:*), pmm(*)
+      real(kind=dbl), intent(out)   :: swork(*), pmj(*), pmj1(*)
     end subroutine fwd_sum_m_sub
     
     module subroutine fwd_sum_jmax_sub(n1, fmj, cosx, sinx, wght, pmm, pmj1, pmj, swork, cr, grid)

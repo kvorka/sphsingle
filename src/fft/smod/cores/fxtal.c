@@ -1,12 +1,12 @@
-#include "fx2a.h"
-#include "fx2b.h"
-#include "fx3a.h"
-#include "fx3b.h"
-#include "fx4a.h"
-#include "fx4b.h"
-#include "fx5a.h"
-#include "fx5b.h"
-#include "fxsh.h"
+#include "../codelets/fx2a.h"
+#include "../codelets/fx2b.h"
+#include "../codelets/fx3a.h"
+#include "../codelets/fx3b.h"
+#include "../codelets/fx4a.h"
+#include "../codelets/fx4b.h"
+#include "../codelets/fx5a.h"
+#include "../codelets/fx5b.h"
+#include "../codelets/fxsh.h"
 
 void fxztal_c( const int n,
                const int *restrict it,

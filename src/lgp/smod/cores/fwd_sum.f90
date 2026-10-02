@@ -2,8 +2,7 @@ submodule (lege_poly) fwd_sum_m
   implicit none; contains
   
   module procedure fwd_sum_m_sub
-    integer                             :: ima
-    real(kind=dbl), pointer, contiguous :: pmj2(:)
+    integer :: ima
     
     !!! After the FFT, we need to shuffle the packing north/south and real/imaginary
     !!! into packing suitable for summation.
@@ -16,13 +15,14 @@ submodule (lege_poly) fwd_sum_m
     
     !! Following with the recursion for degrees m+1 to jmax. We need to repointer our
     !! polynomials, follow with recursion and add cc * pmj to our swork accumulator.
-    do ima = 1, nma
-      pmj2 => pmj1
-      pmj1 => pmj
-      pmj  => pmj2
-      
-      call fwd_rec_sub( n1, swork, fmj(2*ima), cosx2, pmj1, pmj, cr(4*ima) )
+    do ima = 1, nma-1, 2
+      call fwd_rec_sub( n1, swork, fmj(2*ima  ), cosx2, pmj,  pmj1, cr(4*ima  ) )
+      call fwd_rec_sub( n1, swork, fmj(2*ima+2), cosx2, pmj1, pmj,  cr(4*ima+4) )
     end do
+    
+    if ( ima == nma ) then
+      call fwd_rec_sub( n1, swork, fmj(2*nma), cosx2, pmj, pmj1, cr(4*nma) )
+    end if
     
   end procedure fwd_sum_m_sub
   
