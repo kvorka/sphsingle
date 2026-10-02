@@ -19,6 +19,7 @@ module fourier_transform
   
   real(kind=dbl), parameter :: pi = acos(-1._dbl)
   
+  !! Class routines
   interface
     module subroutine fft_init_sub(this, n)
       class(T_fft), intent(inout) :: this
@@ -40,7 +41,10 @@ module fourier_transform
       integer,        intent(in)    :: m
       real(kind=dbl), intent(inout) :: x(4*m*ndbl,2,0:this%n/2-1)
     end subroutine fft_bwd_sub
-    
+  end interface
+  
+  !! Cores
+  interface
     module subroutine fxzini(n, it, t)
       integer,        intent(in)  :: n
       integer,        intent(out) :: it(n)

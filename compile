@@ -21,22 +21,19 @@ echo "$macros" | grep -q "__AVX512F__" && instructions="$instructions -D__AVX512
 case $fc in
     ifx)
         flags="-O3 -ipo -xHost -fp-model=fast -fomit-frame-pointer -qopt-zmm-usage=high \
-               -fno-stack-protector -qopenmp-simd -fno-alias $instructions"
-        
-        fcompile="$fc $flags -cpp"
-        ccompile="$cc $flags -fno-builtin-memcpy -fno-builtin-memmove -fno-builtin-memset"
+               -fno-stack-protector -fno-alias $instructions"
     ;;
     
     gfortran*)
         flags="-Ofast -march=native -mprefer-vector-width=512 -mno-vzeroupper -fstrict-aliasing \
-               -fno-tree-loop-distribute-patterns -fcx-limited-range -fno-bounds-check -fopenmp-simd \
+               -fno-tree-loop-distribute-patterns -fcx-limited-range -fno-bounds-check \
                -fomit-frame-pointer -fno-stack-protector -fargument-noalias-global -flto=auto \
-               -fwhole-program $instructions -cpp"
-        
-        fcompile="$fc $flags"
-        ccompile="$cc $flags -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-memmove"
+               -fwhole-program $instructions"
     ;;
 esac
+
+fcompile="$fc $flags -cpp"
+ccompile="$cc $flags -fno-builtin-memcpy -fno-builtin-memmove -fno-builtin-memset"
 
 ###########################################################################################
 ####                                PATHS TO LIBRARIES                                 ####
@@ -59,10 +56,8 @@ lvlF=( "${mathpath}/smod"
        "${fftpath}/smod/init" 
        "${fftpath}/smod/transform" 
        "${legepath}/smod/init" 
-       "${legepath}/smod/cores" 
        "${legepath}/smod/transform" 
-       "${sphpath}/smod/init" 
-       "${sphpath}/smod/cores" 
+       "${sphpath}/smod/" 
        "${gridpath}/smod/" )
 
 ###########################################################################################

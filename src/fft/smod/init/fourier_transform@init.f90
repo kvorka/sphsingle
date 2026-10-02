@@ -18,11 +18,4 @@ submodule (fourier_transform) init
     
   end procedure fft_init_sub
   
-  module procedure fft_deallocate_sub
-    
-    deallocate( this%it )
-    deallocate( this%t  )
-    
-  end procedure fft_deallocate_sub
-  
 end submodule init
