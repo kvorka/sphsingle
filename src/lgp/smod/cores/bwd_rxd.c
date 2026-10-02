@@ -22,7 +22,7 @@ extern inline void bwd_rxd_c( const int jmax,
     
     // Registers to be used
     const __m128d s00 = _mm_setzero_pd();
-          __m128d se1, se2, sa1, sc1, sc2, sc3;
+          __m128d se1, se2, sa1, sc1, sc2, sc3, scT;
     
     // Cycle over orders
     for ( int m = 0; m <= jmax-1; m++ ) {
@@ -70,8 +70,15 @@ extern inline void bwd_rxd_c( const int jmax,
             sc2 = _mm_loadu_pd( pr        );
             sc3 = _mm_loadu_pd( pr + step );
             
+            #if defined (__FMA__)
             sc1 = _mm_fmadd_pd( se2, sc3, sc1 );
             sc2 = _mm_mul_pd( sa1, sc2 );
+            #else
+            scT = _mm_mul_pd( se2, sc3 );
+            sc2 = _mm_mul_pd( sa1, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
             
             sc1 = _mm_mul_pd( sa1, sc1 );
             

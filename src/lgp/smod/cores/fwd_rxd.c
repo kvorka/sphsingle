@@ -19,7 +19,7 @@ extern inline void fwd_rxd_c( const int jmax,
     int step;
     
     // Registers to be used
-    __m128d se1, se2, sa1, sc1, sc2, sc3;
+    __m128d se1, se2, sa1, sc1, sc2, sc3, scT;
 
     // Order m == 0
     {
@@ -70,7 +70,12 @@ extern inline void fwd_rxd_c( const int jmax,
             sc2 = _mm_mul_pd( sa1, sc2 );
             sc3 = _mm_mul_pd( sa1, sc3 );
             
+            #if defined (__FMA__)
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            scT = _mm_mul_pd( se2, sc2 );
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
             
             sc1 = _mm_unpacklo_pd( sc1, s00 );
             sc3 = _mm_unpacklo_pd( sc3, s00 );
@@ -102,8 +107,15 @@ extern inline void fwd_rxd_c( const int jmax,
             sc1 = _mm_mul_pd( se1, sc1 );
             sc2 = _mm_mul_pd( sa1, sc2 );
             
+            #if defined (__FMA__)
             sc3 = _mm_mul_pd( sa1, sc3 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            sc3 = _mm_mul_pd( sa1, sc3 );
+            scT = _mm_mul_pd( se2, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
             
             sc3 = _mm_unpacklo_pd( sc3, s00 );
             sc1 = _mm_unpacklo_pd( sc1, s00 );
@@ -124,8 +136,15 @@ extern inline void fwd_rxd_c( const int jmax,
             sc2 = _mm_loadu_pd( pci );
             sc1 = _mm_mul_pd( se1, sc1 );
             
+            #if defined (__FMA__)
             sc2 = _mm_mul_pd( sa1, sc2 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            sc2 = _mm_mul_pd( sa1, sc2 );
+            scT = _mm_mul_pd( se2, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
             
             sc1 = _mm_unpacklo_pd( sc1, s00 );
             
@@ -178,8 +197,15 @@ extern inline void fwd_rxd_c( const int jmax,
             sc1 = _mm_mul_pd( se1, sc1 );
             sc2 = _mm_mul_pd( sa1, sc2 );
 
+            #if defined (__FMA__)
             sc3 = _mm_mul_pd( sa1, sc3 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            sc3 = _mm_mul_pd( sa1, sc3 );
+            scT = _mm_mul_pd( se2, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
 
             _mm_storeu_pd( pr,        sc1 );
             _mm_storeu_pd( pr + step, sc3 );
@@ -208,8 +234,15 @@ extern inline void fwd_rxd_c( const int jmax,
             sc1 = _mm_mul_pd( se1, sc1 );
             sc2 = _mm_mul_pd( sa1, sc2 );
 
+            #if defined (__FMA__)
             sc3 = _mm_mul_pd( sa1, sc3 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            sc3 = _mm_mul_pd( sa1, sc3 );
+            scT = _mm_mul_pd( se2, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
 
             _mm_storeu_pd( pr,        sc1 );
             _mm_storeu_pd( pr + step, sc3 );
@@ -227,8 +260,15 @@ extern inline void fwd_rxd_c( const int jmax,
             sc2 = _mm_loadu_pd( pci );
             sc1 = _mm_mul_pd( se1, sc1 );
 
+            #if defined (__FMA__)
             sc2 = _mm_mul_pd( sa1, sc2 );
             sc1 = _mm_fmadd_pd( se2, sc2, sc1 );
+            #else
+            sc2 = _mm_mul_pd( sa1, sc2 );
+            scT = _mm_mul_pd( se2, sc2 );
+            
+            sc1 = _mm_add_pd( sc1, scT );
+            #endif
 
             _mm_storeu_pd( pr, sc1 );
             
