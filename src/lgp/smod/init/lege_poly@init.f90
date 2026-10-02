@@ -4,7 +4,7 @@ submodule (lege_poly) init
   module procedure init_lege_sub
     integer                     :: j, m, mj, ma, i, i1, i2
     real(kind=qbl)              :: x1, fx1, x2, fx2, x3, fx3, root, froot
-    real(kind=qbl), allocatable :: qamj(:), qemj(:), qfmj(:,:)
+    real(kind=qbl), allocatable :: qamj(:), qemj(:), qfmj(:)
     
     !! Set the constants needed within this class. This includes maximum degree,
     !! maximum compound degree, number of roots needed for G.-L. quadrature (keep
@@ -41,7 +41,7 @@ submodule (lege_poly) init
     
     do m = 0, this%jmax
       if ( m == 0 ) then
-        ma = 1
+        ma = 0
       else
         ma = ma + 1
         this%mamj(m) = ma
@@ -141,7 +141,7 @@ submodule (lege_poly) init
     !! Computing coefficients needed for on-the-fly recursion during transforms. The math is done 
     !! in quadruple precision in order to keep everything as precise as possible, while the results 
     !! are stored in double precision to save space and increase speed.
-    allocate( qfmj(2,this%nrma) ) ; ma = 0
+    allocate( qfmj(2*this%nrma) ) ; ma = 0
     
     do m = 0, this%jmax
       !j = m
@@ -149,33 +149,33 @@ submodule (lege_poly) init
         ma = ma+1
         
         if ( m == 0) then
-          qfmj(1,ma) = 1._qbl
-          qfmj(2,ma) = 1._qbl / sqrt(4*qpi)
+          qfmj(1+2*(ma-1)) = 1._qbl
+          qfmj(2+2*(ma-1)) = 1._qbl / sqrt(4*qpi)
         else
-          qfmj(1,ma) = 1._qbl
-          qfmj(2,ma) = -sqrt( (2*m+1._qbl) / (2*m) )
+          qfmj(1+2*(ma-1)) = 1._qbl
+          qfmj(2+2*(ma-1)) = -sqrt( (2*m+1._qbl) / (2*m) )
         end if
       
       do j = 1, (this%jmax-m)/2
         mj = mj+2
         ma = ma+1
         
-        qfmj(1,ma) =                                     qamj(ma-1)**2
-        qfmj(2,ma) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
+        qfmj(1+2*(ma-1)) =                                     qamj(ma-1)**2
+        qfmj(2+2*(ma-1)) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
       end do
       
       if ( mod((this%jmax-m),2) /= 0 ) then
         mj = mj+2
         ma = ma+1
         
-        qfmj(1,ma) =                                     qamj(ma-1)**2
-        qfmj(2,ma) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
+        qfmj(1+2*(ma-1)) =                                     qamj(ma-1)**2
+        qfmj(2+2*(ma-1)) = ( qemj(mj-1)**2 + qemj(mj-2)**2 ) * qamj(ma-1)**2
       end if
     end do
     
     !! Prepare the array holders from this class and save the results into the double
     !! precision to save space and also the operation counts.
-    allocate( this%emj((this%jmax+3)*(this%jmax+2)/2), this%amj(this%nrma), this%fmj(2,this%nrma) )
+    allocate( this%emj((this%jmax+3)*(this%jmax+2)/2), this%amj(this%nrma), this%fmj(0:2*this%nrma-1) )
     
     this%emj = real( qemj, kind=dbl )
     this%amj = real( qamj, kind=dbl )

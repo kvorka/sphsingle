@@ -5,7 +5,7 @@ module lege_poly
   type, public :: T_legep
     integer                             :: nFreq, jmax, jms, n, n_dbl_2, nrma
     integer,        allocatable         :: mamj(:)
-    real(kind=dbl), allocatable         :: emj(:), fmj(:,:), amj(:)
+    real(kind=dbl), allocatable         :: emj(:), fmj(:), amj(:)
     real(kind=dbl), pointer, contiguous :: cosx(:), sinx(:), cosx2(:), wght(:)
     type(c_ptr)                         :: c_cosx, c_sinx, c_cosx2, c_wght
     
@@ -56,9 +56,9 @@ module lege_poly
       real(kind=dbl),    intent(out) :: ocab(*)
     end subroutine bwd_rxd_sub
     
-    module subroutine bwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
-      integer,                             intent(in)    :: n1, ma1, ma2
-      real(kind=dbl),                      intent(in)    :: fmj(2,ma1:*), cosx(*), sinx(*), cosx2(*), cc(4,ma1:*)
+    module subroutine bwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, pmm, pmj1, pmj, cc, swork, grid)
+      integer,                             intent(in)    :: n1, m, nma
+      real(kind=dbl),                      intent(in)    :: fmj(0:*), cosx(*), sinx(*), cosx2(*), cc(0:*)
       real(kind=dbl),                      intent(inout) :: pmm(*)
       real(kind=dbl),                      intent(out)   :: swork(*), grid(*)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
@@ -71,10 +71,10 @@ module lege_poly
       real(kind=dbl), intent(out)   :: swork(*), grid(*)
     end subroutine bwd_sum_jmax_sub
     
-    module subroutine fwd_sum_m_sub(n1, ma1, ma2, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
-      integer,        intent(in)                         :: n1, ma1, ma2
-      real(kind=dbl), intent(in)                         :: fmj(2,ma1:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
-      real(kind=dbl), intent(inout)                      :: cr(4,ma1:*), pmm(*)
+    module subroutine fwd_sum_m_sub(n1, m, nma, fmj, cosx, sinx, cosx2, wght, pmm, pmj1, pmj, swork, cr, grid)
+      integer,        intent(in)                         :: n1, m, nma
+      real(kind=dbl), intent(in)                         :: fmj(0:*), cosx(*), sinx(*), cosx2(*), wght(*), grid(*)
+      real(kind=dbl), intent(inout)                      :: cr(0:*), pmm(*)
       real(kind=dbl), intent(out)                        :: swork(*)
       real(kind=dbl), pointer, contiguous, intent(inout) :: pmj(:), pmj1(:)
     end subroutine fwd_sum_m_sub
@@ -95,8 +95,8 @@ module lege_poly
   
   !! Codelets
   interface
-    module subroutine bwd_set_sub(ma, n, fmj, cosx, sinx, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
-      integer, value, intent(in)    :: n, ma
+    module subroutine bwd_set_sub(m, n, fmj, cosx, sinx, cc, pmm, pmj1, pmj, swork) bind(C, name="bwd_set_c")
+      integer, value, intent(in)    :: n, m
       real(kind=dbl), intent(in)    :: fmj(*), cosx(*), sinx(*), cc(*)
       real(kind=dbl), intent(inout) :: pmm(*)
       real(kind=dbl), intent(out)   :: pmj1(*), pmj(*), swork(*)
@@ -120,8 +120,8 @@ module lege_poly
       real(kind=dbl), intent(out) :: swork(*)
     end subroutine fwd_shf_sub
     
-    module subroutine fwd_set_sub(ma, n, fmj, cosx, sinx, swork, pmm, pmj1, pmj, cr) bind(C, name="fwd_set_c")
-      integer, value, intent(in)    :: n, ma
+    module subroutine fwd_set_sub(m, n, fmj, cosx, sinx, swork, pmm, pmj1, pmj, cr) bind(C, name="fwd_set_c")
+      integer, value, intent(in)    :: n, m
       real(kind=dbl), intent(in)    :: swork(*), fmj(*), cosx(*), sinx(*)
       real(kind=dbl), intent(out)   :: pmj1(*), pmj(*)
       real(kind=dbl), intent(inout) :: cr(*), pmm(*)

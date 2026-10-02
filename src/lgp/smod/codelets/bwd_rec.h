@@ -1,3 +1,4 @@
+#pragma once
 #include "../../../math/cvec.h"
 
 extern inline __attribute__((always_inline))

@@ -1,7 +1,7 @@
 #include "../../../math/cvec.h"
 
 extern inline __attribute__((always_inline))
-void fwd_set_c( const int ma,
+void fwd_set_c( const int m,
                 const int n,
                 const double *restrict fmj,
                 const double *restrict cosx,
@@ -37,9 +37,9 @@ void fwd_set_c( const int ma,
     __m256d reg0, reg1, reg2, reg3;
     
     // Main cycle
-    switch ( ma ) {
+    switch ( m ) {
         
-        case 1:
+        case 0:
             
             for ( int i = 0; i < n; i++ ) {
                 
